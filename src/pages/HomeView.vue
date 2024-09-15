@@ -5,3 +5,7 @@
 <template>
   <a>Hello World!</a>
 </template>
+
+<style setup>
+  
+</style>
