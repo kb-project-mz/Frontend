@@ -7,8 +7,7 @@ const historyData = ref([]);
 
 const fetchConsumptionHistory = async (memberId) => {
   await consumptionHistoryStore.getCardHistoryList(memberId);
-  historyData.value = consumptionHistoryStore.cardHistory;
-  
+  historyData.value = consumptionHistoryStore.cardHistoryThisMonth;
 }
 
 onMounted(() =>  {
@@ -17,6 +16,7 @@ onMounted(() =>  {
 </script>
 
 <template>
+  <h1>이번 달 소비 내역</h1>
   <table>
     <thead>
       <tr>
