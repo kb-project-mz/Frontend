@@ -2,7 +2,7 @@
 import { defineProps } from 'vue';
 
 const props = defineProps({
-  mostUsed: {
+  maximumUsed: {
     type: Object,
     required: true,
   },
@@ -23,22 +23,23 @@ const getMedal = (index) => {
 </script>
 
 <template>
-  <div class="most-used flex-none ml-10 mr-36">
+  <div class="most-used flex-none mr-10">
     <div class="text-2xl mb-7">
-      <div>이번 달 <span class="text-red">소비 횟수</span>가</div>
-      <div>가장 많은 곳이에요</div>
+      <div>이번 달 <span class="text-blue">가장 많은 지출</span>은</div>
+      <div>바로 이 곳에서 사용했어요</div>
     </div>
     <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
       <div class="text-2xl">
-        <div v-for="(value, key, index) in mostUsed" :key="index">
-          {{ getMedal(index) }} {{ key }} <span class="font-bold">{{ value }}</span>회        </div>
+        <div v-for="(value, key, index) in maximumUsed" :key="index">
+          {{ getMedal(index) }} {{ key }} <span class="font-bold">{{ value.toLocaleString() }}</span>원
+        </div>
       </div>
     </span>
   </div>
 </template>
 
 <style scoped>
-.text-red {
-  color: #F55151;
+.text-blue {
+  color: #0E9CFF;
 }
 </style>
