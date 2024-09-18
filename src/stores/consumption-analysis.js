@@ -9,7 +9,7 @@ export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
   actions: {
     async getMostAndMaximumUse(memberId, startYear, startMonth, startDay, endYear, endMonth, endDay) {
       try {
-        const res = await apiInstance.get(`/consumption/test`, {
+        const res = await apiInstance.get(`/consumption/most`, {
           params: {
             memberId: memberId,
             startYear: startYear,
