@@ -3,6 +3,14 @@ import { ref, onMounted } from 'vue';
 import { useConsumptionAnalysisStore } from '@/stores/consumption-analysis';
 import MostUsed from './MostUsed.vue';
 import MaximumUsed from './MaximumUsed.vue';
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  period: {
+    type: String,
+    required: true,
+  }
+});
 
 const consumptionAnalysisStore = useConsumptionAnalysisStore();
 const mostUsed = ref({});
@@ -45,19 +53,32 @@ const formatMostUsed = (dataStr) => {
   return result;
 }
 
+const getMedal = (index) => {
+  switch(index) {
+    case 0:
+      return '🥇';
+    case 1:
+      return '🥈';
+    case 2:
+      return '🥉';
+    default:
+      return '';
+  }
+};
+
 onMounted(async () => {
-  await fetchConsumptionAnalysis(1, 2024, 9, 1, 2024, 9, 30);
-  
+  // await fetchConsumptionAnalysis(1, 2024, 9, 1, 2024, 9, 30);
+
   // 테스트용 데이터
-  // mostUsed.value = {"배달의 민족":15, "스타벅스":3, "편의점":4};
-  // maximumAmount.value = {"배달의 민족":120000, "스타벅스":23000, "편의점":12000}
+  mostUsed.value = {"배달의 민족":15, "스타벅스":3, "편의점":4};
+  maximumAmount.value = {"배달의 민족":120000, "스타벅스":23000, "편의점":12000}
 });
 </script>
 
 <template>
-  <div class="max-w-max p-8 bg-white border border-gray-200 rounded-lg shadow flex">
-    <MostUsed :mostUsed="mostUsed" />
-    <MaximumUsed :maximumUsed="maximumAmount" />
+  <div class="max-w-max p-8 bg-white border border-gray-200 rounded-2xl shadow flex">
+    <MostUsed :mostUsed="mostUsed" :get-medal="getMedal" :period="period" />
+    <MaximumUsed :maximumUsed="maximumAmount" :get-medal="getMedal" :period="period" />
   </div>
 </template>
 

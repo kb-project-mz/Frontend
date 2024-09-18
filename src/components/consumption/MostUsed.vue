@@ -6,26 +6,21 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-});
-
-const getMedal = (index) => {
-  switch(index) {
-    case 0:
-      return '🥇';
-    case 1:
-      return '🥈';
-    case 2:
-      return '🥉';
-    default:
-      return '';
+  getMedal: {
+    type: Function,
+    required: true,
+  },
+  period: {
+    type: String,
+    required: true,
   }
-};
+});
 </script>
 
 <template>
-  <div class="most-used flex-none ml-10 mr-36">
+  <div class="most-used ml-10 w-88">
     <div class="text-2xl mb-7">
-      <div>이번 달 <span class="text-red">소비 횟수</span>가</div>
+      <div>{{ period }} <span class="text-red">소비 횟수</span>가</div>
       <div>가장 많은 곳이에요</div>
     </div>
     <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
@@ -40,5 +35,8 @@ const getMedal = (index) => {
 <style scoped>
 .text-red {
   color: #F55151;
+}
+.w-88 {
+  width: 22rem;
 }
 </style>
