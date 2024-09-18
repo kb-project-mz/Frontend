@@ -8,19 +8,36 @@ const maximumAmount = ref({});
 
 const fetchConsumptionAnalysis = async (memberId, startYear, startMonth, startDay, endYear, endMonth, endDay) => {
   await consumptionAnalysisStore.getMostAndMaximumUse(memberId, startYear, startMonth, startDay, endYear, endMonth, endDay);
-  mostUsed.value = formatMostUsed(consumptionAnalysisStore.mostUsed);
-  maximumAmount.value = formatMostUsed(consumptionAnalysisStore.maximumAmount);
+  const formattedData = formatMostUsed(consumptionAnalysisStore.mostAndMaximum);
+  
+  mostUsed.value = formattedData.mostUsed;
+  maximumAmount.value = formattedData.maximumAmount;
 }
 
 const formatMostUsed = (dataStr) => {
-  const result = {};
+  const result = {
+    mostUsed: {},
+    maximumAmount: {}
+  }
   
   if (dataStr) {
-    const items = dataStr.replace(/[\[\]"]/g, '').split(', ');
-    items.forEach(item => {
-      const [key, value] = item.split(':');
-      result[key.trim()] = parseInt(value.trim());
-    });
+    const lists = dataStr.split('], [');
+    
+    if (lists[0]) {
+      const items1 = lists[0].replace(/[\[\]]/g, '').split(', ');
+      items1.forEach(item => {
+        const [key, value] = item.split(':');
+        result.mostUsed[key.trim()] = parseInt(value.trim());
+      });
+    }
+    
+    if (lists[1]) {
+      const items2 = lists[1].replace(/[\[\]]/g, '').split(', ');
+      items2.forEach(item => {
+        const [key, value] = item.split(':');
+        result.maximumAmount[key.trim()] = parseInt(value.trim());
+      });
+    }
   }
 
   return result;
@@ -49,5 +66,5 @@ onMounted(() => {
 </template>
 
 <style scoped>
-  
+
 </style>

@@ -3,8 +3,7 @@ import apiInstance from './axios-instance';
 
 export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
   state: () => ({
-    mostUsed: "",
-    maximumAmount: ""
+    mostAndMaximum: ""
   }),
 
   actions: {
@@ -22,8 +21,7 @@ export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
           }
         });
 
-        this.mostUsed = res.data.mostUsed;
-        this.maximumAmount = res.data.maximumAmount;
+        this.mostAndMaximum = res.data.data;
       } catch (err) {
         console.error(err);
       }
