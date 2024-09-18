@@ -1,10 +1,16 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useConsumptionHistoryStore } from '@/stores/consumption-history';
 import MostAndMaximumUsed from '@/components/consumption/MostAndMaximumUsed.vue';
 import CategoryChart from '@/components/consumption/CategoryChart.vue';
 import TotalOutcome from '@/components/consumption/TotalOutcome.vue';
 import TotalIncome from '@/components/consumption/TotalIncome.vue';
 import AverageConsumption from '@/components/consumption/AverageConsumption.vue';
+
+const consumptionHistoryStore = useConsumptionHistoryStore();
+const historyData = ref([]);
+const historyThisMonthData = ref([]);
+const historySelectedPeriodData = ref([]);
 
 const thisMonth = ref("이번 달");
 const selectedPeriod = ref("이 기간 동안");
@@ -25,6 +31,34 @@ const startDay =  ref(1);
 const endYear =  ref(year);
 const endMonth =  ref(month - 1);
 const endDay =  ref(getEndDay(endYear.value, endMonth.value));
+
+const fetchConsumptionHistory = async (memberId) => {
+  await consumptionHistoryStore.getCardHistoryList(memberId);
+  historyData.value = consumptionHistoryStore.cardHistory;
+  historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
+}
+
+const fetchSelectedPeriodConsumptionHistory = () => {
+  const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
+  const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
+
+  console.log(startDate);
+  console.log(endDate);
+
+  // consumptionDate를 Date 객체로 변환하여 비교
+  const filteredHistoryData = historyData.value.filter(item => {
+    const consumptionDate = new Date(item.consumptionDate);
+    return consumptionDate >= startDate && consumptionDate <= endDate;
+  });
+
+  // 필터링된 데이터를 historySelectedPeriodData에 저장
+  historySelectedPeriodData.value = filteredHistoryData;
+};
+
+onMounted(async () => {
+  await fetchConsumptionHistory(1);
+  fetchSelectedPeriodConsumptionHistory();
+});
 </script>
 
 <template>
@@ -40,7 +74,7 @@ const endDay =  ref(getEndDay(endYear.value, endMonth.value));
           <CategoryChart />
         </div>
         <div class="w-1/2 ml-4">
-          <div><TotalOutcome /></div>
+          <div><TotalOutcome :historyData="historyThisMonthData" /></div>
           <div class="mt-8"><TotalIncome /></div>
           <div class="mt-8"><AverageConsumption /></div>
         </div>

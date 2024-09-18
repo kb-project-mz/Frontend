@@ -41,6 +41,8 @@ export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
 
           return consumptionYear === lastYear && consumptionMonth == lastMonth;
         });
+
+        // console.log(this.cardHistory);
       } catch (err) {
         console.error(err);
       }
