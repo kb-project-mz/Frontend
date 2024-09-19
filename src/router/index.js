@@ -1,6 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../pages/HomeView.vue'
+import Login from '@/pages/login/LoginPage.vue';
+import FindUsername from '@/pages/login/FindUsername.vue';
+import FindPassword from '@/pages/login/FindPassword.vue';
+import ChallengePage from '@/pages/challenge/ChallengePage.vue';
 import ConsumptionPage from '@/pages/consumption/ConsumptionPage.vue'
+import ConnectionAssetPage from '@/pages/connection/ConnectionAssetPage.vue';
+import BeforeLoginPage from '@/pages/consumption/BeforeLoginPage.vue';
+import HomePage from '@/pages/home/HomePage.vue';
+import JoinPage from '@/pages/join/JoinPage.vue';
+import AfterConnectionPage from '@/pages/mypage/AfterConnectionPage.vue';
+import BeforeConnectionPage from '@/pages/mypage/BeforeConnectionPage.vue';
+import MyPage from '@/pages/mypage/MyPage.vue';
+import LoginPage from '@/pages/login/LoginPage.vue';
+import TestStartPage from '@/pages/test/TestStartPage.vue';
+import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
+import TestResultPage from '@/pages/test/TestResultPage.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,7 +42,7 @@ const router = createRouter({
     {
       path: '/mypage',  
       name: 'mypage',
-      component: mypage 
+      component: MyPage 
     }
     ,
     { 
@@ -42,10 +58,16 @@ const router = createRouter({
     }
     ,
     {
-      path: '/login/search',
-      name: 'loginSearch',
-      component: SearchPage
-    }     
+      path: '/find-username',
+      name: 'FindUsername',
+      component: FindUsername
+    }
+    ,
+    {
+      path: '/find-password',
+      name: 'FindPassword',
+      component: FindPassword
+    }   
     ,
     {
       path: '/test/start',
