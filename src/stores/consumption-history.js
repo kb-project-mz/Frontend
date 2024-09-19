@@ -26,8 +26,8 @@ export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
           return consumptionYear === thisYear && consumptionMonth == thisMonth;
         });
 
-        const lastYear = thisYear;
-        const lastMonth = thisMonth - 1;
+        let lastYear = thisYear;
+        let lastMonth = thisMonth - 1;
 
         if (thisMonth == 1) {
           lastYear = thisYear - 1;
