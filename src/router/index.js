@@ -12,6 +12,12 @@ const router = createRouter({
     }
     ,
     {
+      path: '/consumption',
+      name: 'consumption',
+      component: ConsumptionPage
+    }
+    ,
+    {
       path: '/mypage/connection/:memberId',
       name: 'connection',
       component: ConnectionAssetPage
