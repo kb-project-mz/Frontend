@@ -8,12 +8,12 @@ const router = useRouter();
 const auth = useAuthStore();
 
 const member = reactive({
-  username: '',
+  memberId: '',
   password: '',
 });
 
 const error = ref('');
-const disableSubmit = computed(() => !(member.username && member.password));
+const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
   console.log(member);
@@ -37,7 +37,6 @@ const login = async () => {
 };
 </script>
 
-
 <template>
     <div class="container mt-5 mx-auto">
       <div class="row justify-content-center">
@@ -50,16 +49,16 @@ const login = async () => {
   
           <form @submit.prevent="login">
             <div class="mb-3 mt-3">
-              <label for="username" class="form-label">
+              <label for="memberId" class="form-label">
                 <i class="fa-solid fa-user"></i>
                 ID:
               </label>
               <input 
                 type="text" 
-                id="username" 
+                id="memberId" 
                 class="form-control" 
-                placeholder="사용자 ID" 
-                v-model="member.username" 
+                placeholder="회원 ID" 
+                v-model="member.memberId" 
                 required 
               />
             </div>
@@ -82,21 +81,21 @@ const login = async () => {
             <div v-if="error" class="text-danger">{{ error }}</div>
   
             <button 
-            type="submit" 
-            class="btn btn-primary w-100 mt-4" 
-            :disabled="disableSubmit"
-            style="background-color: navy; color: white; border: none;">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            로그인
-          </button>
-        </form>
+              type="submit" 
+              class="btn btn-primary w-100 mt-4" 
+              :disabled="disableSubmit"
+              style="background-color: navy; color: white; border: none;">
+              <i class="fa-solid fa-right-to-bracket"></i>
+              로그인
+            </button>
+          </form>
   
           <div class="mt-4">
-            <router-link to="/findUsername" class="btn btn-link">아이디 찾기</router-link>
+            <router-link to="/findMemberId" class="btn btn-link">아이디 찾기</router-link>
             <router-link to="/findPassword" class="btn btn-link">비밀번호 찾기</router-link>
             <router-link to="/join" class="btn btn-link">회원가입</router-link>
           </div>
         </div>
       </div>
     </div>
-  </template>
+</template>
