@@ -1,12 +1,11 @@
 <script setup>
-  import AccountBook from '../../components/connection/AccountBook.vue';
-  import Card from '../../components/connection/Card.vue';
+  import ConnAccountBook from '@/components/connection/ConnAccountBook.vue';
+  import ConnCard from '@/components/connection/ConnCard.vue';
 </script>
 
 <template>
-  <AccountBook />
-  <hr>
-  <Card />
+  <ConnAccountBook />
+  <ConnCard/>
 </template>
 
 <style scoped>
