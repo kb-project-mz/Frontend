@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../pages/HomeView.vue'
 import Login from '@/pages/login/LoginPage.vue';
-import findMemberId from '@/pages/login/findMemberId.vue';
+import FindMemberId from '@/pages/login/FindMemberId.vue';
 import FindPassword from '@/pages/login/FindPassword.vue';
 import ChallengePage from '@/pages/challenge/ChallengePage.vue';
 import ConsumptionPage from '@/pages/consumption/ConsumptionPage.vue'
@@ -60,12 +60,12 @@ const router = createRouter({
     {
       path: '/findMemberId',
       name: 'findMemberId',
-      component: findMemberId
+      component: FindMemberId
     }
     ,
     {
       path: '/findPassword',
-      name: 'FindPassword',
+      name: 'findPassword',
       component: FindPassword
     }   
     ,
