@@ -111,8 +111,8 @@ onMounted(async () => {
 
 .container {
   overflow: auto;
-  max-width: 100%; /* 너비 제한 */
-    max-height: 100vh; /* 세로 방향으로 화면을 넘지 않게 제한 */
+  max-width: 100%;
+    max-height: 100vh;
 }
 
 
