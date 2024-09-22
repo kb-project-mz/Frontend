@@ -62,8 +62,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex items-stretch justify-center mt-10">
-    <div>
+  
+  <div class="container flex items-stretch justify-center mt-10">
+    <div class="flex-grow-0 flex-shrink-0 w-full max-w-screen-lg">
       <div>
         <div class="text-xl mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
         <div class="text-2xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
@@ -83,7 +84,7 @@ onMounted(async () => {
 
     <div class="mx-8 border-l border-gray-300"></div>
 
-    <div>
+    <div class="flex-grow-0 flex-shrink-0 w-full max-w-screen-lg">
       <div class="flex items-end justify-between mb-6">
         <div>
           <div class="text-xl mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
@@ -104,9 +105,41 @@ onMounted(async () => {
   </div>
 </template>
 
+
+
 <style scoped>
-.btn-gray {
-  border-color: #656363;
-  color: #656363;
+
+.container {
+  overflow: auto;
+  max-width: 100%; /* 너비 제한 */
+    max-height: 100vh; /* 세로 방향으로 화면을 넘지 않게 제한 */
 }
+
+
+
+  .btn-gray {
+    border-color: #656363;
+    color: #656363;
+  }
+
+ 
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .flex-container {
+    display: flex;
+    flex-wrap: wrap; 
+  }
+
+
+  .column {
+    flex: 1;
+    min-width: 300px; 
+    margin: 8px;
+    box-sizing: border-box;
+  }
 </style>
