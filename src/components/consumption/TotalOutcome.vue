@@ -22,7 +22,6 @@ const getTotalOutcome = () => {
   const accountTotal = props.accountHistoryData.reduce((total, item) => {
     return total + Math.abs(item.amount < 0 ? item.amount : 0);
   }, 0);
-  console.log(accountTotal);
 
   return historyTotal + accountTotal;
 };

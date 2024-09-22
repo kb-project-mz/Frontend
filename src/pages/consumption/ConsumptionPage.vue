@@ -8,6 +8,8 @@ import TotalOutcome from '@/components/consumption/TotalOutcome.vue';
 import TotalIncome from '@/components/consumption/TotalIncome.vue';
 import AverageConsumption from '@/components/consumption/AverageConsumption.vue';
 import AIRecommendation from '@/components/consumption/AIRecommendation.vue';
+import LineChart from '@/components/consumption/LineChart.vue';
+import SomeChart from '@/components/consumption/SomeChart.vue';
 
 const consumptionHistoryStore = useConsumptionHistoryStore();
 const accountHistoryStore = useAccountHistoryStore();
@@ -48,8 +50,6 @@ const fetchConsumptionHistory = async (memberId) => {
   await accountHistoryStore.getAccountHistoryList(memberId);
   accountHistoryData.value = accountHistoryStore.accountHistory;
   accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
-
-  console.log(accountHistoryThisMonthData.value);
 }
 
 const fetchSelectedPeriodConsumptionHistory = () => {
@@ -107,53 +107,13 @@ onMounted(async () => {
             <CategoryChart />
           </div>
           <div class="w-1/2 ml-4">
-            
+            <LineChart />
+            <div class="mt-8"><SomeChart /></div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- <div class="flex items-stretch justify-center mt-10">
-      <div>
-        <div>
-          <div class="text-xl mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
-          <div class="text-2xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
-        </div>
-        <MostAndMaximumUsed :period="thisMonth" />
-        <div class="flex mt-8">
-          <div class="w-1/2 mr-4">
-            <CategoryChart />
-          </div>
-          <div class="w-1/2 ml-4">
-            <div><TotalOutcome :historyData="historyThisMonthData" :accountHistoryData="accountHistoryThisMonthData" /></div>
-            <div class="mt-8"><TotalIncome :accountHistoryData="accountHistoryThisMonthData" /></div>
-            <div class="mt-8"><AverageConsumption /></div>
-          </div>
-        </div>
-      </div>
 
-      <div class="mx-8 border-l border-gray-300"></div>
-
-      <div>
-        <div class="flex items-end justify-between mb-6">
-          <div>
-            <div class="text-xl mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
-            <div class="text-2xl font-semibold">{{ startYear }}년  {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년  {{ endMonth }}월 {{ endDay }}일</div>
-          </div>
-          <button class="bg-white py-2 px-6 border rounded-2xl text-xl btn-gray">기간 설정</button>
-        </div>
-        <MostAndMaximumUsed :period="selectedPeriod" />
-        <div class="flex mt-8">
-          <div class="w-1/2 mr-4">
-            <CategoryChart />
-          </div>
-          <div class="w-1/2 ml-4">
-            
-          </div>
-        </div>
-      </div>
-
-    </div> -->
     <div class="mt-20 mb-80">
       <AIRecommendation />
     </div>
