@@ -11,8 +11,12 @@ export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
   actions: {
     async getCardHistoryList(memberId) {
       try {
-        const res = await apiInstance.get(`/consumption/card/history/${memberId}`);
-        this.cardHistory = res.data;
+        const res = await apiInstance.get(`/consumption/card/history/${memberId}`, {
+          headers: {
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjY5OTAzODMsImV4cCI6MTcyNzA3Njc4M30.ccTmv2HYPALzTt26S2p0Z53YshnRdVidP9finaNG4rs"
+          }
+        });
+        this.cardHistory = res.data.data;
 
         const now = new Date();
         const thisYear = now.getFullYear();
@@ -42,7 +46,6 @@ export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
           return consumptionYear === lastYear && consumptionMonth == lastMonth;
         });
 
-        // console.log(this.cardHistory);
       } catch (err) {
         console.error(err);
       }
