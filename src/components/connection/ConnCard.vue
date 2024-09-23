@@ -1,27 +1,9 @@
-<template>
-  <div class="card-list">
-    <h2>내 카드 추천</h2>
-    <ul>
-      <li v-for="(card, index) in cardData" :key="index" class="card-item">
-        <img :src="card.image" alt="Card Image" class="card-image" />
-        <div class="card-info">
-          <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
-          <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
-        </div>
-      </li>
-      <li class="add-card">
-        <button @click="addAccount">
-          카드 추가하기
-        </button>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
+import PopUpCard from '@/components/connection/PopUpCard.vue';
+import Modal from '@/components/connection/PopUpCard.vue';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
@@ -35,22 +17,59 @@ onMounted(() => {
 });
 
 const fetchAsset = async (memberId) => {
-  await assetStore.getAssetList(memberId);
-  assetData.value = assetStore.assetList;
+  await assetStore.getConnAssetList(memberId);
+  assetData.value = assetStore.ConnAssetList;
 
   const acctData = assetData.value.slice();
   cardData.value = acctData.filter(data => data.financeKind == 1);
 };
 
+// 원화에 3자리마다 , 표시하는 함수
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
 
-const addCard = () => {
-  console.log('계좌 추가하기');
-  // 계좌 추가 로직
-};
+// 모달 Open/Close 함수
+const isModalVisible = ref(false)
+
+// 모달 Open
+function openModal () {
+  isModalVisible.value = true 
+}
+
+// 모달 Close
+function closeModal () {
+  isModalVisible.value = false 
+}
+
 </script>
+
+<template>
+
+  <div class="about">
+  <!-- 버튼을 통해 모달 팝업을 엽니다 -->
+  <div class="card-list">
+    <h2>연동된 카드</h2>
+      <ul>
+        <li v-for="(card, index) in cardData" :key="index" class="card-item">
+          <img :src="card.image" alt="Card Image" class="card-image" />
+          <div class="card-info">
+          <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
+          <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
+          </div>
+        </li>
+      </ul>
+      <button @click="openModal">카드 추가하기</button>
+    </div>
+  </div>
+    
+  <!-- 모달 팝업 컴포넌트 -->
+  <Modal :visible="isModalVisible" :onClose="closeModal">
+    <PopUpCard/>
+  </Modal>
+
+</template>
+
 
 <style scoped>
 .card-list {
@@ -124,5 +143,6 @@ const addCard = () => {
 .add-card button:hover {
   text-decoration: underline;
 }
+
 
 </style>
