@@ -8,9 +8,13 @@
       </router-link>
 
       <div class="flex space-x-4">
-        <a href="#" class="gray">로그인</a>
+        <router-link to="/login" class="flex items-center">
+          <a href="#" class="gray">로그인</a>
+        </router-link>
         <span class="gray">|</span>
-        <a href="#" class="gray">회원가입</a>
+        <router-link to="/join" class="flex items-center">
+          <a href="#" class="gray">회원가입</a>
+        </router-link>
       </div>
     </div>
   </nav>
