@@ -2,12 +2,12 @@
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const cardData = ref([]);
-const selectedCard = ref(null); // 선택된 계좌를 저장하는 변수
+const selectedCards = ref([]); // 선택된 카드들을 저장하는 배열
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -29,57 +29,71 @@ const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
 
+// 부모 컴포넌트로 이벤트를 전달할 emit 정의
+const emit = defineEmits(['addCards']);
+
 const props = defineProps({
-  visible: { type: Boolean, Required: true}, // 팝업의 가시성
-  onClose: { type: Function, Required: true} // 팝업을 닫는 함수
-})
+  visible: { type: Boolean, required: true }, // 팝업의 가시성
+  onClose: { type: Function, required: true } // 팝업을 닫는 함수
+});
 
 function close() {
-  props.onClose() // 부모 컴포넌트에서 On/Off 제어
+  props.onClose(); // 부모 컴포넌트에서 On/Off 제어
 }
 
+// 카드 선택 시 배열에 추가/삭제
 const selectCard = (card) => {
-  if (selectedCard.value === card) {
-    selectedCard.value = null; // 이미 선택된 항목을 클릭하면 선택 해제
+  const index = selectedCards.value.indexOf(card);
+  if (index > -1) {
+    selectedCards.value.splice(index, 1); // 이미 선택된 카드면 배열에서 제거
   } else {
-    selectedCard.value = card; // 새 항목 선택
+    selectedCards.value.push(card); // 선택되지 않은 카드면 배열에 추가
   }
+};
+
+// "추가하기" 버튼 클릭 시 선택된 카드를 부모 컴포넌트로 전달
+const addSelectedCards = () => {
+  emit('addCards', selectedCards.value); // 선택된 카드들을 부모 컴포넌트로 전달
+
+  // 선택된 카드를 cardData 배열에서 제거
+  selectedCards.value.forEach(card => {
+    const cardIndex = cardData.value.indexOf(card);
+    if (cardIndex > -1) {
+      cardData.value.splice(cardIndex, 1); // cardData에서 해당 카드를 제거
+    }
+  });
+
+  selectedCards.value = []; // 선택된 카드 목록 초기화
+  close(); // 팝업 닫기
 };
 </script>
 
-
 <template>
-
-  <!-- 조건부 렌더링으로 팝업을 제어 -->
   <div v-if="visible" class="modal-overlay" @click="close">
     <div class="modal-content" @click.stop>
-      <!-- 팝업 내용 -->
       <div class="card-list">
         <h2>연동할 카드 선택</h2>
-          <ul>
-            <li v-for="(card, index) in cardData" :key="index" class="card-item">
-              <input 
-                type="checkbox" 
-                :id="'account-' + index" 
-                :checked="selectedCard === card" 
-                @change="selectCard(card)" 
-              />
-              <img :src="card.image" alt="Card Image" class="card-image" />
-              <div class="card-info">
+        <ul>
+          <li v-for="(card, index) in cardData" :key="index" class="card-item">
+            <input 
+              type="checkbox" 
+              :id="'card-' + index" 
+              :checked="selectedCards.includes(card)" 
+              @change="selectCard(card)" 
+            />
+            <img :src="card.image" alt="Card Image" class="card-image" />
+            <div class="card-info">
               <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
               <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
-              </div>
-            </li>
-            <button @click="">추가하기</button>
-          </ul>
+            </div>
+          </li>
+        </ul>
+        <button @click="addSelectedCards">추가하기</button>
       </div>
       <button @click="close">닫기</button>
     </div>
   </div>
-
-  
 </template>
-
 
 <style scoped>
 .card-list {

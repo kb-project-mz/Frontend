@@ -7,7 +7,7 @@ import { defineProps } from 'vue';
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const accountData = ref([]);
-const selectedAccount = ref(null); // 선택된 계좌를 저장하는 변수
+const selectedAccounts = ref([]); // 선택된 계좌들을 저장하는 배열
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -35,16 +35,21 @@ const props = defineProps({
 })
 
 function close() {
-  props.onClose() // 부모 컴포넌트에서 On/Off 제어
+  props.onClose(); // 부모 컴포넌트에서 On/Off 제어
 }
 
+// 계좌 선택 시 배열에 추가/삭제
 const selectAccount = (account) => {
-  if (selectedAccount.value === account) {
-    selectedAccount.value = null; // 이미 선택된 항목을 클릭하면 선택 해제
+  const index = selectedAccounts.value.indexOf(account);
+  if (index > -1) {
+    // 이미 선택된 항목이면 배열에서 제거
+    selectedAccounts.value.splice(index, 1);
   } else {
-    selectedAccount.value = account; // 새 항목 선택
+    // 새 항목을 배열에 추가
+    selectedAccounts.value.push(account);
   }
 };
+
 </script>
 
 <template>
@@ -60,13 +65,13 @@ const selectAccount = (account) => {
               <input 
                 type="checkbox" 
                 :id="'account-' + index" 
-                :checked="selectedAccount === account" 
+                :checked="selectedAccounts.includes(account)" 
                 @change="selectAccount(account)" 
               />
               <img :src="account.image" alt="Account Image" class="account-image" />
               <div class="account-info">
-              <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
-              <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
+                <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
+                <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
               </div>
             </li>
             <button @click="">추가하기</button>
@@ -76,7 +81,6 @@ const selectAccount = (account) => {
     </div>
   </div>
 
-  
 </template>
 
 <style scoped>

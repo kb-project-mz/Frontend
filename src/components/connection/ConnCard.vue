@@ -2,12 +2,12 @@
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
-import PopUpCard from '@/components/connection/PopUpCard.vue';
-import Modal from '@/components/connection/PopUpCard.vue';
+import PopUpCard from '@/components/connection/PopUpCard.vue'; // 모달 컴포넌트 제거
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const cardData = ref([]);
+const addedCards = ref([]); // 추가된 카드들을 저장하는 배열
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -30,44 +30,44 @@ const formatAmount = (amount) => {
 };
 
 // 모달 Open/Close 함수
-const isModalVisible = ref(false)
+const isModalVisible = ref(false);
 
 // 모달 Open
-function openModal () {
-  isModalVisible.value = true 
+function openModal() {
+  isModalVisible.value = true;
 }
 
 // 모달 Close
-function closeModal () {
-  isModalVisible.value = false 
+function closeModal() {
+  isModalVisible.value = false;
 }
 
+// 자식 컴포넌트에서 선택된 카드를 받아 추가
+const handleAddCards = (cards) => {
+  addedCards.value = [...addedCards.value, ...cards]; // 추가된 카드들을 배열에 저장
+};
 </script>
 
 <template>
-
   <div class="about">
-  <!-- 버튼을 통해 모달 팝업을 엽니다 -->
-  <div class="card-list">
-    <h2>연동된 카드</h2>
+    <!-- 연동된 카드 목록 -->
+    <div class="card-list">
+      <h2>연동된 카드</h2>
       <ul>
-        <li v-for="(card, index) in cardData" :key="index" class="card-item">
+        <li v-for="(card, index) in [...cardData, ...addedCards]" :key="index" class="card-item">
           <img :src="card.image" alt="Card Image" class="card-image" />
           <div class="card-info">
-          <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
-          <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
+            <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
+            <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
           </div>
         </li>
       </ul>
       <button @click="openModal">카드 추가하기</button>
     </div>
   </div>
-    
-  <!-- 모달 팝업 컴포넌트 -->
-  <Modal :visible="isModalVisible" :onClose="closeModal">
-    <PopUpCard/>
-  </Modal>
-
+  
+  <!-- PopUpCard 컴포넌트 직접 사용 -->
+  <PopUpCard @addCards="handleAddCards" :onClose="closeModal" :visible="isModalVisible" />
 </template>
 
 
