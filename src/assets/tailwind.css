@@ -1,3 +1,17 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+.gray {
+  color: #656363;
+}
+
+.blue {
+  color: #0b1573;
+}
+
+/* 외곽선 */
+.stroke {
+  -webkit-text-stroke: 2px #0b1573;
+  color: transparent;
+}
