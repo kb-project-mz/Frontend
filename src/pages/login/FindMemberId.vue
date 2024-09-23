@@ -113,6 +113,6 @@ const goToJoin = () => {
       <button @click="goToJoin" class="btn btn-link">회원가입하러 가기</button>
     </div>
     <div v-if="successMessage" class="text-success text-center">{{ successMessage }}</div>
-    <div v-if="loading" class="text-center">로딩 중...</div>
+    <div v-if="loading" class="text-center">로딩 중</div>
   </div>
 </template>

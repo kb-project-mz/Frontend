@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import apiInstance from './axios-instance';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -13,11 +13,11 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login() {
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/member/login', {
+        const response = await apiInstance.post('/member/login', {
           memberId: this.member.memberId,
           password: this.member.password
         });
-        return response.data;
+        return response.data.data;
       } catch (error) {
         console.error('로그인 중 오류:', error);
         throw error;
@@ -25,13 +25,13 @@ export const useAuthStore = defineStore('auth', {
     },
     async create() {
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/member/join', {
+        const response = await apiInstance.post('/member/join', {
           memberId: this.member.memberId,
           password: this.member.password,
           email: this.member.email,
           memberName: this.member.memberName
         });
-        return response.data;
+        return response.data.data;
       } catch (error) {
         console.error('회원가입 중 오류:', error);
         throw error;
@@ -39,17 +39,17 @@ export const useAuthStore = defineStore('auth', {
     },
     async checkMemberId() {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/member/check-memberId/${this.member.memberId}`);
-        return response.data;
+        const response = await apiInstance.get(`/member/check-memberId/${this.member.memberId}`);
+        return response.data.data;
       } catch (error) {
-        console.error('ID 체크 중 오류:', error);
+        console.error('ID 중복 확인 중 오류:', error);
         throw error;
       }
     },
     async checkEmail() {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/member/check-email?email=${encodeURIComponent(this.member.email)}`);
-        return response.data;
+        const response = await apiInstance.get(`/member/check-email?email=${encodeURIComponent(this.member.email)}`);
+        return response.data.data;
       } catch (error) {
         console.error('이메일 체크 중 오류:', error);
         throw error;
