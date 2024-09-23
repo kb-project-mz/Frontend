@@ -1,16 +1,24 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useConsumptionHistoryStore } from '@/stores/consumption-history';
+import { useAccountHistoryStore } from '@/stores/account-history';
 import MostAndMaximumUsed from '@/components/consumption/MostAndMaximumUsed.vue';
 import CategoryChart from '@/components/consumption/CategoryChart.vue';
 import TotalOutcome from '@/components/consumption/TotalOutcome.vue';
 import TotalIncome from '@/components/consumption/TotalIncome.vue';
 import AverageConsumption from '@/components/consumption/AverageConsumption.vue';
+import AIRecommendation from '@/components/consumption/AIRecommendation.vue';
 
 const consumptionHistoryStore = useConsumptionHistoryStore();
+const accountHistoryStore = useAccountHistoryStore();
+
 const historyData = ref([]);
 const historyThisMonthData = ref([]);
 const historySelectedPeriodData = ref([]);
+
+const accountHistoryData = ref([]);
+const accountHistoryThisMonthData = ref([]);
+const accountHistorySelectedPeriodData = ref([]);
 
 const thisMonth = ref("이번 달");
 const selectedPeriod = ref("이 기간 동안");
@@ -36,23 +44,31 @@ const fetchConsumptionHistory = async (memberId) => {
   await consumptionHistoryStore.getCardHistoryList(memberId);
   historyData.value = consumptionHistoryStore.cardHistory;
   historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
+
+  await accountHistoryStore.getAccountHistoryList(memberId);
+  accountHistoryData.value = accountHistoryStore.accountHistory;
+  accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
+
+  console.log(accountHistoryThisMonthData.value);
 }
 
 const fetchSelectedPeriodConsumptionHistory = () => {
+ 
   const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
   const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
 
-  console.log(startDate);
-  console.log(endDate);
-
-  // consumptionDate를 Date 객체로 변환하여 비교
   const filteredHistoryData = historyData.value.filter(item => {
     const consumptionDate = new Date(item.consumptionDate);
     return consumptionDate >= startDate && consumptionDate <= endDate;
   });
 
-  // 필터링된 데이터를 historySelectedPeriodData에 저장
+  const filteredAccountHistoryData = accountHistoryData.value.filter(item => {
+    const accountDate = new Date(item.accountDate);
+    return accountDate >= startDate && accountDate <= endDate;
+  })
+
   historySelectedPeriodData.value = filteredHistoryData;
+  accountHistorySelectedPeriodData.value = filteredAccountHistoryData;
 };
 
 onMounted(async () => {
@@ -62,84 +78,91 @@ onMounted(async () => {
 </script>
 
 <template>
-  
-  <div class="container flex items-stretch justify-center mt-10">
-    <div class="flex-grow-0 flex-shrink-0 w-full max-w-screen-lg">
-      <div>
-        <div class="text-xl mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
-        <div class="text-2xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
-      </div>
-      <MostAndMaximumUsed :period="thisMonth" />
-      <div class="flex mt-8">
-        <div class="w-1/2 mr-4">
-          <CategoryChart />
+  <div class="mx-32 mt-10">
+    <div class="flex">
+      <div class="flex-1">
+        <div class="text-lg mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
+        <div class="text-xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
+        <MostAndMaximumUsed :period="thisMonth" />
+        <div class="flex mt-8">
+          <div class="w-1/2 mr-4">
+            <CategoryChart />
+          </div>
+          <div class="w-1/2 ml-4">
+            <div><TotalOutcome :historyData="historyThisMonthData" :accountHistoryData="accountHistoryThisMonthData" /></div>
+            <div class="mt-8"><TotalIncome :accountHistoryData="accountHistoryThisMonthData" /></div>
+            <div class="mt-8"><AverageConsumption /></div>
+          </div>
         </div>
-        <div class="w-1/2 ml-4">
-          <div><TotalOutcome :historyData="historyThisMonthData" /></div>
-          <div class="mt-8"><TotalIncome /></div>
-          <div class="mt-8"><AverageConsumption /></div>
+      </div>
+
+      <div class="mx-8 border-l border-gray-300"></div>
+
+      <div class="flex-1">
+        <div class="text-lg mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
+        <div class="text-xl font-semibold mb-6">{{ startYear }}년  {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년  {{ endMonth }}월 {{ endDay }}일</div>
+        <MostAndMaximumUsed :period="selectedPeriod" />
+        <div class="flex mt-8">
+          <div class="w-1/2 mr-4">
+            <CategoryChart />
+          </div>
+          <div class="w-1/2 ml-4">
+            
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="mx-8 border-l border-gray-300"></div>
-
-    <div class="flex-grow-0 flex-shrink-0 w-full max-w-screen-lg">
-      <div class="flex items-end justify-between mb-6">
+    
+    <!-- <div class="flex items-stretch justify-center mt-10">
+      <div>
         <div>
-          <div class="text-xl mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
-          <div class="text-2xl font-semibold">{{ startYear }}년  {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년  {{ endMonth }}월 {{ endDay }}일</div>
+          <div class="text-xl mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
+          <div class="text-2xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
         </div>
-        <button class="bg-white py-2 px-6 border rounded-2xl text-xl btn-gray">기간 설정</button>
+        <MostAndMaximumUsed :period="thisMonth" />
+        <div class="flex mt-8">
+          <div class="w-1/2 mr-4">
+            <CategoryChart />
+          </div>
+          <div class="w-1/2 ml-4">
+            <div><TotalOutcome :historyData="historyThisMonthData" :accountHistoryData="accountHistoryThisMonthData" /></div>
+            <div class="mt-8"><TotalIncome :accountHistoryData="accountHistoryThisMonthData" /></div>
+            <div class="mt-8"><AverageConsumption /></div>
+          </div>
+        </div>
       </div>
-      <MostAndMaximumUsed :period="selectedPeriod" />
-      <div class="flex mt-8">
-        <div class="w-1/2 mr-4">
-          <CategoryChart />
+
+      <div class="mx-8 border-l border-gray-300"></div>
+
+      <div>
+        <div class="flex items-end justify-between mb-6">
+          <div>
+            <div class="text-xl mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
+            <div class="text-2xl font-semibold">{{ startYear }}년  {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년  {{ endMonth }}월 {{ endDay }}일</div>
+          </div>
+          <button class="bg-white py-2 px-6 border rounded-2xl text-xl btn-gray">기간 설정</button>
         </div>
-        <div class="w-1/2 ml-4">
-          
+        <MostAndMaximumUsed :period="selectedPeriod" />
+        <div class="flex mt-8">
+          <div class="w-1/2 mr-4">
+            <CategoryChart />
+          </div>
+          <div class="w-1/2 ml-4">
+            
+          </div>
         </div>
       </div>
+
+    </div> -->
+    <div class="mt-20 mb-80">
+      <AIRecommendation />
     </div>
   </div>
 </template>
 
-
-
 <style scoped>
-
-.container {
-  overflow: auto;
-  max-width: 100%;
-    max-height: 100vh;
+.btn-gray {
+  border-color: #656363;
+  color: #656363;
 }
-
-
-
-  .btn-gray {
-    border-color: #656363;
-    color: #656363;
-  }
-
- 
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px;
-  }
-
-  .flex-container {
-    display: flex;
-    flex-wrap: wrap; 
-  }
-
-
-  .column {
-    flex: 1;
-    min-width: 300px; 
-    margin: 8px;
-    box-sizing: border-box;
-  }
 </style>
