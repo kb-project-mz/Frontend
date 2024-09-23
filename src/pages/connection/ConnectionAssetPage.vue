@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useAssetStore } from '@/stores/asset-history';
+// import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';  // useRoute를 사용하여 URL 파라미터를 가져옴
 
-const assetStore = useAssetStore();
+const assetStore = useAssetStore([]);
 const assetData = ref([]);
-const accountData = ref()
-const cardData = ref()
+const accountData = ref([])
+const cardData = ref([])
 
 const route = useRoute();  // 현재 경로 정보 가져오기
 const memberId = route.params.memberId;  // URL에서 memberId 추출

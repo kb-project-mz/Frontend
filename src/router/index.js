@@ -1,6 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../pages/HomeView.vue'
-import ConsumptionPage from '@/pages/consumption/ConsumptionPage.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../pages/HomeView.vue";
+import ConsumptionPage from "@/pages/consumption/ConsumptionPage.vue";
+import ConnectionAssetPage from "@/pages/connection/ConnectionAssetPage.vue";
+import mypage from "@/pages/mypage/MyPage.vue";
+import JoinPage from "@/pages/join/JoinPage.vue";
+import LoginPage from "@/pages/login/LoginPage.vue";
+import SearchPage from "@/pages/login/SearchPage.vue";
+import TestStartPage from "@/pages/test/TestStartPage.vue";
+import TestQuestionPage from "@/pages/test/TestQuestionPage.vue";
+import TestResultPage from "@/pages/test/TestResultPage.vue";
+import ChallengePage from "@/pages/challenge/ChallengePage.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +18,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: ChallengePage
     }
     ,
     {
