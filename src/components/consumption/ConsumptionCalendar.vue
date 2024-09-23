@@ -1,153 +1,138 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useDailyConsumptionHistoryDailyStore } from "@/stores/consumption-history-daily"; // 하루 소비 스토어
-import { useConsumptionHistoryStore } from "@/stores/consumption-history"; // 월별 소비 스토어
-import { useAccountHistoryStore } from "@/stores/account-history";
-import MostAndMaximumUsed from "@/components/consumption/MostAndMaximumUsed.vue";
-import CategoryChart from "@/components/consumption/CategoryChart.vue";
-import TotalOutcome from "@/components/consumption/TotalOutcome.vue";
-import TotalIncome from "@/components/consumption/TotalIncome.vue";
-import AverageConsumption from "@/components/consumption/AverageConsumption.vue";
-import AIRecommendation from "@/components/consumption/AIRecommendation.vue";
-import ConsumptionCalendar from "@/components/consumption/ConsumptionCalendar.vue";
+import { ref, onMounted } from 'vue';
 
-const memberId = 1;
-const dailyConsumptionStore = useDailyConsumptionHistoryDailyStore(); // 하루 소비 스토어
-const consumptionHistoryStore = useConsumptionHistoryStore(); // 월별 소비 스토어
-const accountHistoryStore = useAccountHistoryStore(); // 계좌 히스토리 스토어
+const currentYear = ref(new Date().getFullYear());
+const currentMonth = ref(new Date().getMonth());
+const daysInMonth = ref([]);
+const expenses = ref([
+  { date: '2024-09-01', amount: 2000 },
+  { date: '2024-09-05', amount: 5000 },
+]);
+const incomes = ref([
+  { date: '2024-09-01', amount: 3000 },
+  { date: '2024-09-03', amount: 7000 },
+]);
 
-const historyData = ref([]);
-const historyThisMonthData = ref([]);
-const historySelectedPeriodData = ref([]);
-const accountHistoryData = ref([]);
-const accountHistoryThisMonthData = ref([]);
-const accountHistorySelectedPeriodData = ref([]);
-const thisMonth = ref("이번 달");
-const selectedPeriod = ref("이 기간 동안");
-const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth() + 1;
-
-// 월의 마지막 날짜 가져오기
-const getEndDay = (year, month) => {
-    const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    return daysInMonth[month - 1];
+const generateCalendar = () => {
+  const days = new Date(
+    currentYear.value,
+    currentMonth.value + 1, 0
+  ).getDate();
+  daysInMonth.value = Array.from({ length: days }, (v, i) => {
+    return {
+      date: new Date(currentYear.value, currentMonth.value, i + 1)
+        .toISOString()
+        .split('T')[0],
+    };
+  });
 };
 
-const startYear = ref(year);
-const startMonth = ref(month - 1);
-const startDay = ref(1);
-const endYear = ref(year);
-const endMonth = ref(month - 1);
-const endDay = ref(getEndDay(endYear.value, endMonth.value));
-
-// 데이터가 중복으로 불려오는 것을 방지하기 위한 플래그
-let dataFetched = ref(false);
-
-// 소비 내역 불러오기 함수
-const fetchConsumptionHistory = async (memberId) => {
-    if (!dataFetched.value) {
-        // 한 번만 호출되도록 보장
-        await consumptionHistoryStore.getCardHistoryList(memberId);
-        historyData.value = consumptionHistoryStore.cardHistory;
-        historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
-
-        await accountHistoryStore.getAccountHistoryList(memberId);
-        accountHistoryData.value = accountHistoryStore.accountHistory;
-        accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
-
-        // 하루 소비 내역도 가져오기
-        await dailyConsumptionStore.getCardHistoryForDate(memberId, today);
-
-        // 데이터가 한 번만 불러와졌음을 표시
-        dataFetched.value = true;
-    }
+const nextMonth = () => {
+  if (currentMonth.value === 11) {
+    currentMonth.value = 0;
+    currentYear.value++;
+  } else {
+    currentMonth.value++;
+  }
+  generateCalendar();
 };
 
-// 선택한 기간 동안의 소비 내역 필터링
-const fetchSelectedPeriodConsumptionHistory = () => {
-    const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
-    const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
-
-    const filteredHistoryData = historyData.value.filter((item) => {
-        const consumptionDate = new Date(item.consumptionDate);
-        return consumptionDate >= startDate && consumptionDate <= endDate;
-    });
-
-    const filteredAccountHistoryData = accountHistoryData.value.filter((item) => {
-        const accountDate = new Date(item.accountDate);
-        return accountDate >= startDate && accountDate <= endDate;
-    });
-
-    historySelectedPeriodData.value = filteredHistoryData;
-    accountHistorySelectedPeriodData.value = filteredAccountHistoryData;
+const prevMonth = () => {
+  if (currentMonth.value === 0) {
+    currentMonth.value = 11;
+    currentYear.value--;
+  } else {
+    currentMonth.value--;
+  }
+  generateCalendar();
 };
 
-// 컴포넌트가 마운트될 때 데이터 불러오기
-onMounted(async () => {
-    await fetchConsumptionHistory(memberId);
-    fetchSelectedPeriodConsumptionHistory();
+const getExpense = (date) => {
+  const expense = expenses.value.find((e) => e.date === date);
+  return expense ? expense.amount : 0;
+};
+
+const getIncome = (date) => {
+  const income = incomes.value.find((i) => i.date === date);
+  return income ? income.amount : 0;
+};
+
+onMounted(() => {
+  generateCalendar();
 });
 </script>
 
 <template>
-    <div class="mx-32 mt-10">
-        <div class="flex">
-            <div class="flex-1">
-                <div class="text-lg mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
-                <div class="text-xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
-                <MostAndMaximumUsed :period="thisMonth" />
-                <div class="flex mt-8">
-                    <div class="w-1/2 mr-4">
-                        <CategoryChart />
-                    </div>
-                    <div class="w-1/2 ml-4">
-                        <div>
-                            <TotalOutcome :historyData="historyThisMonthData" :accountHistoryData="accountHistoryThisMonthData" />
-                        </div>
-                        <div class="mt-8">
-                            <TotalIncome :accountHistoryData="accountHistoryThisMonthData" />
-                        </div>
-                        <div class="mt-8"><AverageConsumption /></div>
-                    </div>
-                </div>
-                <div class="flex mt-8">
-                    <div class="w-1/2 mr-4">
-                        <ConsumptionList />
-                    </div>
-                    <div class="w-1/2 ml-4">
-                        <div>
-                            <ConsumptionCalendar :historyData="dailyConsumptionStore.cardHistoryToday" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mx-8 border-l border-gray-300"></div>
-            <div class="flex-1">
-                <div class="text-lg mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
-                <div class="text-xl font-semibold mb-6">{{ startYear }}년 {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년 {{ endMonth }}월 {{ endDay }}일</div>
-                <MostAndMaximumUsed :period="selectedPeriod" />
-                <div class="flex mt-8">
-                    <div class="w-1/2 mr-4">
-                        <CategoryChart />
-                    </div>
-                    <div class="w-1/2 ml-4">
-                        <LineChart />
-                        <div class="mt-8"><SomeChart /></div>
-                    </div>
-                </div>
-            </div>
+  <div class="p-8 bg-white border border-gray-200 rounded-2xl shadow h-full">
+    <div class="calendar">
+      <div class="calendar-header">
+        <button @click="prevMonth">이전</button>
+        <h2 style="font-weight: bold">
+          {{ currentYear }}년 {{ currentMonth + 1 }}월
+        </h2>
+        <button @click="nextMonth">다음</button>
+      </div>
+      <div class="calendar-grid">
+        <div class="day" v-for="day in daysInMonth" :key="day.date">
+          <div class="date">{{ new Date(day.date).getDate() }}</div>
+          <div class="expenses" v-if="getExpense(day.date) > 0">
+            {{ getExpense(day.date) }}
+          </div>
+          <div class="income" v-if="getIncome(day.date) > 0">
+            {{ getIncome(day.date) }}
+          </div>
         </div>
-        <div class="mt-20 mb-80">
-            <AIRecommendation />
-        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
-.btn-gray {
-    border-color: #656363;
-    color: #656363;
+.calendar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  /* 간격 줄임 */
+}
+
+.day {
+  padding: 5px;
+  /* 박스 크기 줄임 */
+  border: 1px solid #ffffff;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.date {
+  font-weight: bold;
+}
+
+.expenses,
+.income {
+  margin-top: 3px;
+  font-size: 0.8rem;
+}
+
+.expenses {
+  color: #f55151;
+}
+
+.income {
+  color: #0e9cff;
 }
 </style>
