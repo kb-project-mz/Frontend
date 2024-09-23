@@ -1,119 +1,153 @@
 <script setup>
+import { ref, onMounted } from "vue";
+import { useDailyConsumptionHistoryDailyStore } from "@/stores/consumption-history-daily"; // 하루 소비 스토어
+import { useConsumptionHistoryStore } from "@/stores/consumption-history"; // 월별 소비 스토어
+import { useAccountHistoryStore } from "@/stores/account-history";
+import MostAndMaximumUsed from "@/components/consumption/MostAndMaximumUsed.vue";
+import CategoryChart from "@/components/consumption/CategoryChart.vue";
+import TotalOutcome from "@/components/consumption/TotalOutcome.vue";
+import TotalIncome from "@/components/consumption/TotalIncome.vue";
+import AverageConsumption from "@/components/consumption/AverageConsumption.vue";
+import AIRecommendation from "@/components/consumption/AIRecommendation.vue";
+import ConsumptionCalendar from "@/components/consumption/ConsumptionCalendar.vue";
 
+const memberId = 1;
+const dailyConsumptionStore = useDailyConsumptionHistoryDailyStore(); // 하루 소비 스토어
+const consumptionHistoryStore = useConsumptionHistoryStore(); // 월별 소비 스토어
+const accountHistoryStore = useAccountHistoryStore(); // 계좌 히스토리 스토어
+
+const historyData = ref([]);
+const historyThisMonthData = ref([]);
+const historySelectedPeriodData = ref([]);
+const accountHistoryData = ref([]);
+const accountHistoryThisMonthData = ref([]);
+const accountHistorySelectedPeriodData = ref([]);
+const thisMonth = ref("이번 달");
+const selectedPeriod = ref("이 기간 동안");
+const today = new Date();
+const year = today.getFullYear();
+const month = today.getMonth() + 1;
+
+// 월의 마지막 날짜 가져오기
+const getEndDay = (year, month) => {
+    const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    return daysInMonth[month - 1];
+};
+
+const startYear = ref(year);
+const startMonth = ref(month - 1);
+const startDay = ref(1);
+const endYear = ref(year);
+const endMonth = ref(month - 1);
+const endDay = ref(getEndDay(endYear.value, endMonth.value));
+
+// 데이터가 중복으로 불려오는 것을 방지하기 위한 플래그
+let dataFetched = ref(false);
+
+// 소비 내역 불러오기 함수
+const fetchConsumptionHistory = async (memberId) => {
+    if (!dataFetched.value) {
+        // 한 번만 호출되도록 보장
+        await consumptionHistoryStore.getCardHistoryList(memberId);
+        historyData.value = consumptionHistoryStore.cardHistory;
+        historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
+
+        await accountHistoryStore.getAccountHistoryList(memberId);
+        accountHistoryData.value = accountHistoryStore.accountHistory;
+        accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
+
+        // 하루 소비 내역도 가져오기
+        await dailyConsumptionStore.getCardHistoryForDate(memberId, today);
+
+        // 데이터가 한 번만 불러와졌음을 표시
+        dataFetched.value = true;
+    }
+};
+
+// 선택한 기간 동안의 소비 내역 필터링
+const fetchSelectedPeriodConsumptionHistory = () => {
+    const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
+    const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
+
+    const filteredHistoryData = historyData.value.filter((item) => {
+        const consumptionDate = new Date(item.consumptionDate);
+        return consumptionDate >= startDate && consumptionDate <= endDate;
+    });
+
+    const filteredAccountHistoryData = accountHistoryData.value.filter((item) => {
+        const accountDate = new Date(item.accountDate);
+        return accountDate >= startDate && accountDate <= endDate;
+    });
+
+    historySelectedPeriodData.value = filteredHistoryData;
+    accountHistorySelectedPeriodData.value = filteredAccountHistoryData;
+};
+
+// 컴포넌트가 마운트될 때 데이터 불러오기
+onMounted(async () => {
+    await fetchConsumptionHistory(memberId);
+    fetchSelectedPeriodConsumptionHistory();
+});
 </script>
 
 <template>
-    <div class="calendar">
-      <div class="calendar-header">
-        <button @click="prevMonth">이전</button>
-        <h2>{{ currentYear }}년 {{ currentMonth + 1 }}월</h2>
-        <button @click="nextMonth">다음</button>
-      </div>
-      <div class="calendar-grid">
-        <div class="day" v-for="day in daysInMonth" :key="day.date">
-          <div class="date">{{ day.date }}</div>
-          <div class="expenses">지출: {{ getExpense(day.date) }} 원</div>
-          <div class="income">수입: {{ getIncome(day.date) }} 원</div>
+    <div class="mx-32 mt-10">
+        <div class="flex">
+            <div class="flex-1">
+                <div class="text-lg mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
+                <div class="text-xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
+                <MostAndMaximumUsed :period="thisMonth" />
+                <div class="flex mt-8">
+                    <div class="w-1/2 mr-4">
+                        <CategoryChart />
+                    </div>
+                    <div class="w-1/2 ml-4">
+                        <div>
+                            <TotalOutcome :historyData="historyThisMonthData" :accountHistoryData="accountHistoryThisMonthData" />
+                        </div>
+                        <div class="mt-8">
+                            <TotalIncome :accountHistoryData="accountHistoryThisMonthData" />
+                        </div>
+                        <div class="mt-8"><AverageConsumption /></div>
+                    </div>
+                </div>
+                <div class="flex mt-8">
+                    <div class="w-1/2 mr-4">
+                        <ConsumptionList />
+                    </div>
+                    <div class="w-1/2 ml-4">
+                        <div>
+                            <ConsumptionCalendar :historyData="dailyConsumptionStore.cardHistoryToday" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-8 border-l border-gray-300"></div>
+            <div class="flex-1">
+                <div class="text-lg mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
+                <div class="text-xl font-semibold mb-6">{{ startYear }}년 {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년 {{ endMonth }}월 {{ endDay }}일</div>
+                <MostAndMaximumUsed :period="selectedPeriod" />
+                <div class="flex mt-8">
+                    <div class="w-1/2 mr-4">
+                        <CategoryChart />
+                    </div>
+                    <div class="w-1/2 ml-4">
+                        <LineChart />
+                        <div class="mt-8"><SomeChart /></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="mt-20 mb-80">
+            <AIRecommendation />
+        </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        currentYear: new Date().getFullYear(),
-        currentMonth: new Date().getMonth(),
-        daysInMonth: [],
-        expenses: [
-          // 이 데이터는 예시입니다. 실제 데이터는 API에서 가져와서 이곳에 할당할 수 있습니다.
-          { date: '2024-09-01', amount: 2000 },
-          { date: '2024-09-05', amount: 5000 }
-        ],
-        incomes: [
-          { date: '2024-09-01', amount: 3000 },
-          { date: '2024-09-03', amount: 7000 }
-        ]
-      };
-    },
-    created() {
-      this.generateCalendar();
-    },
-    methods: {
-      // 캘린더 날짜 생성
-      generateCalendar() {
-        const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
-        this.daysInMonth = Array.from({ length: daysInMonth }, (v, i) => {
-          return { date: new Date(this.currentYear, this.currentMonth, i + 1).toISOString().split('T')[0] };
-        });
-      },
-      // 다음 달로 이동
-      nextMonth() {
-        if (this.currentMonth === 11) {
-          this.currentMonth = 0;
-          this.currentYear++;
-        } else {
-          this.currentMonth++;
-        }
-        this.generateCalendar();
-      },
-      // 이전 달로 이동
-      prevMonth() {
-        if (this.currentMonth === 0) {
-          this.currentMonth = 11;
-          this.currentYear--;
-        } else {
-          this.currentMonth--;
-        }
-        this.generateCalendar();
-      },
-      // 특정 날짜의 지출 금액 반환
-      getExpense(date) {
-        const expense = this.expenses.find(e => e.date === date);
-        return expense ? expense.amount : 0;
-      },
-      // 특정 날짜의 수입 금액 반환
-      getIncome(date) {
-        const income = this.incomes.find(i => i.date === date);
-        return income ? income.amount : 0;
-      }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .calendar {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-  }
-  
-  .day {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
-  
-  .date {
-    font-weight: bold;
-  }
-  
-  .expenses, .income {
-    margin-top: 5px;
-  }
-  </style>
+</template>
+
+<style scoped>
+.btn-gray {
+    border-color: #656363;
+    color: #656363;
+}
+</style>
