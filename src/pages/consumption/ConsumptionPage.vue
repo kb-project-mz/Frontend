@@ -86,7 +86,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Header />
   <div class="mx-[25%] mt-10">
     <button @click="toggleCardFlip" class="mt-4 p-2 bg-blue-500 text-white rounded">
       뒤집기
@@ -131,19 +130,18 @@ onMounted(async () => {
 .flip { 
   width: 100%;
   height: 720px;
-  display: table;
+  position: relative;
+  display: inline-block;
   perspective: 1100px;
 }
 .card {
   width: 100%;
   position: relative;
-  display: table;
+  display: inline-block;
   transition: .4s;
   transform-style: preserve-3d;
-  
 }	
 .front, .back {
-  display: table-row;
   position: absolute;
   width: 100%;
   height: auto;
