@@ -21,24 +21,21 @@ export const useAuthStore = defineStore('auth', {
 					memberId: memberId,
 					password: password
 				});
-				console.log(response.data.data)
+				console.log(response.data);
 		
 				const loginData = response.data.data;
 		
-				if (!loginData || !loginData.accessToken) {
-					console.error('응답에 accessToken이 없습니다.', loginData);
-					return null;  // 문제가 있는 경우 null 반환
+				if (!response.data.success) {
+					console.error(response.data.error.message);
+					return response.data.error.message;
 				}
-		
-				
 
+        localStorage.setItem('id', loginData.id);
 				localStorage.setItem('memberId', loginData.memberId);		
+        localStorage.setItem('memberName', loginData.memberName);
 				localStorage.setItem('accessToken', 'Bearer ' + loginData.accessToken);
 				localStorage.setItem('refreshToken', 'Bearer ' + loginData.refreshToken);
-				localStorage.setItem('auth', JSON.stringify(loginData));
-				
-				localStorage.setItem('id', loginData.id);
-				localStorage.setItem('memberName', loginData.memberName);
+				localStorage.setItem('auth', JSON.stringify(loginData));				
 		
 				console.log('로그인 응답 데이터:', loginData);
 				return loginData;
