@@ -166,7 +166,7 @@ const join = async () => {
 
 <template>
   <div class="flex justify-center">
-    <div class="mt-5 px-20 py-20 bg-white border rounded-lg shadow">
+    <div class="px-20 py-20 bg-white border rounded-lg shadow">
       <div class="mb-5 font-bold text-2xl text-blue">
         <div>회원가입을 위해</div>
         <div>정보를 입력해주세요</div>
@@ -178,7 +178,7 @@ const join = async () => {
           <input
             v-model="member.memberName"
             type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="memberName"
             placeholder="이름을 입력해주세요."
             required />
@@ -190,13 +190,13 @@ const join = async () => {
             <input
               v-model="member.memberId"
               type="text"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block flex-grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block flex-grow p-2.5"
               id="memberId"
               placeholder="회원 ID를 입력해주세요."
               required />
             <button
               type="button"
-              class="ml-2 px-3 py-1 bg-blue-800 text-white rounded-lg"
+              class="cursor-pointer ml-2 px-3 py-1 bg-blue-800 text-white rounded-lg"
               @click="checkMemberId"
               :disabled="!member.memberId">
               중복 확인
@@ -212,7 +212,7 @@ const join = async () => {
           <input
             v-model="member.password"
             type="password"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="password"
             placeholder="비밀번호를 입력해주세요."
             @input="checkPasswordStrength"
@@ -227,7 +227,7 @@ const join = async () => {
           <input
             v-model="member.checkPassword"
             type="password"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="checkPassword"
             @input="checkPasswordsMatch"
             placeholder="비밀번호를 다시 입력해주세요."
@@ -243,7 +243,7 @@ const join = async () => {
             <input 
               v-model="member.birthday" 
               type="text" 
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
               id="birthday" 
               placeholder="990101" 
               maxlength="6" 
@@ -252,7 +252,7 @@ const join = async () => {
             <input 
               v-model="member.gender"
               type="text" 
-              class="w-8 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              class="w-8 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
               id="gender" 
               maxlength="1"
               @input="handleBirthdayInput"
@@ -267,7 +267,7 @@ const join = async () => {
             <input
             v-model="member.email"
             type="email"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             id="email"
             placeholder="이메일을 입력해주세요."
             required />
@@ -298,7 +298,7 @@ const join = async () => {
 
         <button
           type="submit"
-          class="w-full bg-blue-800 text-white py-2 rounded-lg flex justify-center items-center"
+          class="cursor-pointer w-full bg-blue-800 text-white py-2 rounded-lg flex justify-center items-center"
           :disabled="disableSubmit || isLoading || !isMemberIdChecked">
           <i class="fa-solid fa-user-plus"></i>
           <span class="ml-2">확인</span>
