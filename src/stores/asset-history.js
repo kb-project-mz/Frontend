@@ -1,19 +1,30 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import apiInstance from './axios-instance';
 
 export const useAssetStore = defineStore('asset', {
   state: () => ({
-    assetList: [],
+    AllAssetList: [],
+    ConnAssetList: [],
   }),
   actions: {
     async getAssetList(memberId) {
       try {
-        const response = await axios.get(`/api/assets/${memberId}`);
-        this.assetList = response.data;
+        const response = await apiInstance.get(`/connection/asset/${memberId}`);
+        this.AllAssetList = response.data.data;
       } catch (error) {
         console.error('Failed to fetch asset list:', error);
         throw error;
       }
     },
+
+    async getConnAssetList(memberId) {
+        try {
+          const response = await apiInstance.get(`/connection/asset/connected/${memberId}`);
+          this.ConnAssetList = response.data.data;
+        } catch (error) {
+          console.error('Failed to fetch asset list:', error);
+          throw error;
+        }
+      },
   },
 });
