@@ -22,6 +22,7 @@ const fetchAsset = async (memberId) => {
 
   const acctData = assetData.value.slice();
   accountData.value = acctData.filter(data => data.financeKind == 2);
+  console.log("연동된 계좌 가져오자", accountData.value);
 };
 
 const formatAmount = (amount) => {
@@ -56,8 +57,8 @@ const handleAccountDataUpdate = (updatedAccountData) => {
   <div class="account-list">
     <h2>연동된 계좌</h2>
 
-      <ul v-if="addedAccounts.length > 0">
-        <li v-for="(account, index) in [...accountData, ...addedAccounts]" :key="index" class="account-item">
+      <ul v-if="accountData.length > 0">
+        <li v-for="(account, index) in accountData" :key="index" class="account-item">
           <img :src="account.image" alt="Account Image" class="account-image" />
           <div class="account-info">
           <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
@@ -66,7 +67,7 @@ const handleAccountDataUpdate = (updatedAccountData) => {
         </li>
       </ul>
 
-      <p v-else>연동된 계좌가 없습니다.</p>
+      <p v-else>텅</p>
       <button @click="openModal">계좌 추가하기</button>
     </div>
   </div>

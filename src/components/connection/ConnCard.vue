@@ -53,8 +53,8 @@ const handleCardDataUpdate = (updatedCardData) => {
     <div class="card-list">
       <h2>연동된 카드</h2>
 
-      <ul v-if="addedCards.length > 0">
-        <li v-for="(card, index) in [...cardData, ...addedCards]" :key="index" class="card-item">
+      <ul v-if="cardData.length > 0">
+        <li v-for="(card, index) in cardData" :key="index" class="card-item">
           <img :src="card.image" alt="Card Image" class="card-image" />
           <div class="card-info">
           <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
@@ -63,7 +63,7 @@ const handleCardDataUpdate = (updatedCardData) => {
         </li>
       </ul>
 
-      <p v-else>연동된 카드가 없습니다.</p>
+      <p v-else>텅</p>
       <button @click="openModal">카드 추가하기</button>
     </div>
   </div>
