@@ -37,8 +37,8 @@ function closeModal() {
 }
 
 // 자식 컴포넌트에서 선택된 카드를 받아 추가
-const handleAddCards = (cards) => {
-  addedCards.value = [...selectedCards.value, ...cards]; // 추가된 카드들을 배열에 저장
+const handleAddCard = (card) => {
+  addedCards.value = card; // 추가된 카드들을 배열에 저장
 };
 </script>
 
@@ -64,8 +64,7 @@ const handleAddCards = (cards) => {
     </div>
   </div>
   
-  <!-- PopUpCard 컴포넌트 직접 사용 -->
-  <PopUpCard @addCards="handleAddCards" :onClose="closeModal" :visible="isModalVisible" />
+  <PopUpCard @addCard="handleAddCard" :onClose="closeModal" :visible="isModalVisible" />
 </template>
 
 

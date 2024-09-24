@@ -7,8 +7,9 @@ import axios from 'axios';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
-const cardData = ref([]); // 전체 카드들을 저장할 배열
-const selectedCards = ref(); // 선택된 카드들을 저장하는 배열
+const cardData = ref([]); 
+const newCard = ref(null); 
+const message = ref('');
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -21,8 +22,6 @@ const fetchAsset = async (memberId) => {
   await assetStore.getAssetList(memberId);
   assetData.value = assetStore.AllAssetList;
   cardData.value = assetData.value.filter(data => data.financeKind === 1);
-  // 전체 데이터를 slice 해서 cardData에 넣는다!!!
-  console.log("여기까지는 되는거 맞음 올바른 데이터 옴!!!!!!!!!!!", cardData);
 };
 
 const formatAmount = (amount) => {
@@ -31,7 +30,6 @@ const formatAmount = (amount) => {
 
 // 부모 컴포넌트로 이벤트를 전달할 emit 정의
 const emit = defineEmits(['addCard']);
-
 const props = defineProps({
   visible: { type: Boolean, required: true }, // 팝업의 가시성
   onClose: { type: Function, required: true } // 팝업을 닫는 함수
@@ -43,56 +41,44 @@ function close() {
 
 // 카드 선택 시 배열에 추가/삭제 이것도 됨!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const selectCard = (card) => {
-  const index = selectedCards.value.indexOf(card);
-  
-  if (index > -1) {
-    selectedCards.value.splice(index, 1); // 이미 선택된 카드면 배열에서 제거
-  } else {
-    selectedCards.value.push(card); // 선택되지 않은 카드면 배열에 추가
-  }
+  newCard.value = card;
+  message.value = ''; // 카드가 선택되면 메시지 초기화
 };
 
-// // "추가하기" 버튼 클릭 시 선택된 카드를 부모 컴포넌트로 전달
-// const addSelectedCards = () => {
-//   emit('addCards', selectedCards.value); // 선택된 카드 배열들을 부모 컴포넌트로 전달
-//   // 선택된 카드를 cardData 배열에서 제거
-//   selectedCards.value.forEach(card => {
-//     const cardIndex = cardData.value.indexOf(card);
-//     if (cardIndex > -1) {
-//       cardData.value.splice(cardIndex, 1); // cardData 배열에서 해당 카드를 제거
-//     }
-//   });
-//     selectedCards.value = []; // 선택된 카드 목록 초기화
-//     close(); // 팝업 닫기
-// };
-
-const addSelectedCards = async () => {
+const addCard = async () => {
   try {
-    // 선택된 카드 배열들을 서버로 전송 (POST 요청)
-    const selectedCard = selectedCards.value;
-    const response = await axios.post('/connection/cards', { cards: selectedCard });
+    if(!newCard.value){
+      message.value = '선택된 카드가 없습니다.';
+      return;
+    }
+    close();
+    const id = newCard.value.prdtId;
+    const cardIndex = cardData.value.indexOf(newCard.value);
 
-    console.log("t선택된 카드는 하나!!!!!!!!!!!")
-    // 서버 응답에 따라 성공적으로 처리되면 다음 로직 실행
-    if (response.status === 200) {
+    console.log("카드 인덱스는??", cardIndex);
+    if (cardIndex > -1) {
+      cardData.value.splice(cardIndex, 1);
+    }
+
+    const response = await axios.post(`/api/v1/connection/card/${id}`);
+    if (cardIndex > -1) {
+      cardData.value.splice(cardIndex, 1);
+    }
+
+    console.log("선택된 카드는 하나!!!!!!!!!!!")
     
-      // 선택된 카드를 cardData 배열에서 제거
-      selectedCards.value.forEach(card => {
-        const cardIndex = cardData.value.indexOf(card);
-        if (cardIndex > -1) {
-          cardData.value.splice(cardIndex, 1); // cardData 배열에서 해당 카드를 제거
-        }
-      });
-
-      selectedCards.value = []; // 선택된 카드 목록 초기화
-      close(); // 팝업 닫기
+    if (response.status === 200) {
+      if (cardIndex > -1) {
+      cardData.value.splice(cardIndex, 1);
+    }
     } else {
       console.error('서버 요청 실패:', response.status);
     }
   } catch (error) {
     console.error('서버 통신 중 오류 발생:', error);
-  }
+  } 
 };
+
 </script>
 
 <template>
@@ -107,19 +93,21 @@ const addSelectedCards = async () => {
               type="radio" 
               name="selectedCard"  
               :id="'card-' + index" 
-              :checked="selectedCards[0] === card" 
+              :value="card" 
+              v-model="newCard"  
               @change="selectCard(card)" 
             />
             <img :src="card.image" alt="Card Image" class="card-image" />
             <div class="card-info">
-              <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
-              <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
+            <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
+            <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
             </div>
           </li>
-          <button @click="addSelectedCards">추가하기</button>
         </ul>
         
-        <p v-else>텅</p>
+        <p v-if="message">{{ message }}</p>
+        <p v-if="cardData.length === 0">더 이상 추가할 카드가 없습니다.</p>
+        <button v-if="cardData.length > 0 && !message" @click="addCard">추가하기</button>
       </div>
       <button @click="close">닫기</button>
     </div>

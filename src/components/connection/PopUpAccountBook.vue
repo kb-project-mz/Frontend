@@ -1,14 +1,15 @@
-<!-- popupAccount.vue -->
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import { defineProps, defineEmits } from 'vue';
+import axios from 'axios';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const accountData = ref([]);
-const selectedAccounts= ref(null); // 카드 하나만 선택하기 위해서 배열 대신 단일 변수 사용
+const newAccount = ref(null); 
+const message = ref('');
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -29,8 +30,6 @@ const formatAmount = (amount) => {
 
 // 부모 컴포넌트에 선택된 카드를 전달할 emit 정의
 const emit = defineEmits(['addAccount']);
-
-// 팝업의 가시성 조절
 const props = defineProps({
   visible: { type: Boolean, required: true },
   onClose: { type: Function, required: true }
@@ -41,27 +40,40 @@ function close() {
 }
 
 const selectAccount = (account) => {
-  const index = selectedAccounts.value.indexOf(account);
-  if(index > -1){
-    selectedAccounts.value.splic(index, -1); 
-  } else {
-    selectedAccounts.value.push(account);
-  }
-}
+  newAccount.value = account;
+  message.value = ''; // 카드가 선택되면 메시지 초기화
+};
 
-const addSelectedAccounts = () => {
-  emit('addAccounts', selectedAccounts.value);
+const addAccount = async () => {
+  try {
+    if(!newAccount.value){
+      message.value = '선택된 카드가 없습니다.';
+      return;
+    }
+    close();
+    const id = newAccount.value.prdtId;
+    const accountIndex = accountData.value.indexOf(newAccount.value);
 
-  selectedAccounts.value.forEach(account => {
-    const accountIndex = accountData.value.indexOf(account);
-    if (accountIndex > -1) {
+    if(accountIndex > -1) {
       accountData.value.splice(accountIndex, 1);
     }
-  });
 
-  selectedAccounts.value = [];
-  close();
-}
+    const response = await axios.post(`api/v1/connection/account${id}`);
+    if (accountIndex > -1) {
+      cardData.value.splice(accountIndex, 1);
+    }
+
+    if (response.status === 200) {
+      if (accountIndex > -1) {
+        accountData.value.splice(accountIndex, 1);
+    }
+    } else {
+      console.error('서버 요청 실패:', response.status);
+    }
+  } catch (error) {
+    console.error('서버 통신 중 오류 발생: ', error);
+  }
+};
 </script>
 
 <template>
@@ -73,22 +85,24 @@ const addSelectedAccounts = () => {
         <ul v-if="accountData && accountData.length > 0">
           <li v-for="(account, index) in accountData" :key="index" class="account-item">
             <input 
-              type="checkbox" 
-              :id="'account-' + index" 
-              :checked="selectedAccounts === account" 
-              @change="selectAccount(account)" 
+              type="radio" 
+              name="selectedAccount"
+              :id="'account-' + index"
+              :value="account" 
+              v-model="newAccount" 
+              @change="selectAccount(account)"
             />
             <img :src="account.image" alt="Account Image" class="account-image" />
             <div class="account-info">
-              <div class="account-name">{{ card.prdtName }} ({{ account.financeName }})</div>
+              <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
               <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
             </div>
           </li>
         </ul>
 
-        <p v-else>텅</p>
-
-        <button @click="addSelectedAccounts">추가하기</button>
+        <p v-if="message">{{ message }}</p>
+        <p v-if="accountData.length === 0">더 이상 추가할 계좌가 없습니다.</p>
+        <button v-if="accountData.length > 0 && !message" @click="addAccount">추가하기</button>
       </div>
       <button @click="close">닫기</button>
     </div>

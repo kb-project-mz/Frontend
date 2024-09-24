@@ -3,11 +3,11 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import PopUpAccountBook from '@/components/connection/PopUpAccountBook.vue';
-import Modal from '@/components/connection/PopUpAccountBook.vue';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const accountData = ref([]);
+const addedAccounts = ref([]);
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -24,24 +24,22 @@ const fetchAsset = async (memberId) => {
   accountData.value = acctData.filter(data => data.financeKind == 2);
 };
 
-// 원화에 3자리마다 , 표시하는 함수
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
 
-// 모달 Open/Close 함수
-const isModalVisible = ref(false);
 
-// 모달 Open
+const isModalVisible = ref(false);
 function openModal () {
   isModalVisible.value = true;
 }
-
-// 모달 Close
 function closeModal () {
   isModalVisible.value = false;
 }
 
+const handleAddAccount = (account) => {
+  addedAccounts.value = account;
+}
 </script>
 
 <template>
@@ -50,8 +48,9 @@ function closeModal () {
   <!-- 버튼을 통해 모달 팝업 Open -->
   <div class="account-list">
     <h2>연동된 계좌</h2>
-      <ul>
-        <li v-for="(account, index) in accountData" :key="index" class="account-item">
+
+      <ul v-if="addedAccounts.length > 0">
+        <li v-for="(account, index) in [...accountData, ...addedAccounts]" :key="index" class="account-item">
           <img :src="account.image" alt="Account Image" class="account-image" />
           <div class="account-info">
           <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
@@ -59,14 +58,13 @@ function closeModal () {
           </div>
         </li>
       </ul>
+
+      <p v-else>연동된 계좌가 없습니다.</p>
       <button @click="openModal">계좌 추가하기</button>
     </div>
   </div>
 
-  <Modal :visible="isModalVisible" :onClose="closeModal">
-    <PopUpAccountBook/>
-  </Modal>
-
+  <PopUpAccountBook @addAccount="handleAddAccount" :onClose="closeModal" :visible="isModalVisible" />
 </template>
 
 <style scoped>
