@@ -107,7 +107,7 @@ onMounted(async () => {
         <div class="h-6"></div>
         <div class="flex">
             <div class="w-3/5 mr-4 border border-gray-200 rounded-2xl shadow">
-                <ConsumptionCalendar />
+                <ConsumptionCalendar :account-history-data="accountHistoryData" :history-data="historyData" />
             </div>
             <div class="w-2/5 ml-4 border border-gray-200 rounded-2xl shadow">
                 <ConsumptionList />

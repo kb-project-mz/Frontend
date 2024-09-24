@@ -1,6 +1,18 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 
+// Props로 accountHistoryData와 historyData를 받아옵니다.
+const props = defineProps({
+    accountHistoryData: {
+        type: Array,
+        required: true,
+    },
+    historyData: {
+        type: Array,
+        required: true,
+    },
+});
+
 // 달력의 현재 연도와 월
 const currentYear = ref(new Date().getFullYear());
 const currentMonth = ref(new Date().getMonth());
@@ -9,19 +21,31 @@ const currentMonth = ref(new Date().getMonth());
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
 const daysInMonth = ref([]);
-const expenses = ref([
-    { date: "2024-09-01", amount: 2000 },
-    { date: "2024-09-05", amount: 5000 },
-]);
-const incomes = ref([
-    { date: "2024-09-01", amount: 300000 },
-    { date: "2024-09-03", amount: 70000 },
-]);
+
+// 필터링된 지출 내역 (현재 연도와 월에 맞는 데이터만 필터링)
+const filteredExpenses = computed(() => {
+    return props.accountHistoryData.filter((item) => {
+        const itemDate = new Date(item.accountDate);
+        return (
+            itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount < 0 // 지출만 필터링 (필요에 따라 수정 가능)
+        );
+    });
+});
+
+// 필터링된 수입 내역 (현재 연도와 월에 맞는 데이터만 필터링)
+const filteredIncomes = computed(() => {
+    return props.accountHistoryData.filter((item) => {
+        const itemDate = new Date(item.accountDate);
+        return (
+            itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount > 0 // 수입만 필터링 (필요에 따라 수정 가능)
+        );
+    });
+});
 
 // 월의 시작 요일과 마지막 날짜 계산
 const getMonthInfo = (year, month) => {
-    const startDay = new Date(year, month, 1).getDay(); // 월 시작 요일 (0: 일요일)
-    const endDate = new Date(year, month + 1, 0).getDate(); // 월 마지막 날짜
+    const startDay = new Date(year, month, 1).getDay();
+    const endDate = new Date(year, month + 1, 0).getDate();
     return { startDay, endDate };
 };
 
@@ -87,22 +111,34 @@ const prevMonth = () => {
     generateCalendar();
 };
 
-// 특정 날짜의 지출을 가져오는 함수
 const getExpense = (date) => {
-    const expense = expenses.value.find((e) => e.date === date);
-    return expense ? expense.amount.toLocaleString() : 0;
+    // 해당 날짜에 해당하는 모든 지출 데이터를 필터링 (amount가 음수인 경우만)
+    const expensesForDate = filteredExpenses.value.filter((e) => e.accountDate === date && e.amount < 0);
+
+    // 해당 날짜에 지출이 있는 경우 amount를 모두 절대값으로 합산
+    const totalAmount = expensesForDate.reduce((sum, e) => sum + Math.abs(e.amount), 0);
+
+    // 합산된 금액을 반환, 없으면 0 반환
+    return totalAmount ? totalAmount.toLocaleString() : 0;
 };
 
-// 특정 날짜의 수입을 가져오는 함수
 const getIncome = (date) => {
-    const income = incomes.value.find((i) => i.date === date);
-    return income ? income.amount.toLocaleString() : 0;
+    // 해당 날짜에 해당하는 모든 수입 데이터를 필터링 (amount가 양수인 경우만)
+    const incomesForDate = filteredIncomes.value.filter((e) => e.accountDate === date && e.amount > 0);
+
+    // 해당 날짜에 수입이 있는 경우 amount를 모두 합산
+    const totalAmount = incomesForDate.reduce((sum, e) => sum + e.amount, 0);
+
+    // 합산된 금액을 반환, 없으면 0 반환
+    return totalAmount ? totalAmount.toLocaleString() : 0;
 };
 
 // 컴포넌트가 처음 로드될 때 달력 생성
 onMounted(() => {
     generateCalendar();
 });
+
+watch([currentYear, currentMonth], generateCalendar);
 </script>
 
 <template>
@@ -128,7 +164,6 @@ onMounted(() => {
                             <div class="expenses" v-if="getExpense(getDateString(day))">{{ getExpense(getDateString(day)) }}</div>
                         </div>
                         <span v-else>&nbsp;</span>
-                        <!-- 빈칸을 위한 처리 -->
                     </td>
                 </tr>
             </tbody>
