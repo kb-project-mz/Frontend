@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import FindMemberId from '@/pages/login/FindMemberId.vue';
+import FindPassword from '@/pages/login/FindPassword.vue';
 import HomePage from '@/pages/home/HomePage.vue';
 import LoginPage from '@/pages/login/LoginPage.vue';
 import SearchPage from '@/pages/login/SearchPage.vue';
@@ -59,7 +61,20 @@ const router = createRouter({
       path: '/mypage/connection/:memberId',
       name: 'connection',
       component: ConnectionAssetPage
-    },
+    }
+    , 
+    {
+      path: '/findMemberId',
+      name: 'findMemberId',
+      component: FindMemberId
+    }
+    ,
+    {
+      path: '/findPassword',
+      name: 'findPassword',
+      component: FindPassword
+    }   
+    ,
     {
       path: '/test/start',
       name: 'testStart',
