@@ -1,29 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-const id = ref(null);
-const memberId = ref(null);
 const memberName = ref(null);
 
-// 컴포넌트가 마운트될 때 localStorage에서 id 값을 가져옴
 onMounted(() => {
-  // localStorage.setItem("id", 1);
-  // localStorage.setItem("memberId", 'dlekdud0102');
-  // localStorage.setItem("memberName", '이다영');
-
-  id.value = localStorage.getItem("id");
-  memberId.value = localStorage.getItem("memberId");
   memberName.value = localStorage.getItem("memberName");
 });
 
-// 로그아웃 함수 (예: id 삭제)
 const logout = () => {
-  localStorage.removeItem("id");
   localStorage.removeItem("memberId");
   localStorage.removeItem("memberName");
-  id.value = null;
-  memberId.value = null;
-  membername.value = null;
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("auth");
+
+  memberName.value = null;
 };
 </script>
 
