@@ -1,13 +1,14 @@
+<!-- popupAccount.vue -->
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const accountData = ref([]);
-const selectedAccounts = ref([]); // 선택된 계좌들을 저장하는 배열
+const selectedAccounts= ref(null); // 카드 하나만 선택하기 위해서 배열 대신 단일 변수 사용
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -19,69 +20,81 @@ onMounted(() => {
 const fetchAsset = async (memberId) => {
   await assetStore.getAssetList(memberId);
   assetData.value = assetStore.AllAssetList;
-
-  const acctData = assetData.value.slice();
-  accountData.value = acctData.filter(data => data.financeKind == 2);
+  accountData.value = assetData.value.filter(data => data.financeKind === 2);
 };
 
-// 원화에 3자리마다 , 표시하는 함수
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
 
+// 부모 컴포넌트에 선택된 카드를 전달할 emit 정의
+const emit = defineEmits(['addAccount']);
+
+// 팝업의 가시성 조절
 const props = defineProps({
-  visible: { type: Boolean, Required: true}, // 팝업의 가시성
-  onClose: { type: Function, Required: true} // 팝업을 닫는 함수
-})
+  visible: { type: Boolean, required: true },
+  onClose: { type: Function, required: true }
+});
 
 function close() {
-  props.onClose(); // 부모 컴포넌트에서 On/Off 제어
+  props.onClose();
 }
 
-// 계좌 선택 시 배열에 추가/삭제
 const selectAccount = (account) => {
   const index = selectedAccounts.value.indexOf(account);
-  if (index > -1) {
-    // 이미 선택된 항목이면 배열에서 제거
-    selectedAccounts.value.splice(index, 1);
+  if(index > -1){
+    selectedAccounts.value.splic(index, -1); 
   } else {
-    // 새 항목을 배열에 추가
     selectedAccounts.value.push(account);
   }
-};
+}
 
+const addSelectedAccounts = () => {
+  emit('addAccounts', selectedAccounts.value);
+
+  selectedAccounts.value.forEach(account => {
+    const accountIndex = accountData.value.indexOf(account);
+    if (accountIndex > -1) {
+      accountData.value.splice(accountIndex, 1);
+    }
+  });
+
+  selectedAccounts.value = [];
+  close();
+}
 </script>
 
 <template>
-
-  <!-- 조건부 렌더링으로 팝업을 제어 -->
   <div v-if="visible" class="modal-overlay" @click="close">
     <div class="modal-content" @click.stop>
-      <!-- 팝업 내용 -->
       <div class="account-list">
         <h2>연동할 계좌 선택</h2>
-          <ul>
-            <li v-for="(account, index) in accountData" :key="index" class="account-item">
-              <input 
-                type="checkbox" 
-                :id="'account-' + index" 
-                :checked="selectedAccounts.includes(account)" 
-                @change="selectAccount(account)" 
-              />
-              <img :src="account.image" alt="Account Image" class="account-image" />
-              <div class="account-info">
-                <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
-                <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
-              </div>
-            </li>
-            <button @click="">추가하기</button>
-          </ul>
+
+        <ul v-if="accountData && accountData.length > 0">
+          <li v-for="(account, index) in accountData" :key="index" class="account-item">
+            <input 
+              type="checkbox" 
+              :id="'account-' + index" 
+              :checked="selectedAccounts === account" 
+              @change="selectAccount(account)" 
+            />
+            <img :src="account.image" alt="Account Image" class="account-image" />
+            <div class="account-info">
+              <div class="account-name">{{ card.prdtName }} ({{ account.financeName }})</div>
+              <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
+            </div>
+          </li>
+        </ul>
+
+        <p v-else>텅</p>
+
+        <button @click="addSelectedAccounts">추가하기</button>
       </div>
-      <button @click="close">Close</button>
+      <button @click="close">닫기</button>
     </div>
   </div>
-
 </template>
+
 
 <style scoped>
 .account-list {

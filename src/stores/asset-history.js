@@ -7,9 +7,9 @@ export const useAssetStore = defineStore('asset', {
     ConnAssetList: [],
   }),
   actions: {
-    async getAssetList(memberId) {
+    async getAssetList(id) {
       try {
-        const response = await apiInstance.get(`/connection/asset/${memberId}`);
+        const response = await apiInstance.get(`/connection/asset/${id}`);
         this.AllAssetList = response.data.data;
       } catch (error) {
         console.error('Failed to fetch asset list:', error);
@@ -17,9 +17,9 @@ export const useAssetStore = defineStore('asset', {
       }
     },
 
-    async getConnAssetList(memberId) {
+    async getConnAssetList(id) {
         try {
-          const response = await apiInstance.get(`/connection/asset/connected/${memberId}`);
+          const response = await apiInstance.get(`/connection/asset/connected/${id}`);
           this.ConnAssetList = response.data.data;
         } catch (error) {
           console.error('Failed to fetch asset list:', error);

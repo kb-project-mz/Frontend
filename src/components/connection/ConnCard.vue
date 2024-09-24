@@ -24,44 +24,42 @@ const fetchAsset = async (memberId) => {
   cardData.value = acctData.filter(data => data.financeKind == 1);
 };
 
-// 원화에 3자리마다 , 표시하는 함수
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
 
-// 모달 Open/Close 함수
 const isModalVisible = ref(false);
-
-// 모달 Open
 function openModal() {
   isModalVisible.value = true;
 }
-
-// 모달 Close
 function closeModal() {
   isModalVisible.value = false;
 }
 
 // 자식 컴포넌트에서 선택된 카드를 받아 추가
 const handleAddCards = (cards) => {
-  addedCards.value = [...addedCards.value, ...cards]; // 추가된 카드들을 배열에 저장
+  addedCards.value = [...selectedCards.value, ...cards]; // 추가된 카드들을 배열에 저장
 };
 </script>
 
 <template>
+  
   <div class="about">
     <!-- 연동된 카드 목록 -->
     <div class="card-list">
       <h2>연동된 카드</h2>
-      <ul>
+
+      <ul v-if="addedCards.length > 0">
         <li v-for="(card, index) in [...cardData, ...addedCards]" :key="index" class="card-item">
           <img :src="card.image" alt="Card Image" class="card-image" />
           <div class="card-info">
-            <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
-            <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
+          <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
+          <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
           </div>
         </li>
       </ul>
+
+      <p v-else>연동된 카드가 없습니다.</p>
       <button @click="openModal">카드 추가하기</button>
     </div>
   </div>

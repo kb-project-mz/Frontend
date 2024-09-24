@@ -3,11 +3,12 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import { defineProps, defineEmits } from 'vue';
+import axios from 'axios';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
-const cardData = ref([]);
-const selectedCards = ref([]); // 선택된 카드들을 저장하는 배열
+const cardData = ref([]); // 전체 카드들을 저장할 배열
+const selectedCards = ref(); // 선택된 카드들을 저장하는 배열
 
 const route = useRoute();
 const memberId = route.params.memberId;
@@ -19,18 +20,17 @@ onMounted(() => {
 const fetchAsset = async (memberId) => {
   await assetStore.getAssetList(memberId);
   assetData.value = assetStore.AllAssetList;
-
-  const acctData = assetData.value.slice();
-  cardData.value = acctData.filter(data => data.financeKind == 1);
+  cardData.value = assetData.value.filter(data => data.financeKind === 1);
+  // 전체 데이터를 slice 해서 cardData에 넣는다!!!
+  console.log("여기까지는 되는거 맞음 올바른 데이터 옴!!!!!!!!!!!", cardData);
 };
 
-// 원화에 3자리마다 , 표시하는 함수
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
 
 // 부모 컴포넌트로 이벤트를 전달할 emit 정의
-const emit = defineEmits(['addCards']);
+const emit = defineEmits(['addCard']);
 
 const props = defineProps({
   visible: { type: Boolean, required: true }, // 팝업의 가시성
@@ -41,9 +41,10 @@ function close() {
   props.onClose(); // 부모 컴포넌트에서 On/Off 제어
 }
 
-// 카드 선택 시 배열에 추가/삭제
+// 카드 선택 시 배열에 추가/삭제 이것도 됨!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const selectCard = (card) => {
   const index = selectedCards.value.indexOf(card);
+  
   if (index > -1) {
     selectedCards.value.splice(index, 1); // 이미 선택된 카드면 배열에서 제거
   } else {
@@ -51,20 +52,46 @@ const selectCard = (card) => {
   }
 };
 
-// "추가하기" 버튼 클릭 시 선택된 카드를 부모 컴포넌트로 전달
-const addSelectedCards = () => {
-  emit('addCards', selectedCards.value); // 선택된 카드들을 부모 컴포넌트로 전달
+// // "추가하기" 버튼 클릭 시 선택된 카드를 부모 컴포넌트로 전달
+// const addSelectedCards = () => {
+//   emit('addCards', selectedCards.value); // 선택된 카드 배열들을 부모 컴포넌트로 전달
+//   // 선택된 카드를 cardData 배열에서 제거
+//   selectedCards.value.forEach(card => {
+//     const cardIndex = cardData.value.indexOf(card);
+//     if (cardIndex > -1) {
+//       cardData.value.splice(cardIndex, 1); // cardData 배열에서 해당 카드를 제거
+//     }
+//   });
+//     selectedCards.value = []; // 선택된 카드 목록 초기화
+//     close(); // 팝업 닫기
+// };
 
-  // 선택된 카드를 cardData 배열에서 제거
-  selectedCards.value.forEach(card => {
-    const cardIndex = cardData.value.indexOf(card);
-    if (cardIndex > -1) {
-      cardData.value.splice(cardIndex, 1); // cardData에서 해당 카드를 제거
+const addSelectedCards = async () => {
+  try {
+    // 선택된 카드 배열들을 서버로 전송 (POST 요청)
+    const selectedCard = selectedCards.value;
+    const response = await axios.post('/connection/cards', { cards: selectedCard });
+
+    console.log("t선택된 카드는 하나!!!!!!!!!!!")
+    // 서버 응답에 따라 성공적으로 처리되면 다음 로직 실행
+    if (response.status === 200) {
+    
+      // 선택된 카드를 cardData 배열에서 제거
+      selectedCards.value.forEach(card => {
+        const cardIndex = cardData.value.indexOf(card);
+        if (cardIndex > -1) {
+          cardData.value.splice(cardIndex, 1); // cardData 배열에서 해당 카드를 제거
+        }
+      });
+
+      selectedCards.value = []; // 선택된 카드 목록 초기화
+      close(); // 팝업 닫기
+    } else {
+      console.error('서버 요청 실패:', response.status);
     }
-  });
-
-  selectedCards.value = []; // 선택된 카드 목록 초기화
-  close(); // 팝업 닫기
+  } catch (error) {
+    console.error('서버 통신 중 오류 발생:', error);
+  }
 };
 </script>
 
@@ -73,12 +100,14 @@ const addSelectedCards = () => {
     <div class="modal-content" @click.stop>
       <div class="card-list">
         <h2>연동할 카드 선택</h2>
-        <ul>
+
+        <ul v-if="cardData && cardData.length > 0">
           <li v-for="(card, index) in cardData" :key="index" class="card-item">
             <input 
-              type="checkbox" 
+              type="radio" 
+              name="selectedCard"  
               :id="'card-' + index" 
-              :checked="selectedCards.includes(card)" 
+              :checked="selectedCards[0] === card" 
               @change="selectCard(card)" 
             />
             <img :src="card.image" alt="Card Image" class="card-image" />
@@ -87,8 +116,10 @@ const addSelectedCards = () => {
               <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
             </div>
           </li>
+          <button @click="addSelectedCards">추가하기</button>
         </ul>
-        <button @click="addSelectedCards">추가하기</button>
+        
+        <p v-else>텅</p>
       </div>
       <button @click="close">닫기</button>
     </div>
