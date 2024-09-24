@@ -145,11 +145,16 @@ const join = async () => {
   try {
     isLoading.value = true;
     const createResponse = await auth.create(member);
-    // await auth.create(member);
     console.log('회원가입 요청:', member);
-    console.log('회원가입 응답:', createResponse); 
-    await auth.login({ memberId: member.memberId, password: member.password });
-    router.push({ name: 'home' });
+    console.log('회원가입 응답:', createResponse);
+
+		// 회원가입 후 로그인 요청
+    const loginResponse = await auth.login(member.memberId, member.password);
+
+    if (loginResponse) {
+      console.log('로그인 성공:', loginResponse);
+      router.push({ name: 'home' });
+    }
   } catch (error) {
     alert('회원가입 중 오류가 발생했습니다.');
     console.error('회원가입 중 오류:', error);
