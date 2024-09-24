@@ -83,7 +83,7 @@ const login = async () => {
       <button 
         type="submit" 
         class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5" >
-        <font-awesome-icon :icon="['fas', 'right-to-bracket']" /> 로그인
+        로그인
       </button>
     </form>
 

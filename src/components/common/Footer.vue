@@ -13,7 +13,7 @@
     <div>KB IT's Your Life 5기 깨비핑</div>
     
     <div class="flex items-center space-x-1">
-      <font-awesome-icon :icon="['fas', 'phone']" style="color: #71717A;" />
+      <font-awesome-icon :icon="['fas', 'phone']" class="text-gray-500 text-xs" />
       <div>02-2205-0108</div>
     </div>
     <div>서울특별시 광진구 능동로 195-16, 5층</div>
