@@ -5,18 +5,18 @@
       <form @submit.prevent="confirmSubmission">
         <div class="form-group">
           <label>Member ID</label>
-          <input type="number" v-model="formData.memberId" class="form-control" />
+          <input type="number" v-model="formData.memberId" class="form-control" required />
         </div>
 
         <div class="form-group">
           <label>챌린지 이름</label>
-          <input type="text" v-model="formData.challengeName" class="form-control" />
+          <input type="text" v-model="formData.challengeName" class="form-control" required />
         </div>
 
         <div class="form-group">
           <label>기간</label>
-          <input type="date" v-model="formData.startDate" class="form-control" /> ~
-          <input type="date" v-model="formData.endDate" class="form-control" />
+          <input type="date" v-model="formData.startDate" class="form-control" required /> ~
+          <input type="date" v-model="formData.endDate" class="form-control" required />
         </div>
 
         <div class="form-group">
@@ -44,10 +44,17 @@
           </select>
         </div>
 
-        <!-- OpenAI의 응답을 표시하는 부분 -->
-        <div v-if="openAiResponse" class="detailed-categories">
+        <div v-if="detailedCategories.length > 0" class="detailed-categories">
           <p>반복된 항목들:</p>
-          <span>{{ openAiResponse }}</span>
+          <div>
+            <span 
+              v-for="(category, index) in detailedCategories" 
+              :key="index" 
+              @click="selectDetailedCategory(category)"
+              class="category-chip">
+              {{ category }}
+            </span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -58,7 +65,7 @@
 
         <div class="modal-actions">
           <button type="submit" class="btn btn-primary">등록</button>
-          <button type="button" class="btn btn-secondary" @click="closeModal">취소</button>
+          <button type="button" class="btn btn-secondary" @click="resetForm">취소</button>
         </div>
       </form>
     </div>
@@ -80,10 +87,10 @@ const formData = ref({
   challengeLimit: 1,
   startDate: '',
   endDate: '',
-  detailedCategory:''
+  detailedCategory: ''
 });
 
-const openAiResponse = ref('');  // OpenAI의 응답을 저장하는 변수
+const detailedCategories = ref([]);  // OpenAI의 응답을 저장하는 배열
 const maxLimit = ref(1);
 
 const closeModal = () => {
@@ -106,8 +113,7 @@ const fetchDetailedCategory = (categoryId) => {
     })
     .then((res) => {
       if (res.data.success) {
-        // OpenAI의 응답을 JsonResponse에서 추출하여 화면에 표시
-        openAiResponse.value = res.data.data.response; 
+        detailedCategories.value = res.data.data.detailedCategories; 
       } else {
         console.error("Error from server:", res.data.error.message);
       }
@@ -115,6 +121,11 @@ const fetchDetailedCategory = (categoryId) => {
     .catch((err) => {
       console.error("Error fetching detailed categories:", err);
     });
+};
+
+// 사용자가 상세 카테고리를 클릭하면 formData에 저장
+const selectDetailedCategory = (category) => {
+  formData.value.detailedCategory = category;
 };
 
 const submitForm = () => {
@@ -125,15 +136,32 @@ const submitForm = () => {
   })
   .then((res) => {
     if (res.data.success) {
-      emit('challengeAdded', formData.value);  // Emit event only on success
+      emit('challengeAdded', formData.value);  // 성공 시 데이터 전송
+      resetForm();  // 폼 데이터 초기화
       closeModal();
     } else {
-      console.error(res.data.error.message);  // Handle backend error
+      console.error(res.data.error.message);  // 오류 처리
     }
   })
   .catch(err => {
     console.log(err);
   });
+};
+
+// 폼 데이터 초기화 함수
+const resetForm = () => {
+  formData.value = {
+    category: 1, // 기본값: 식비
+    memberId: 0,
+    challengeName: '',
+    challengeType: '0',
+    challengeLimit: 1,
+    startDate: '',
+    endDate: '',
+    detailedCategory: ''
+  };
+  detailedCategories.value = [];  // 상세 카테고리도 초기화
+  closeModal();  // 모달 닫기
 };
 </script>
 
@@ -176,5 +204,11 @@ const submitForm = () => {
   background-color: #f0f0f0;
   border-radius: 16px;
   font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.category-chip:hover {
+  background-color: #ddd;
 }
 </style>
