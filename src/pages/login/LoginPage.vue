@@ -82,7 +82,7 @@ const login = async () => {
 
       <button 
         type="submit" 
-        class="cursor-pointer btn-navy text-white text-sm rounded-xl block w-full ps-10 p-5" >
+        class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5" >
         <font-awesome-icon :icon="['fas', 'right-to-bracket']" /> 로그인
       </button>
     </form>
@@ -113,7 +113,7 @@ img {
 .text-navy {
   color: #0B1573;
 }
-.btn-navy  {
+.bg-navy  {
   background-color: #0B1573;
 }
 .tooltip {

@@ -4,13 +4,13 @@ import apiInstance from './axios-instance';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
-			id: '',
-      memberName: '',
-      memberId: '',
-      password: '',
-      email: '',
-      birthday: '',
-      gender: ''
+			id: null,
+      memberName: null,
+      memberId: null,
+      password: null,
+      email: null,
+      birthday: null,
+      gender: null
     }
   }),
   actions: {
@@ -29,6 +29,10 @@ export const useAuthStore = defineStore('auth', {
 					console.error(response.data.error.message);
 					return response.data.error.message;
 				}
+
+        this.member.id = loginData.id;
+        this.member.memberId = loginData.memberId;
+        this.member.memberName = loginData.memberName;
 
         localStorage.setItem('id', loginData.id);
 				localStorage.setItem('memberId', loginData.memberId);		
@@ -73,6 +77,16 @@ export const useAuthStore = defineStore('auth', {
         throw error;
       }
     },
+    logout() {
+      this.member.id = null;
+      this.member.memberName = null,
+      this.member.memberId = null,
+      this.member.password = null,
+      this.member.email = null,
+      this.member.birthday = null,
+      this.member.gender = null;
+      localStorage.clear();
+    }
   },
 	// 로그인 상태 유지
 	loadAuthState() {
@@ -86,4 +100,6 @@ export const useAuthStore = defineStore('auth', {
 		const authData = localStorage.getItem('auth');
 		return !!authData;
 	},
+
+
 });
