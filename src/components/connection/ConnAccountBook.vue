@@ -40,6 +40,13 @@ function closeModal () {
 const handleAddAccount = (account) => {
   addedAccounts.value = account;
 }
+
+const handleAccountDataUpdate = (updatedAccountData) => {
+  // updatedAccountData를 부모 컴포넌트의 상태에 반영
+  console.log('Updated Account Data:', updatedAccountData);
+  // 여기에 상태 업데이트 로직 추가
+};
+
 </script>
 
 <template>
@@ -64,7 +71,8 @@ const handleAddAccount = (account) => {
     </div>
   </div>
 
-  <PopUpAccountBook @addAccount="handleAddAccount" :onClose="closeModal" :visible="isModalVisible" />
+  <PopUpAccountBook @addAccount="handleAddAccount" 
+    :onClose="closeModal" :visible="isModalVisible" @updateAccountData="handleAccountDataUpdate"/>
 </template>
 
 <style scoped>

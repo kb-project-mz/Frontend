@@ -29,20 +29,20 @@ const formatAmount = (amount) => {
 };
 
 // 부모 컴포넌트로 이벤트를 전달할 emit 정의
-const emit = defineEmits(['addCard']);
+const emit = defineEmits(['addCard', 'updateCard']);
 const props = defineProps({
-  visible: { type: Boolean, required: true }, // 팝업의 가시성
-  onClose: { type: Function, required: true } // 팝업을 닫는 함수
+  visible: { type: Boolean, required: true }, 
+  onClose: { type: Function, required: true } 
 });
 
 function close() {
-  props.onClose(); // 부모 컴포넌트에서 On/Off 제어
+  props.onClose();
 }
 
-// 카드 선택 시 배열에 추가/삭제 이것도 됨!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 const selectCard = (card) => {
   newCard.value = card;
-  message.value = ''; // 카드가 선택되면 메시지 초기화
+  message.value = ''; 
 };
 
 const addCard = async () => {
@@ -53,9 +53,11 @@ const addCard = async () => {
     }
     close();
     const id = newCard.value.prdtId;
-    const cardIndex = cardData.value.indexOf(newCard.value);
 
-    console.log("카드 인덱스는??", cardIndex);
+    const store = useAssetStore();
+    await store.updateCardStatus(id);
+
+    const cardIndex = cardData.value.indexOf(newCard.value);
     if (cardIndex > -1) {
       cardData.value.splice(cardIndex, 1);
     }
@@ -64,10 +66,9 @@ const addCard = async () => {
     if (cardIndex > -1) {
       cardData.value.splice(cardIndex, 1);
     }
-
-    console.log("선택된 카드는 하나!!!!!!!!!!!")
     
     if (response.status === 200) {
+      emit('updateCard', cardData.value);
       if (cardIndex > -1) {
       cardData.value.splice(cardIndex, 1);
     }

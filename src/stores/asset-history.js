@@ -26,5 +26,26 @@ export const useAssetStore = defineStore('asset', {
           throw error;
         }
       },
+
+     async updateAccountStatus(id) {
+      try {
+        const response = await apiInstance.post(`/connection/account/${id}`);
+        return response.data; // 서버 응답 데이터 반환
+      } catch (error) {
+        console.error('Failed to update account status:', error);
+        throw error;
+      }
+    }
+    ,
+    // 카드 연동 action 추가
+    async updateCardStatus(id) {
+      try {
+        const response = await apiInstance.post(`/connection/card/${id}`);
+        return response.data; 
+      } catch (error) {
+        console.error('Failed to update card status:', error);
+        throw error;
+      }
+    }
   },
 });

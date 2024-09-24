@@ -29,7 +29,7 @@ const formatAmount = (amount) => {
 };
 
 // 부모 컴포넌트에 선택된 카드를 전달할 emit 정의
-const emit = defineEmits(['addAccount']);
+const emit = defineEmits(['addAccount', 'updateAccountData']);
 const props = defineProps({
   visible: { type: Boolean, required: true },
   onClose: { type: Function, required: true }
@@ -41,7 +41,7 @@ function close() {
 
 const selectAccount = (account) => {
   newAccount.value = account;
-  message.value = ''; // 카드가 선택되면 메시지 초기화
+  message.value = ''; 
 };
 
 const addAccount = async () => {
@@ -52,18 +52,23 @@ const addAccount = async () => {
     }
     close();
     const id = newAccount.value.prdtId;
-    const accountIndex = accountData.value.indexOf(newAccount.value);
 
+     // Pinia store의 action 호출
+    const store = useAssetStore();
+    await store.updateAccountStatus(id);
+
+    const accountIndex = accountData.value.indexOf(newAccount.value);
     if(accountIndex > -1) {
       accountData.value.splice(accountIndex, 1);
     }
 
     const response = await axios.post(`api/v1/connection/account${id}`);
     if (accountIndex > -1) {
-      cardData.value.splice(accountIndex, 1);
+      accountData.value.splice(accountIndex, 1);
     }
-
+   
     if (response.status === 200) {
+      emit('updateAccountData', accountData.value);
       if (accountIndex > -1) {
         accountData.value.splice(accountIndex, 1);
     }
