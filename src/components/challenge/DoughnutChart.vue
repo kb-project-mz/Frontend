@@ -1,63 +1,62 @@
-<template>
-  <div>
-    <doughnut-chart :chart-data="chartData" :options="chartOptions" />
-  </div>
-</template>
-
 <script setup>
-import { ref, onMounted } from 'vue';
-import { Doughnut } from 'vue-chartjs';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import axios from 'axios';
+import { ref, watch, onMounted } from 'vue';
+import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
 
-// 차트에 필요한 요소 등록
-ChartJS.register(ArcElement, Tooltip, Legend);
+Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 const props = defineProps({
-  id: Number, // 각 챌린지의 ID
+  chartData: {
+    type: Object,
+    default: () => ({})  // 기본값을 빈 객체로 설정
+  }
 });
 
-const chartData = ref({
-  labels: ['진행된 횟수', '남은 횟수'],
-  datasets: [
-    {
-      label: '진행도',
-      backgroundColor: ['#FF6384', '#36A2EB'],
-      data: [0, 0],  // 초기값
-    },
-  ],
-});
+const canvasRef = ref(null);
+const chartInstance = ref(null);  // 차트 인스턴스를 추적
 
-const chartOptions = ref({
-  responsive: true,
-  maintainAspectRatio: false,
-});
+const renderDoughnutChart = () => {
+  if (!props.chartData || typeof props.chartData.challengeLimit === 'undefined' || typeof props.chartData.cardHistoryCount === 'undefined') {
+    console.error("차트를 렌더링할 데이터가 부족합니다.");
+    return;  // 데이터가 없으면 차트를 렌더링하지 않음
+  }
 
-const fetchChartData = () => {
-  axios
-    .get(`http://localhost:8080/api/v1/challenge/donutchart/`, {
-      headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwNTkyNDksImV4cCI6MTcyNzQwNDg0OX0.6Z-07i5nQhAMBnzlcwfDXcSc-6wuL46bcn2hpx5wLxA"
-      }
-    })
-    .then((res) => {
-      if (res.data.success) {
-        const total = res.data.data.total;
-        const completed = res.data.data.completed;
-        chartData.value.datasets[0].data = [completed, total - completed];
-      }
-    })
-    .catch((err) => {
-      console.error('차트 데이터 가져오기 오류:', err);
-    });
+  const ctx = canvasRef.value.getContext('2d');
+  
+  // 이전 차트가 있으면 먼저 삭제
+  if (chartInstance.value) {
+    chartInstance.value.destroy();
+  }
+
+  chartInstance.value = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['진행된 횟수', '남은 횟수'],
+      datasets: [{
+        data: [props.chartData.cardHistoryCount, props.chartData.challengeLimit - props.chartData.cardHistoryCount],
+        backgroundColor: ['#ff6384', '#36a2eb'],
+        hoverBackgroundColor: ['#ff6384', '#36a2eb']
+      }]
+    }
+  });
 };
 
-onMounted(fetchChartData);
+onMounted(() => {
+  renderDoughnutChart();  // 처음 컴포넌트가 로드될 때 차트 렌더링
+});
+
+// props.chartData가 변경될 때마다 차트 다시 렌더링
+watch(() => props.chartData, () => {
+  renderDoughnutChart();
+});
 </script>
 
+<template>
+  <canvas ref="canvasRef"></canvas>
+</template>
+
 <style scoped>
-.doughnut-chart {
-  width: 100px;
-  height: 100px;
+canvas {
+  width: 100%;
+  height: 100%;
 }
 </style>
