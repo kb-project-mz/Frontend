@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import { defineProps, defineEmits } from 'vue';
-import axios from 'axios';
 import apiInstance from '@/stores/axios-instance';
 
 const assetStore = useAssetStore();
@@ -14,6 +13,8 @@ const message = ref('');
 
 const route = useRoute();
 const memberId = route.params.memberId;
+
+const emit = defineEmits(['updateAccount']);
 
 onMounted(() => {
   fetchAsset(memberId);
@@ -28,14 +29,10 @@ const fetchAsset = async (memberId) => {
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
-
-// 부모 컴포넌트에 선택된 카드를 전달할 emit 정의
-const emit = defineEmits(['addAccount', 'updateAccountData']);
 const props = defineProps({
   visible: { type: Boolean, required: true },
   onClose: { type: Function, required: true }
 });
-
 function close() {
   props.onClose();
 }
@@ -48,32 +45,18 @@ const selectAccount = (account) => {
 const addAccount = async () => {
   try {
     if(!newAccount.value){
-      message.value = '선택된 카드가 없습니다.';
+      message.value = '선택된 계좌가 없습니다.';
       return;
     }
+    accountData.value.push(newAccount.value);
     close();
     const id = newAccount.value.prdtId;
-    console.log("id-------------", id);
-
-     // Pinia store의 action 호출
     const store = useAssetStore();
     await store.updateAccountStatus(id);
-
-    const accountIndex = accountData.value.indexOf(newAccount.value);
-    if(accountIndex > -1) {
-      accountData.value.splice(accountIndex, 1);
-    }
-
     const response = await apiInstance.post(`/connection/account/${id}`);
-    if (accountIndex > -1) {
-      accountData.value.splice(accountIndex, 1);
-    }
-   
+    accountData.value = accountData.value.filter(account => account.prdtId != newAccount.value.prdtId);
     if (response.data.success) {
-      emit('updateAccountData', accountData.value);
-      if (accountIndex > -1) {
-        accountData.value.splice(accountIndex, 1);
-    }
+      emit('updateAccount', newAccount);
     } else {
       console.error('서버 요청 실패:', response.status);
     }

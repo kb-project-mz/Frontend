@@ -14,7 +14,6 @@ const memberId = route.params.memberId;
 
 onMounted(() => {
   fetchAsset(memberId);
-  handleAccountDataUpdate();
 });
 
 const fetchAsset = async (memberId) => {
@@ -22,13 +21,11 @@ const fetchAsset = async (memberId) => {
   assetData.value = assetStore.ConnAssetList;
   const acctData = assetData.value.slice();
   accountData.value = acctData.filter(data => data.financeKind == 2);
-  console.log("연동된 계좌 가져오자", accountData.value);
 };
 
 const formatAmount = (amount) => {
   return new Intl.NumberFormat().format(amount);
 };
-
 
 const isModalVisible = ref(false);
 function openModal () {
@@ -38,15 +35,12 @@ function closeModal () {
   isModalVisible.value = false;
 }
 
-const handleAddAccount = (account) => {
-  addedAccounts.value = account;
+const handleAddAccount = (newAccount) => {
+  accountData.value.push(newAccount);
 }
 
 const handleAccountDataUpdate = (updatedAccountData) => {
-  // updatedAccountData를 부모 컴포넌트의 상태에 반영
   accountData.value = updatedAccountData;
-  console.log('Updated Account Data:', updatedAccountData);
-  // 여기에 상태 업데이트 로직 추가
 };
 
 </script>
@@ -73,7 +67,7 @@ const handleAccountDataUpdate = (updatedAccountData) => {
     </div>
   </div>
 
-  <PopUpAccountBook @addAccount="handleAddAccount" 
+  <PopUpAccountBook @updateAccount="handleAddAccount" 
     :onClose="closeModal" :visible="isModalVisible" @updateAccountData="handleAccountDataUpdate"/>
 </template>
 
