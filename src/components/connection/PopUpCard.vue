@@ -4,6 +4,7 @@ import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import { defineProps, defineEmits } from 'vue';
 import axios from 'axios';
+import apiInstance from '@/stores/axios-instance';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
@@ -62,7 +63,7 @@ const addCard = async () => {
       cardData.value.splice(cardIndex, 1);
     }
 
-    const response = await axios.post(`/api/v1/connection/card/${id}`);
+    const response = await apiInstance.post(`/connection/card/${id}`);
     if (cardIndex > -1) {
       cardData.value.splice(cardIndex, 1);
     }

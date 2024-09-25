@@ -42,6 +42,7 @@ const handleAddCard = (card) => {
 };
 
 const handleCardDataUpdate = (updatedCardData) => {
+  cardData.value = updatedCardData;
   console.log('updated Card Data:', updatedCardData);
 }
 </script>

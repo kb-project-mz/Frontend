@@ -4,6 +4,7 @@ import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import { defineProps, defineEmits } from 'vue';
 import axios from 'axios';
+import apiInstance from '@/stores/axios-instance';
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
@@ -52,6 +53,7 @@ const addAccount = async () => {
     }
     close();
     const id = newAccount.value.prdtId;
+    console.log("id-------------", id);
 
      // Pinia store의 action 호출
     const store = useAssetStore();
@@ -62,12 +64,12 @@ const addAccount = async () => {
       accountData.value.splice(accountIndex, 1);
     }
 
-    const response = await axios.post(`api/v1/connection/account${id}`);
+    const response = await apiInstance.post(`/connection/account/${id}`);
     if (accountIndex > -1) {
       accountData.value.splice(accountIndex, 1);
     }
    
-    if (response.status === 200) {
+    if (response.data.success) {
       emit('updateAccountData', accountData.value);
       if (accountIndex > -1) {
         accountData.value.splice(accountIndex, 1);

@@ -14,12 +14,12 @@ const memberId = route.params.memberId;
 
 onMounted(() => {
   fetchAsset(memberId);
+  handleAccountDataUpdate();
 });
 
 const fetchAsset = async (memberId) => {
   await assetStore.getConnAssetList(memberId);
   assetData.value = assetStore.ConnAssetList;
-
   const acctData = assetData.value.slice();
   accountData.value = acctData.filter(data => data.financeKind == 2);
   console.log("연동된 계좌 가져오자", accountData.value);
@@ -44,6 +44,7 @@ const handleAddAccount = (account) => {
 
 const handleAccountDataUpdate = (updatedAccountData) => {
   // updatedAccountData를 부모 컴포넌트의 상태에 반영
+  accountData.value = updatedAccountData;
   console.log('Updated Account Data:', updatedAccountData);
   // 여기에 상태 업데이트 로직 추가
 };
