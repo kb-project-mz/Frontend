@@ -9,8 +9,8 @@ export const useChallengeStore = defineStore('challengeStore', {
 
   actions: {
     // 모든 챌린지 항목을 가져오는 액션
-    fetchAllItems(memberId) {
-      return axios
+    async fetchAllItems(memberId) {
+      return await axios
         .get(`http://localhost:8080/api/v1/challenge/list/${memberId}`, {
           headers: {
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcxNjIxODIsImV4cCI6MTcyNzUwNzc4Mn0.shTPN61p68SsQ-5Q1Ctm1FKi1f98zkYwP_MrIBOrLJI"
@@ -29,8 +29,8 @@ export const useChallengeStore = defineStore('challengeStore', {
     },
 
     // 새로운 챌린지를 추가하는 액션
-    addNewChallenge(challengeData) {
-      return axios
+    async addNewChallenge(challengeData) {
+      return await axios
         .post("http://localhost:8080/api/v1/challenge/write", challengeData, {
           headers: {
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcxNjIxODIsImV4cCI6MTcyNzUwNzc4Mn0.shTPN61p68SsQ-5Q1Ctm1FKi1f98zkYwP_MrIBOrLJI"
@@ -49,9 +49,9 @@ export const useChallengeStore = defineStore('challengeStore', {
     },
 
     // 챌린지를 삭제하는 액션
-    deleteChallenge(id) {
+    async deleteChallenge(id) {
      
-      return axios
+      return await axios
         .post("http://localhost:8080/api/v1/challenge/delete", { id }, {
           headers: {
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcxNjIxODIsImV4cCI6MTcyNzUwNzc4Mn0.shTPN61p68SsQ-5Q1Ctm1FKi1f98zkYwP_MrIBOrLJI"
