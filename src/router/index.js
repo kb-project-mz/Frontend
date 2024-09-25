@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: ChallengePage
+      component: HomePage
     },
     { 
       path: '/login',
