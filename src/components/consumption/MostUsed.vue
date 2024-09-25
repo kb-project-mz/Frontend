@@ -23,7 +23,7 @@ const props = defineProps({
       <div>{{ period }} <span class="text-red font-semibold">소비 횟수</span>가</div>
       <div>가장 많은 곳이에요</div>
     </div>
-    <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+    <span class="mb-3 font-normal text-gray-700">
       <div class="text-lg">
         <div v-for="(value, key, index) in mostUsed" :key="index">
           {{ getMedal(index) }} {{ key }} <span class="font-bold">{{ value }}</span>회        </div>
