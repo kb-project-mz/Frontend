@@ -52,7 +52,7 @@ const addCard = async () => {
 
     // 2. 새로운 카드를 cardData에 추가
     cardData.value.push(newCard.value);
-    console.log("전체 카드데이터에 뉴 카드 추가된거", cardData.value); // 왜 안들어감????
+    //console.log("전체 카드데이터에 뉴 카드 추가된거", cardData.value); // 왜 안들어감????
 
     // 3. 모달 닫기
     close();
@@ -65,18 +65,24 @@ const addCard = async () => {
     // 5. 서버에 카드 추가 요청 (POST)
     const response = await apiInstance.post(`/connection/card/${id}`);
 
+    console.log("newCard.value.prdtId:", newCard.value.prdtId);
+    console.log("cardData 배열 확인:", cardData.value);
+
+    // 7. cardData에서 newCard를 삭제 (이미 서버 요청이 완료되었으므로 로직 최적화)
+    cardData.value = cardData.value.filter(card => card.prdtId !== newCard.value.prdtId);
+
     // 6. 서버 요청 성공 시 카드 데이터를 부모 컴포넌트에 전달 (emit)
     if (response.data.success) {
-      emit('updateCard', cardData.value);
+      emit('updateCard', newCard.value);
+      console.log(newCard);
+      console.log("여기서 찍히는 cardData배열", cardData.value);
+      //console.log("여기서 찍히는 뉴ㅠㅠㅠcardData", newCard.value);
     } else {
       console.error('서버 요청 실패:', response.status);
     }
     
-    // 7. cardData에서 newCard를 삭제 (이미 서버 요청이 완료되었으므로 로직 최적화)
-    const cardIndex = cardData.value.indexOf(newCard.value);
-    if(cardIndex > -1) {
-      cardData.value.splice(cardIndex, 1);
-    } 
+
+   // console.log("여기서 찍히는 cardData", cardData.value);
   }catch (error) {
     console.error('서버 통신 중 오류 발생:', error);
   }

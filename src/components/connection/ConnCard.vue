@@ -36,14 +36,16 @@ function closeModal() {
   isModalVisible.value = false;
 }
 
-
-const handleAddCard = (card) => {
-  addedCards.value = card; 
+//////////////// 여기서 newCard 값을 받아와서 cardData 배열에 넣저!!!!!!!
+const handleAddCard = (newCard) => {
+  cardData.value.push(newCard);  // cardData 배열에 newCard 추가
+  console.log('zzzzzzzz새로운 카드 추가됨:', newCard);
+  console.log('zzzzzzz업데이트된 cardData 배열:', cardData.value);
 };
 
 const handleCardDataUpdate = (updatedCardData) => {
   cardData.value = updatedCardData;
-  console.log('updated Card Data:', updatedCardData);
+ //console.log('updated Card Data:', updatedCardData);
 }
 </script>
 
@@ -69,7 +71,7 @@ const handleCardDataUpdate = (updatedCardData) => {
     </div>
   </div>
   
-  <PopUpCard @addCard="handleAddCard" 
+  <PopUpCard @updateCard="handleAddCard" 
     :onClose="closeModal" :visible="isModalVisible" @updateCardData="handleCardDataUpdate"/>
 </template>
 
