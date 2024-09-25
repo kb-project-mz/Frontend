@@ -2,18 +2,22 @@
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
-import PopUpCard from '@/components/connection/PopUpCard.vue'; // 모달 컴포넌트 제거
+import PopUpCard from '@/components/connection/PopUpCard.vue'; 
+import { useConsumptionHistoryStore } from '@/stores/consumption-history';
+
+const consumptionHistoryStore = useConsumptionHistoryStore();
+const comsumptionData = ref([]);
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const cardData = ref([]);
-const addedCards = ref([]); // 추가된 카드들을 저장하는 배열
 
 const route = useRoute();
 const memberId = route.params.memberId;
 
-onMounted(() => {
-  fetchAsset(memberId);
+onMounted(async ()  => {
+  await fetchAsset(memberId);
+  await fetchConsumption(memberId);
 });
 
 const fetchAsset = async (memberId) => {
@@ -21,6 +25,15 @@ const fetchAsset = async (memberId) => {
   assetData.value = assetStore.ConnAssetList;
   const acctData = assetData.value.slice();
   cardData.value = acctData.filter(data => data.financeKind == 1);
+};
+
+const fetchConsumption = async (memberId) => {
+  comsumptionData.value = [];  // 초기화
+  console.log("Fetching consumption data for member:", memberId);
+  await consumptionHistoryStore.getCardHistoryList(2);
+  console.log("API 호출 후 store 데이터", consumptionHistoryStore.cardHistoryThisMonth);
+  comsumptionData.value = consumptionHistoryStore.cardHistoryThisMonth;
+  console.log("comsumptionData 설정 후", comsumptionData.value);
 };
 
 const formatAmount = (amount) => {
@@ -42,6 +55,7 @@ const handleAddCard = (newCard) => {
 const handleCardDataUpdate = (updatedCardData) => {
   cardData.value = updatedCardData;
 }
+
 </script>
 
 <template>

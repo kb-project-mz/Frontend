@@ -7,13 +7,12 @@ import PopUpAccountBook from '@/components/connection/PopUpAccountBook.vue';
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const accountData = ref([]);
-const addedAccounts = ref([]);
 
 const route = useRoute();
 const memberId = route.params.memberId;
 
-onMounted(() => {
-  fetchAsset(memberId);
+onMounted( async () => {
+  await fetchAsset(memberId);
 });
 
 const fetchAsset = async (memberId) => {
@@ -24,7 +23,8 @@ const fetchAsset = async (memberId) => {
 };
 
 const formatAmount = (amount) => {
-  return new Intl.NumberFormat().format(amount);
+  const actualAmount = amount?.__v_isRef ? amount.value : amount;
+  return new Intl.NumberFormat().format(actualAmount);
 };
 
 const isModalVisible = ref(false);
@@ -48,7 +48,6 @@ const handleAccountDataUpdate = (updatedAccountData) => {
 <template>
 
   <div class="about">
-  <!-- 버튼을 통해 모달 팝업 Open -->
   <div class="account-list">
     <h2>연동된 계좌</h2>
 

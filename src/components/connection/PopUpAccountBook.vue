@@ -55,6 +55,7 @@ const addAccount = async () => {
     await store.updateAccountStatus(id);
     const response = await apiInstance.post(`/connection/account/${id}`);
     accountData.value = accountData.value.filter(account => account.prdtId != newAccount.value.prdtId);
+    
     if (response.data.success) {
       emit('updateAccount', newAccount);
     } else {
