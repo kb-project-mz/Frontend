@@ -15,16 +15,16 @@ const consumptionHistoryStore = useConsumptionHistoryStore(); // 월별 소비 �
 const accountHistoryStore = useAccountHistoryStore(); // 계좌 히스토리 스토어
 
 const historyData = ref([]);
-const historyThisMonthData = ref([]);
+const historyThisMonthData = ref([]); //이번달 카드 내역
 const historySelectedPeriodData = ref([]);
-const accountHistoryData = ref([]);
+const accountHistoryData = ref([]); //이번달 계좌 입출금 내역
 const accountHistoryThisMonthData = ref([]);
 const accountHistorySelectedPeriodData = ref([]);
 
 const isFlipped = ref(false);
 
 const toggleCardFlip = () => {
-  isFlipped.value = !isFlipped.value;
+    isFlipped.value = !isFlipped.value;
 };
 
 const today = new Date();
@@ -33,9 +33,9 @@ const month = today.getMonth() + 1;
 
 // 월의 마지막 날짜 가져오기 함수
 const getEndDay = (year, month) => {
-  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return daysInMonth[month - 1];
+    const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    return daysInMonth[month - 1];
 };
 
 const startYear = ref(year);
@@ -47,13 +47,13 @@ const endDay = ref(getEndDay(endYear.value, endMonth.value));
 
 // 소비 내역 불러오기 함수
 const fetchConsumptionHistory = async (memberId) => {
-  await consumptionHistoryStore.getCardHistoryList(memberId);
-  historyData.value = consumptionHistoryStore.cardHistory;
-  historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
+    await consumptionHistoryStore.getCardHistoryList(memberId);
+    historyData.value = consumptionHistoryStore.cardHistory;
+    historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
 
-  await accountHistoryStore.getAccountHistoryList(memberId);
-  accountHistoryData.value = accountHistoryStore.accountHistory;
-  accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
+    await accountHistoryStore.getAccountHistoryList(memberId);
+    accountHistoryData.value = accountHistoryStore.accountHistory;
+    accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
 };
 
 // 선택한 기간 동안의 소비 내역 필터링
@@ -74,7 +74,6 @@ const fetchSelectedPeriodConsumptionHistory = () => {
     historySelectedPeriodData.value = filteredHistoryData;
     accountHistorySelectedPeriodData.value = filteredAccountHistoryData;
 };
-
 
 onMounted(async () => {
     // 데이터 불러오기
@@ -97,35 +96,35 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex">
-      <div class="flex-1 mt-8 mr-4">
-        <LineChart />
-      </div>
-      <div class="flex-1 mt-8 ml-4">
-        <LineChart />
-      </div>
-    </div>
+        <div class="flex">
+            <div class="flex-1 mt-8 mr-4">
+                <LineChart />
+            </div>
+            <div class="flex-1 mt-8 ml-4">
+                <LineChart />
+            </div>
+        </div>
 
-    <div class="h-6"></div>
-    <div class="flex">
-      <div class="w-1/2 mr-4">
-        <ConsumptionCalendar />
-      </div>
-      <div class="w-1/2 ml-4 border border-gray-200 rounded-2xl shadow">
-        <ConsumptionList />
-      </div>
-    </div>
+        <div class="h-6"></div>
+        <div class="flex">
+            <div class="w-3/5 mr-4 border border-gray-200 rounded-2xl shadow">
+                <ConsumptionCalendar :account-history-data="accountHistoryData" :history-data="historyData" />
+            </div>
+            <div class="w-2/5 ml-4 border border-gray-200 rounded-2xl shadow">
+                <ConsumptionList :history-data="historyData" />
+            </div>
+        </div>
 
-    <div class="mt-16 mb-80">
-      <AIRecommendation />
+        <div class="mt-16 mb-80">
+            <AIRecommendation />
+        </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
 .btn-gray {
-  border-color: #656363;
-  color: #656363;
+    border-color: #656363;
+    color: #656363;
 }
 .flip { 
   width: 100%;
@@ -147,10 +146,10 @@ onMounted(async () => {
   height: auto;
   backface-visibility: hidden;
 }
-.back { 
-  transform: rotateY(180deg);
+.back {
+    transform: rotateY(180deg);
 }
 .card.flipped {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 </style>
