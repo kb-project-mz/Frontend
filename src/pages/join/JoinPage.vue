@@ -145,11 +145,16 @@ const join = async () => {
   try {
     isLoading.value = true;
     const createResponse = await auth.create(member);
-    // await auth.create(member);
     console.log('회원가입 요청:', member);
-    console.log('회원가입 응답:', createResponse); 
-    await auth.login({ memberId: member.memberId, password: member.password });
-    router.push({ name: 'home' });
+    console.log('회원가입 응답:', createResponse);
+
+		// 회원가입 후 로그인 요청
+    const loginResponse = await auth.login(member.memberId, member.password);
+
+    if (loginResponse) {
+      console.log('로그인 성공:', loginResponse);
+      router.push({ name: 'home' });
+    }
   } catch (error) {
     alert('회원가입 중 오류가 발생했습니다.');
     console.error('회원가입 중 오류:', error);
@@ -160,110 +165,112 @@ const join = async () => {
 </script>
 
 <template>
-  <div class="container mx-auto mt-5 p-4">
-    <div class="max-w-md mx-auto">
-      <h1 class="my-4 text-center text-2xl font-bold">
-        <i class="fa-solid fa-user-plus"></i> 회원 가입
-      </h1>
-      <form @submit.prevent="join" class="bg-white border rounded-lg shadow p-4">
+  <div class="flex justify-center">
+    <div class="mt-5 px-20 py-20 bg-white border rounded-lg shadow">
+      <div class="mb-5 font-bold text-2xl text-blue">
+        <div>회원가입을 위해</div>
+        <div>정보를 입력해주세요</div>
+      </div>
+    
+      <form @submit.prevent="join">
         <div class="mb-4">
           <label for="memberName" class="block text-sm font-medium">이름</label>
           <input
             v-model="member.memberName"
             type="text"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             id="memberName"
-            placeholder="이름을 입력하세요."
-            required
-          />
+            placeholder="이름을 입력해주세요."
+            required />
         </div>
+
         <div class="mb-4">
-          <label for="memberId" class="block text-sm font-medium">
-            아이디
+          <label for="memberId" class="block text-sm font-medium">아이디</label>
+          <div class="flex w-full">
+            <input
+              v-model="member.memberId"
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block flex-grow p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              id="memberId"
+              placeholder="회원 ID를 입력해주세요."
+              required />
             <button
               type="button"
-              class="ml-2 px-2 py-1 bg-blue-800 text-white rounded"
+              class="ml-2 px-3 py-1 bg-blue-800 text-white rounded-lg"
               @click="checkMemberId"
-              :disabled="!member.memberId"
-            >
+              :disabled="!member.memberId">
               중복 확인
             </button>
-          </label>
-          <input
-            v-model="member.memberId"
-            type="text"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="memberId"
-            placeholder="회원 ID를 입력하세요."
-            required
-          />
+          </div>
+          
           <span v-if="memberIdFail" class="text-red-500">{{ memberIdFail }}</span>
           <span v-if="memberIdSuccess" class="text-green-500">{{ memberIdSuccess }}</span>
         </div>
+        
         <div class="mb-4">
           <label for="password" class="block text-sm font-medium">비밀번호</label>
           <input
             v-model="member.password"
             type="password"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             id="password"
-            placeholder="비밀번호를 입력하세요."
+            placeholder="비밀번호를 입력해주세요."
             @input="checkPasswordStrength"
-            required
-          />
+            required />
           <div class="text-sm mt-1">
             <p>{{ passwordStrengthMessage }}</p>
           </div>
         </div>
+
         <div class="mb-4">
           <label for="checkPassword" class="block text-sm font-medium">비밀번호 확인</label>
           <input
             v-model="member.checkPassword"
             type="password"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             id="checkPassword"
-            placeholder="비밀번호를 확인하세요."
             @input="checkPasswordsMatch"
-            required
-          />
+            placeholder="비밀번호를 다시 입력해주세요."
+            required />
           <span :class="passwordsMatch ? 'text-green-500' : 'text-red-500'">
             {{ passwordsMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.' }}
           </span>
         </div>
+
         <div class="mb-4">
+          <label for="birthday" class="block text-sm font-medium">생일</label>
           <div class="flex items-center">
             <input 
               v-model="member.birthday" 
               type="text" 
-              class="border-none p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               id="birthday" 
-              placeholder="010101" 
+              placeholder="990101" 
               maxlength="6" 
-              required
-            />
-            <span class="bg-gray-200 px-2">-</span>
+              required />
+            <span class="px-2">-</span>
             <input 
               v-model="member.gender"
               type="text" 
-              class="border-none p-2 w-1/4 text-center focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              class="w-8 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               id="gender" 
-              maxlength="1" 
+              maxlength="1"
               @input="handleBirthdayInput"
-            />
-            <span class="bg-gray-200 px-2">******</span>
+              required />
+            <span class="px-2">******</span>
           </div>
         </div>
+
         <div class="mb-4 flex flex-col">
           <label for="email" class="block text-sm font-medium mb-1">이메일</label>
           <div class="flex">
             <input
-              v-model="member.email"
-              type="email"
-              class="flex-1 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              id="email"
-              placeholder="이메일을 입력하세요."
-              required
-            />
+            v-model="member.email"
+            type="email"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            id="email"
+            placeholder="이메일을 입력해주세요."
+            required />
             <select v-model="selectedDomain" @change="handleDomainChange" class="border border-gray-300 rounded-r-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="">도메인 선택</option>
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
@@ -273,35 +280,35 @@ const join = async () => {
           <input 
             v-if="isDirectInput" 
             type="text" 
+            class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
             placeholder="직접 도메인을 입력해 주세요" 
             v-model="directEmail" 
-            @input="updateDirectEmail"
-            class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-          />
+            @input="updateDirectEmail" />
         </div>
+
         <div class="mb-4 form-check">
           <input
             type="checkbox"
             class="form-check-input"
             id="terms"
             v-model="member.terms"
-            required
-          />
+            required />
           <label class="form-check-label" for="terms">약관에 동의합니다.</label>
         </div>
+
         <button
           type="submit"
           class="w-full bg-blue-800 text-white py-2 rounded-lg flex justify-center items-center"
-          :disabled="disableSubmit || isLoading || !isMemberIdChecked"
-        >
+          :disabled="disableSubmit || isLoading || !isMemberIdChecked">
           <i class="fa-solid fa-user-plus"></i>
           <span class="ml-2">확인</span>
         </button>
-        <div v-if="isLoading" class="text-center mt-2">
+
+        <!-- <div v-if="isLoading" class="text-center mt-2">
           <div class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
-        </div>
+        </div> -->
       </form>
     </div>
   </div>
@@ -311,5 +318,8 @@ const join = async () => {
 .spinner-border {
   width: 2rem;
   height: 2rem;
+}
+.text-blue {
+  color: #0B1573;
 }
 </style>

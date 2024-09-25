@@ -37,3 +37,4 @@ const props = defineProps({
   color: #F55151;
 }
 </style>
+

@@ -4,6 +4,7 @@ import apiInstance from './axios-instance';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
+			id: '',
       memberName: '',
       memberId: '',
       password: '',
@@ -13,18 +14,40 @@ export const useAuthStore = defineStore('auth', {
     }
   }),
   actions: {
-    async login() {
-      try {
-        const response = await apiInstance.post('/member/login', {
-          memberId: this.member.memberId,
-          password: this.member.password
-        });
-        return response.data.data;
-      } catch (error) {
-        console.error('로그인 중 오류:', error);
-        throw error;
-      }
-    },
+    async login(memberId, password) {
+			try {
+				console.log('로그인 시도:', memberId);
+				const response = await apiInstance.post('/member/login', {
+					memberId: memberId,
+					password: password
+				});
+				console.log(response.data.data)
+		
+				const loginData = response.data.data;
+		
+				if (!loginData || !loginData.accessToken) {
+					console.error('응답에 accessToken이 없습니다.', loginData);
+					return null;  // 문제가 있는 경우 null 반환
+				}
+		
+				
+
+				localStorage.setItem('memberId', loginData.memberId);		
+				localStorage.setItem('accessToken', 'Bearer ' + loginData.accessToken);
+				localStorage.setItem('refreshToken', 'Bearer ' + loginData.refreshToken);
+				localStorage.setItem('auth', JSON.stringify(loginData));
+				
+				localStorage.setItem('id', loginData.id);
+				localStorage.setItem('memberName', loginData.memberName);
+		
+				console.log('로그인 응답 데이터:', loginData);
+				return loginData;
+			} catch (error) {
+				console.error('로그인 중 오류:', error);
+				throw error;
+			}
+		},
+		
     async create(member) {
       try {
         const response = await apiInstance.post('/member/join', member);
@@ -54,4 +77,16 @@ export const useAuthStore = defineStore('auth', {
       }
     },
   },
+	// 로그인 상태 유지
+	loadAuthState() {
+		const authData = localStorage.getItem('auth');
+		if (authData) {
+			this.member = JSON.parse(authData);
+		}
+	},
+
+	isLogin() {
+		const authData = localStorage.getItem('auth');
+		return !!authData;
+	},
 });

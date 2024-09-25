@@ -10,9 +10,10 @@ export const useAccountHistoryStore = defineStore('accountHistory', {
   actions: {
     async getAccountHistoryList(memberId) {
       try {
-        const res = await apiInstance.get(`/consumption/account/history/${memberId}`, {
+        const res = await apiInstance.get(`/history/account/${memberId}`, {
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjY5OTAzODMsImV4cCI6MTcyNzA3Njc4M30.ccTmv2HYPALzTt26S2p0Z53YshnRdVidP9finaNG4rs"
+            "Authorization":
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwOTMxMDQsImV4cCI6MTcyNzQzODcwNH0.CDpk_rBMERwApocgtppe8EtnuQkbxRpjLAJK2A7wBBo"
           }
         });
         this.accountHistory = res.data.data;
