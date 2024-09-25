@@ -30,6 +30,10 @@ const login = async () => {
     error.value = response;
   }
 };
+
+function ToGoogleLogin() {
+  router.push('/login/google');
+}
 </script>
 
 <template>
@@ -95,12 +99,9 @@ const login = async () => {
       <router-link to="join">회원가입</router-link>
     </div>
 
-    <div class="w-1/4">
-      <button 
-        type="submit" 
-        class="cursor-pointer bg-white border border-gray-400 text-sm rounded-xl block w-full ps-10 p-5" 
-        :disabled="disableSubmit">
-        Sign in with Google (Roboto)
+    <div class="mt-3 w-14">
+      <button  @click="ToGoogleLogin">
+        <img src="@/assets/google.png" alt="Google Login Button" />
       </button>
     </div>
   </div>
