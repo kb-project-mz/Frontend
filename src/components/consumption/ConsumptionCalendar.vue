@@ -204,7 +204,6 @@ td {
     text-align: center; /* 가운데 정렬 */
     padding: 10px; /* 셀 간의 여백 추가 */
     border: none; /* 셀 테두리 없애기 */
-    background-color: white; /* 셀 배경을 흰색으로 설정 */
     height: 60px; /* 셀 높이 고정 */
     width: 60px; /* 셀 너비 고정 */
 }
