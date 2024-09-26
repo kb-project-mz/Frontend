@@ -1,10 +1,11 @@
 <script setup>
-import Header from "@/components/common/Header.vue";
+import Button from '@/components/home/Button.vue';
+import testImage from '@/assets/테스트.png';
+import chartImage from '@/assets/파이차트.png';
+import challengeImage from '@/assets/챌린지.png';
 </script>
 
 <template>
-  <Header />
-
   <!-- 상단 글자 -->
   <div class="max-w-7.5xl mx-auto flex">
     <div class="text-left">
@@ -19,28 +20,26 @@ import Header from "@/components/common/Header.vue";
 
   <!-- 버튼 -->
   <div class="max-w-7.5xl mx-auto space-x-12 flex">
-    <button
-      class="bg-transparent hover:bg-customBlue blue font-bold hover:text-white py-14 px-16 border shadow-lg hover:border-transparent rounded whitespace-normal w-50 h-50 flex flex-col items-center justify-center"
-    >
-      소비 심리 <br />
-      테스트
-      <img src="/src/assets/테스트.png" alt="Logo" class="h-8 w-auto mt-4" />
-    </button>
-    <button
-      class="bg-transparent hover:bg-customBlue blue font-bold hover:text-white py-14 px-16 border shadow-lg hover:border-transparent rounded whitespace-normal w-50 h-50 flex flex-col items-center justify-center"
-    >
-      나의 소비 <br />
-      습관 분석
-      <img src="/src/assets/파이차트.png" alt="Logo" class="h-8 w-auto mt-4" />
-    </button>
+    <Button 
+      :img-src="testImage" 
+      :router-to="{ name: 'testStart' }" 
+      text-above="소비 심리" 
+      text-below="테스트" 
+    />
 
-    <button
-      class="bg-transparent hover:bg-customBlue blue font-bold hover:text-white py-14 px-12 border shadow-lg hover:border-transparent rounded whitespace-normal w-50 h-50 flex flex-col items-center justify-center"
-    >
-      돈과의 전쟁 <br />
-      챌린지의 서막
-      <img src="/src/assets/챌린지.png" alt="Logo" class="h-8 w-auto mt-4" />
-    </button>
+    <Button 
+      :img-src="chartImage" 
+      :router-to="{ name: 'consumption' }" 
+      text-above="나의 소비" 
+      text-below="습관 분석" 
+    />
+
+    <Button 
+      :img-src="challengeImage" 
+      :router-to="{ name: 'challenge' }" 
+      text-above="돈과의 전쟁" 
+      text-below="챌린지의 서막" 
+    />
 
     <!-- 버튼 우측 글자 -->
     <span class="flex-grow text-right">

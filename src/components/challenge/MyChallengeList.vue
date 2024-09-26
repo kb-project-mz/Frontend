@@ -32,7 +32,7 @@ const deleteChallenge = (id) => {
   if (confirm('정말로 삭제하시겠습니까?')) {
     axios.post('http://localhost:8080/api/v1/challenge/delete', { id }, {
       headers: { 
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwNTkyNDksImV4cCI6MTcyNzQwNDg0OX0.6Z-07i5nQhAMBnzlcwfDXcSc-6wuL46bcn2hpx5wLxA"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcxNjIxODIsImV4cCI6MTcyNzUwNzc4Mn0.shTPN61p68SsQ-5Q1Ctm1FKi1f98zkYwP_MrIBOrLJI"
       }
     })
     .then((res) => {
@@ -54,3 +54,7 @@ const deleteChallenge = (id) => {
 
 
 </script>
+
+
+
+

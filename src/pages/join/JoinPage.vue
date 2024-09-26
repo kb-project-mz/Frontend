@@ -19,7 +19,7 @@ const member = reactive({
 
 const isMemberIdChecked = ref(false);
 const passwordsMatch = ref(false);
-const passwordStrengthMessage = ref('8자 이상, 특수문자, 대소문자 포함해야 합니다');
+const passwordStrengthMessage = ref('대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.');
 const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
 const selectedDomain = ref('');
 const directEmail = ref('');
@@ -28,6 +28,7 @@ const memberIdFail = ref('');
 const memberIdSuccess = ref('');
 const disableSubmit = ref(true);
 const isLoading = ref(false);
+const isStrong = ref(false);
 
 watch(() => member, (newMember) => {
   disableSubmit.value = !(
@@ -99,7 +100,7 @@ const enhancedSecurityPassword = (password) => {
 };
 
 const checkPasswordStrength = () => {
-  const isStrong = enhancedSecurityPassword(member.password);
+  isStrong.value = enhancedSecurityPassword(member.password);
   passwordStrengthMessage.value = isStrong ? '비밀번호가 강합니다.' : '비밀번호가 약합니다.';
 };
 
@@ -145,11 +146,16 @@ const join = async () => {
   try {
     isLoading.value = true;
     const createResponse = await auth.create(member);
-    // await auth.create(member);
     console.log('회원가입 요청:', member);
-    console.log('회원가입 응답:', createResponse); 
-    await auth.login({ memberId: member.memberId, password: member.password });
-    router.push({ name: 'home' });
+    console.log('회원가입 응답:', createResponse);
+
+		// 회원가입 후 로그인 요청
+    const loginResponse = await auth.login(member.memberId, member.password);
+
+    if (loginResponse) {
+      console.log('로그인 성공:', loginResponse);
+      router.push({ name: 'home' });
+    }
   } catch (error) {
     alert('회원가입 중 오류가 발생했습니다.');
     console.error('회원가입 중 오류:', error);
@@ -160,111 +166,122 @@ const join = async () => {
 </script>
 
 <template>
-  <div class="container mx-auto mt-5 p-4">
-    <div class="max-w-md mx-auto">
-      <h1 class="my-4 text-center text-2xl font-bold">
-        <i class="fa-solid fa-user-plus"></i> 회원 가입
-      </h1>
-      <form @submit.prevent="join" class="bg-white border rounded-lg shadow p-4">
-        <div class="mb-4">
-          <label for="memberName" class="block text-sm font-medium">이름</label>
+  <div class="flex justify-center">
+    <div class="w-1/3 px-16 py-10 bg-white border rounded-lg shadow">
+      <div class="mb-5 font-bold text-2xl text-blue">
+        <div>회원가입을 위해</div>
+        <div>정보를 입력해주세요</div>
+      </div>
+    
+      <form @submit.prevent="join">
+        <div class="relative mb-6">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+            <font-awesome-icon :icon="['fas', 'user']" />
+          </div>
           <input
             v-model="member.memberName"
             type="text"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             id="memberName"
-            placeholder="이름을 입력하세요."
-            required
-          />
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
+            placeholder="이름"
+            required />
         </div>
-        <div class="mb-4">
-          <label for="memberId" class="block text-sm font-medium">
-            아이디
-            <button
-              type="button"
-              class="ml-2 px-2 py-1 bg-blue-800 text-white rounded"
-              @click="checkMemberId"
-              :disabled="!member.memberId"
-            >
-              중복 확인
-            </button>
-          </label>
+        
+        <div class="relative flex">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+            <font-awesome-icon :icon="['fas', 'user']" />
+          </div>
           <input
             v-model="member.memberId"
             type="text"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             id="memberId"
-            placeholder="회원 ID를 입력하세요."
-            required
-          />
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
+            placeholder="아이디"
+            required />
+          <button
+            type="button"
+            class="cursor-pointer w-24 ml-2 px-1 my-2 bg-navy text-white rounded-lg text-sm"
+            @click="checkMemberId"
+            :disabled="!member.memberId">
+            중복 확인
+          </button>
+        </div>
+        <div class="text-sm mb-6">
           <span v-if="memberIdFail" class="text-red-500">{{ memberIdFail }}</span>
           <span v-if="memberIdSuccess" class="text-green-500">{{ memberIdSuccess }}</span>
         </div>
-        <div class="mb-4">
-          <label for="password" class="block text-sm font-medium">비밀번호</label>
+
+        <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+            <font-awesome-icon :icon="['fas', 'lock']" />
+          </div>
           <input
             v-model="member.password"
             type="password"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             id="password"
-            placeholder="비밀번호를 입력하세요."
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
+            placeholder="비밀번호"
             @input="checkPasswordStrength"
-            required
-          />
-          <div class="text-sm mt-1">
-            <p>{{ passwordStrengthMessage }}</p>
-          </div>
+            required />
+            
         </div>
-        <div class="mb-4">
-          <label for="checkPassword" class="block text-sm font-medium">비밀번호 확인</label>
+        <div :class="['text-sm', 'mt-1', 'mb-6', isStrong ? 'text-green-500' : 'text-red-500']">
+          {{ passwordStrengthMessage }}
+        </div>
+
+        <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+            <font-awesome-icon :icon="['fas', 'lock']" />
+          </div>
           <input
             v-model="member.checkPassword"
             type="password"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             id="checkPassword"
-            placeholder="비밀번호를 확인하세요."
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
+            placeholder="비밀번호를 다시 입력해주세요."
             @input="checkPasswordsMatch"
-            required
-          />
-          <span :class="passwordsMatch ? 'text-green-500' : 'text-red-500'">
-            {{ passwordsMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.' }}
-          </span>
+            required />
         </div>
-        <div class="mb-4">
+        <div :class="['mb-6', 'text-sm', passwordsMatch ? 'text-green-500' : 'text-red-500']">
+          {{ passwordsMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.' }}
+        </div>
+
+        <div class="mb-6">
           <div class="flex items-center">
             <input 
               v-model="member.birthday" 
               type="text" 
-              class="border-none p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-4"
               id="birthday" 
-              placeholder="010101" 
+              placeholder="생년월일 6자리" 
               maxlength="6" 
-              required
-            />
-            <span class="bg-gray-200 px-2">-</span>
+              required />
+            <span class="px-2">-</span>
             <input 
               v-model="member.gender"
               type="text" 
-              class="border-none p-2 w-1/4 text-center focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              class="w-11 bg-gray border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-4"
               id="gender" 
-              maxlength="1" 
+              maxlength="1"
               @input="handleBirthdayInput"
-            />
-            <span class="bg-gray-200 px-2">******</span>
+              required />
+            <span class="px-2">●●●●●●</span>
           </div>
         </div>
+        
+
         <div class="mb-4 flex flex-col">
-          <label for="email" class="block text-sm font-medium mb-1">이메일</label>
-          <div class="flex">
+          <div class="flex items-center">
             <input
-              v-model="member.email"
-              type="email"
-              class="flex-1 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              id="email"
-              placeholder="이메일을 입력하세요."
-              required
-            />
-            <select v-model="selectedDomain" @change="handleDomainChange" class="border border-gray-300 rounded-r-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            v-model="member.email"
+            type="email"
+            
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+            id="email"
+            placeholder="이메일"
+            required />
+            <select v-model="selectedDomain" @change="handleDomainChange"
+              class="border border-gray-300 rounded-r-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block p-3">
               <option value="">도메인 선택</option>
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
               <option value="직접입력">직접 입력</option>
@@ -273,35 +290,28 @@ const join = async () => {
           <input 
             v-if="isDirectInput" 
             type="text" 
+            class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
             placeholder="직접 도메인을 입력해 주세요" 
             v-model="directEmail" 
-            @input="updateDirectEmail"
-            class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-          />
+            @input="updateDirectEmail" />
         </div>
-        <div class="mb-4 form-check">
+
+        <div class="mb-6 form-check">
           <input
             type="checkbox"
             class="form-check-input"
             id="terms"
             v-model="member.terms"
-            required
-          />
+            required />
           <label class="form-check-label" for="terms">약관에 동의합니다.</label>
         </div>
+
         <button
           type="submit"
-          class="w-full bg-blue-800 text-white py-2 rounded-lg flex justify-center items-center"
-          :disabled="disableSubmit || isLoading || !isMemberIdChecked"
-        >
-          <i class="fa-solid fa-user-plus"></i>
-          <span class="ml-2">확인</span>
+          class="cursor-pointer w-full bg-navy text-white py-2 rounded-xl flex justify-center items-center py-5"
+          :disabled="disableSubmit || isLoading || !isMemberIdChecked">
+          <span class="ml-2">회원가입 하기</span>
         </button>
-        <div v-if="isLoading" class="text-center mt-2">
-          <div class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
       </form>
     </div>
   </div>
@@ -311,5 +321,11 @@ const join = async () => {
 .spinner-border {
   width: 2rem;
   height: 2rem;
+}
+.text-blue {
+  color: #0B1573;
+}
+.bg-navy {
+  background-color: #0B1573;
 }
 </style>

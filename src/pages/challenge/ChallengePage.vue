@@ -1,3 +1,7 @@
+
+
+
+
 <script setup>
 import MyChallengeList from '@/components/challenge/MyChallengeList.vue';
 import CreateChallenge from '@/components/challenge/CreateChallenge.vue';
@@ -23,29 +27,30 @@ const addNewChallenge = (newChallenge) => {
 };
 
 // 데이터 로드
-const fetchAllItems = () => {
+const fetchAllItems = (memberId) => {
   axios
-  axios
-  .get('http://localhost:8080/api/v1/challenge/list', {
-    headers: {
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwNTkyNDksImV4cCI6MTcyNzQwNDg0OX0.6Z-07i5nQhAMBnzlcwfDXcSc-6wuL46bcn2hpx5wLxA"
-    }
-  })
-  .then((res) => {
-    if (res.data.success) {
-      // Access the data field from the JSON response structure
-      challengeList.value = res.data['data']['data'];  // Extracting the actual data
-    } else {
-      console.error(res.data.error.message);
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+    .get(`http://localhost:8080/api/v1/challenge/list/${memberId}`, {
+      headers: {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcxNjIxODIsImV4cCI6MTcyNzUwNzc4Mn0.shTPN61p68SsQ-5Q1Ctm1FKi1f98zkYwP_MrIBOrLJI"
+      }
+    })
+    .then((res) => {
+      if (res.data.success) {
+        // 데이터를 추출하여 리스트에 저장
+        challengeList.value = res.data['data']['data'];  // 실제 데이터를 저장
+      } else {
+        console.error(res.data.error.message);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
+
 onMounted(() => {
-  fetchAllItems();  // 페이지 로드 시 챌린지 목록 불러오기
+  const memberId = 2; 
+  fetchAllItems(memberId);  // 페이지 로드 시 챌린지 목록 불러오기
 });
 </script>
 
@@ -68,3 +73,4 @@ onMounted(() => {
 <style scoped>
 /* 스타일 생략 */
 </style>
+
