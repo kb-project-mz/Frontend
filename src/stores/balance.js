@@ -1,17 +1,17 @@
-import { defineStore } from "pinia";
-import apiInstance from "./axios-instance";
+import { defineStore } from 'pinia';
+import apiInstance from './axios-instance';
 
-export const useBalanceStore = defineStore("balance", {
+export const useBalanceStore = defineStore('balance', {
   state: () => ({
-    TotalBalance: 0,
+    TotalBalanceList: [],
   }),
   actions: {
-    async getTotalBalance(memberId) {
+    async getTotalBalance() {
       try {
-        const reponse = await apiInstance.get(`/home/balance/${memberId}`);
-        this.TotalBalance = response.data.data;
+        const response = await apiInstance.get(`/home/balance`);
+        this.TotalBalanceList = response.data.data;
       } catch (error) {
-        console.error("Failed to fetch total balance: ", error);
+        console.error('Failed to fetch total balance: ', error);
         throw error;
       }
     },
