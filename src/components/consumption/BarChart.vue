@@ -1,6 +1,5 @@
 <template>
     <div class="chart-container">
-        <!-- ref 바인딩을 canvas에 추가 -->
         <canvas ref="canvasRef" id="monthlyConsumptionChart"></canvas>
     </div>
 </template>
@@ -9,7 +8,6 @@
 import { ref, onMounted } from "vue";
 import { Chart } from "chart.js/auto";
 
-// Props로 전달받은 소비 데이터
 const props = defineProps({
     consumptionData: {
         type: Array,
@@ -64,7 +62,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 차트를 부모 div의 크기에 맞게 조정 */
 .chart-container {
     width: 100%; /* 부모 div의 너비에 맞게 */
     height: 100%; /* 부모 div의 높이에 맞게 */

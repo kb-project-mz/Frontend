@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useConsumptionHistoryStore } from "@/stores/consumption-history"; // 월별 소비 스토어
+import { useConsumptionHistoryStore } from "@/stores/consumption-history";
 import { useAccountHistoryStore } from "@/stores/account-history";
+import { useAuthStore } from "@/stores/auth.js";
 import AIRecommendation from "@/components/consumption/AIRecommendation.vue";
 import ConsumptionCalendar from "@/components/consumption/ConsumptionCalendar.vue";
 import LineChart from "@/components/consumption/LineChart.vue";
@@ -20,6 +21,9 @@ const historySelectedPeriodData = ref([]);
 const accountHistoryData = ref([]); //이번달 계좌 입출금 내역
 const accountHistoryThisMonthData = ref([]);
 const accountHistorySelectedPeriodData = ref([]);
+
+const authStore = useAuthStore();
+const user = authStore.member; // 로그인 사용자 데이터
 
 const isFlipped = ref(false);
 
@@ -102,7 +106,7 @@ onMounted(async () => {
             <div class="flex-1 mt-8 mr-4">
                 <LineChart />
             </div>
-            <div class="flex-1 mt-8 ml-4 border border-gray-200 rounded-2xl shadow">
+            <div class="flex-1 mt-8 ml-4">
                 <BarChart />
             </div>
         </div>
@@ -110,7 +114,7 @@ onMounted(async () => {
         <div class="h-6"></div>
         <div class="flex">
             <div class="w-3/5 mr-4 border border-gray-200 rounded-2xl shadow">
-                <ConsumptionCalendar :account-history-data="accountHistoryData" :history-data="historyData" />
+                <ConsumptionCalendar :account-history-data="accountHistoryData" :history-data="historyData" :auth="{ memberName: user.memberName }" />
             </div>
             <div class="w-2/5 ml-4 border border-gray-200 rounded-2xl shadow">
                 <ConsumptionList :history-data="historyData" />

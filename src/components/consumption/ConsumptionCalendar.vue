@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 
-// Props로 accountHistoryData와 historyData를 받아옵니다.
 const props = defineProps({
     accountHistoryData: {
         type: Array,
@@ -11,33 +10,51 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    auth: {
+        type: Object,
+        required: true,
+    },
 });
 
 // 달력의 현재 연도와 월
 const currentYear = ref(new Date().getFullYear());
 const currentMonth = ref(new Date().getMonth());
 
-// 요일을 나타내는 배열 (한국어)
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
 const daysInMonth = ref([]);
 
-// 필터링된 지출 내역 (현재 연도와 월에 맞는 데이터만 필터링)
-const filteredExpenses = computed(() => {
+// 필터링된 계좌 지출 내역
+const filteredAccountExpenses = computed(() => {
+    const memberName = props.auth.memberName;
     return props.accountHistoryData.filter((item) => {
         const itemDate = new Date(item.accountDate);
         return (
-            itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount < 0 // 지출만 필터링 (필요에 따라 수정 가능)
+            itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount < 0 && (!item.content || !item.content.includes(memberName)) // memberName이 content에 포함되지 않은 경우
         );
     });
 });
 
-// 필터링된 수입 내역 (현재 연도와 월에 맞는 데이터만 필터링)
+// 필터링된 카드 지출 내역
+const filteredCardExpenses = computed(() => {
+    return props.historyData.filter((item) => {
+        const itemDate = new Date(item.consumptionDate); // 카드 지출 데이터의 날짜 필드 확인 필요
+        return (
+            itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount > 0 // 카드 지출 (양수)
+        );
+    });
+});
+
+// 필터링된 수입 내역
 const filteredIncomes = computed(() => {
     return props.accountHistoryData.filter((item) => {
         const itemDate = new Date(item.accountDate);
+        const memberName = props.auth.memberName; // auth 오브젝트에서 memberName 추출
         return (
-            itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount > 0 // 수입만 필터링 (필요에 따라 수정 가능)
+            itemDate.getFullYear() === currentYear.value &&
+            itemDate.getMonth() === currentMonth.value &&
+            item.amount > 0 && // 수입
+            (!item.content || !item.content.includes(memberName)) // memberName이 content에 포함되지 않은 경우
         );
     });
 });
@@ -112,24 +129,29 @@ const prevMonth = () => {
 };
 
 const getExpense = (date) => {
-    // 해당 날짜에 해당하는 모든 지출 데이터를 필터링 (amount가 음수인 경우만)
-    const expensesForDate = filteredExpenses.value.filter((e) => e.accountDate === date && e.amount < 0);
+    // 계좌 지출 필터링 (accountHistoryData에서 음수 값)
+    const accountExpensesForDate = filteredAccountExpenses.value.filter((e) => {
+        const accountDate = new Date(e.accountDate).toISOString().split("T")[0];
+        return accountDate === date; // 일별 필터링
+    });
 
-    // 해당 날짜에 지출이 있는 경우 amount를 모두 절대값으로 합산
-    const totalAmount = expensesForDate.reduce((sum, e) => sum + Math.abs(e.amount), 0);
+    // 카드 지출 필터링 (historyData에서 양수 값)
+    const cardExpensesForDate = filteredCardExpenses.value.filter((e) => {
+        const cardDate = new Date(e.consumptionDate).toISOString().split("T")[0];
+        return cardDate === date;
+    });
 
-    // 합산된 금액을 반환, 없으면 0 반환
-    return totalAmount ? totalAmount.toLocaleString() : 0;
+    const totalAccountExpenses = accountExpensesForDate.reduce((sum, e) => sum + Math.abs(e.amount), 0);
+    const totalCardExpenses = cardExpensesForDate.reduce((sum, e) => sum + e.amount, 0);
+    const totalExpenses = totalAccountExpenses + totalCardExpenses;
+    return totalExpenses ? totalExpenses.toLocaleString() : 0;
 };
 
 const getIncome = (date) => {
     // 해당 날짜에 해당하는 모든 수입 데이터를 필터링 (amount가 양수인 경우만)
     const incomesForDate = filteredIncomes.value.filter((e) => e.accountDate === date && e.amount > 0);
-
-    // 해당 날짜에 수입이 있는 경우 amount를 모두 합산
     const totalAmount = incomesForDate.reduce((sum, e) => sum + e.amount, 0);
 
-    // 합산된 금액을 반환, 없으면 0 반환
     return totalAmount ? totalAmount.toLocaleString() : 0;
 };
 
@@ -174,9 +196,9 @@ watch([currentYear, currentMonth], generateCalendar);
 <style scoped>
 .calendar-header {
     display: flex;
-    justify-content: center; /* 중앙 정렬 */
+    justify-content: center;
     align-items: center;
-    margin-bottom: 12px; /* 헤더 하단 여백 */
+    margin-bottom: 12px;
     margin-top: 20px;
 }
 
@@ -184,7 +206,7 @@ button {
     background: none;
     border: none;
     font-size: 1rem;
-    margin: 0 10px; /* 버튼과 텍스트 사이의 여백을 줄임 */
+    margin: 0 10px;
 }
 
 .calendar-title {
@@ -195,26 +217,26 @@ button {
 
 table {
     width: 100%;
-    border-collapse: collapse; /* 테이블 셀 간격 없애기 */
-    table-layout: fixed; /* 셀 크기를 고정 */
+    border-collapse: collapse;
+    table-layout: fixed;
 }
 
 th,
 td {
-    text-align: center; /* 가운데 정렬 */
-    padding: 10px; /* 셀 간의 여백 추가 */
-    border: none; /* 셀 테두리 없애기 */
-    height: 60px; /* 셀 높이 고정 */
-    width: 60px; /* 셀 너비 고정 */
+    text-align: center;
+    padding: 10px;
+    border: none;
+    height: 60px;
+    width: 60px;
 }
 
 thead th {
-    font-weight: bold; /* 요일을 굵게 설정 */
-    background-color: white; /* 요일 배경색을 흰색으로 설정 */
+    font-weight: bold;
+    background-color: white;
 }
 
 tbody td {
-    font-weight: bold; /* 날짜는 굵게 */
+    font-weight: bold;
 }
 
 tbody td span {
@@ -244,26 +266,18 @@ tbody td span {
 
 td div {
     display: flex;
-    flex-direction: column; /* 세로로 배치 */
-    justify-content: flex-start; /* 세로 방향에서 위쪽 정렬 */
-    align-items: center; /* 가로 방향은 가운데 정렬 */
-    height: 100%; /* 셀 전체 높이를 차지하도록 설정 */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
 }
 
 /* 반응형을 위한 미디어 쿼리 */
 @media (max-width: 600px) {
     th,
     td {
-        height: 50px; /* 화면이 좁아지면 셀 높이 줄임 */
-        font-size: 0.8rem; /* 텍스트 크기 줄임 */
-    }
-
-    .calendar-title {
-        font-size: 1.2rem; /* 화면이 좁아지면 타이틀 폰트 크기 줄임 */
-    }
-
-    .weekdays {
-        font-size: 0.8rem; /* 요일 폰트 크기 줄임 */
+        height: 50px;
+        font-size: 0.8rem;
     }
 }
 </style>
