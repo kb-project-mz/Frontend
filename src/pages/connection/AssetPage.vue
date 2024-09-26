@@ -1,15 +1,15 @@
 <script setup>
-import ConnAccountBook from '@/components/connection/ConnAccountBook.vue';
-import ConnCard from '@/components/connection/ConnCard.vue';
+import ConnectedAccountBook from '@/components/connection/ConnectedAccountBook.vue';
+import ConnectedCard from '@/components/connection/ConnectedCard.vue';
 </script>
 
 <template>
-  <div class="mx-[20%] flex space-x-10">
+  <div class="mx-[20%] flex space-x-12">
     <div class="w-1/2">
-      <ConnAccountBook />
+      <ConnectedAccountBook />
     </div>
     <div class="w-1/2">
-      <!-- <ConnCard/> -->
+      <ConnectedCard/>
     </div>
   </div>
 </template>

@@ -38,10 +38,13 @@ export const useAssetStore = defineStore('asset', {
       }
     },
     
-    async updateCardStatus(id) {
+    async updateCardStatus(selectedCard) {
       try {
+        const id = selectedCard.prdtId;
         const response = await apiInstance.post(`/connection/card/${id}`);
-        return response.data; 
+        this.connectedCardList.push(selectedCard);
+        console.log(this.connectedCardList);
+        return response.data;
       } catch (error) {
         console.error('Failed to update card status:', error);
         throw error;
