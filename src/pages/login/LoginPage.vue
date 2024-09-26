@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
+import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
 
 const cr = useRoute();
 const router = useRouter();
@@ -31,9 +32,23 @@ const login = async () => {
   }
 };
 
-function ToGoogleLogin() {
-  router.push('/login/google');
-}
+const toGoogleLogin = async () => {
+  try {
+    // Google 로그인 페이지로 이동 (백엔드에서 로그인 URL 반환)
+    const response = await apiInstance.get('/member/login/google');
+		console.log(response);
+    const data = response.data;
+
+    if (data.success) {
+      // 구글 로그인 페이지로 리디렉션
+      window.location.href = data.data;
+    } else {
+      console.error('Google 로그인 실패:', data.error.message);
+    }
+  } catch (error) {
+    	console.error('Google 로그인 중 오류 발생:', error);
+  }
+};
 </script>
 
 <template>
@@ -99,11 +114,10 @@ function ToGoogleLogin() {
       <router-link to="join">회원가입</router-link>
     </div>
 
-    <div class="mt-3 w-14">
-      <button  @click="ToGoogleLogin">
-        <img src="@/assets/google.png" alt="Google Login Button" />
-      </button>
+		<div class="mt-3 w-14">
+			<GoogleLoginComponent />
     </div>
+    
   </div>
 </template>
 

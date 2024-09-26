@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import apiInstance from './axios-instance';
+import apiInstance from '@/util/axios-instance';
 
 export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
   state: () => ({

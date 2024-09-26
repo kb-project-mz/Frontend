@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
-import apiInstance from './axios-instance';
+import apiInstance from '@/util/axios-instance';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
-			id: null,
-      memberName: null,
-      memberId: null,
-      password: null,
-      email: null,
-      birthday: null,
-      gender: null
+			id: '',
+      memberName: '',
+      memberId: '',
+      password: '',
+      email: '',
+      birthday: '',
+      gender: ''
     }
   }),
   actions: {
@@ -21,25 +21,25 @@ export const useAuthStore = defineStore('auth', {
 					memberId: memberId,
 					password: password
 				});
-				console.log(response.data);
+				console.log(response.data.data)
 		
 				const loginData = response.data.data;
 		
-				if (!response.data.success) {
-					console.error(response.data.error.message);
-					return response.data.error.message;
+				if (!loginData || !loginData.accessToken) {
+					console.error('응답에 accessToken이 없습니다.', loginData);
+					return null;
 				}
-
-        this.member.id = loginData.id;
-        this.member.memberId = loginData.memberId;
-        this.member.memberName = loginData.memberName;
-
-        localStorage.setItem('id', loginData.id);
+		
 				localStorage.setItem('memberId', loginData.memberId);		
-        localStorage.setItem('memberName', loginData.memberName);
 				localStorage.setItem('accessToken', 'Bearer ' + loginData.accessToken);
 				localStorage.setItem('refreshToken', 'Bearer ' + loginData.refreshToken);
-				localStorage.setItem('auth', JSON.stringify(loginData));				
+				localStorage.setItem('auth', JSON.stringify(loginData));
+				
+				const memberResponse = await apiInstance.get(`/member/${loginData.memberId}`);
+        const memberData = memberResponse.data.data;
+
+				localStorage.setItem('id', loginData.id);
+				localStorage.setItem('memberName', loginData.memberName);
 		
 				console.log('로그인 응답 데이터:', loginData);
 				return loginData;
@@ -77,16 +77,6 @@ export const useAuthStore = defineStore('auth', {
         throw error;
       }
     },
-    logout() {
-      this.member.id = null;
-      this.member.memberName = null,
-      this.member.memberId = null,
-      this.member.password = null,
-      this.member.email = null,
-      this.member.birthday = null,
-      this.member.gender = null;
-      localStorage.clear();
-    }
   },
 	// 로그인 상태 유지
 	loadAuthState() {
@@ -100,6 +90,4 @@ export const useAuthStore = defineStore('auth', {
 		const authData = localStorage.getItem('auth');
 		return !!authData;
 	},
-
-
 });
