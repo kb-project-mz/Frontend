@@ -91,22 +91,6 @@ watch(() => props.visible, (newVal) => {
               </div>
             </label>
           </div>
-          <!-- <div v-for="(card, index) in unconnectedCardList" :key="index" class="flex items-center mb-6">
-            <input 
-              type="radio" 
-              name="selectedCard"
-              :id="'card-' + index"
-              :value="card" 
-              v-model="selectedCard" 
-              @change="selectCard(card)"
-              class="mr-3"
-            />
-            <img :src="card.image" alt="card" class="h-10 mr-3 rounded-sm" />
-            <div class="flex flex-col">
-              <div class="text-sm text-gray-600">{{ card.financeName }} </div>
-              <div class="font-bold">{{ card.prdtName }}</div>
-            </div>
-          </div> -->
           <div v-if="message" class="mb-4 text-red-500 text-lg font-bold text-center">{{ message }}</div>
         </div>
         <div v-else class="text-red-500 text-lg font-bold text-center">더 이상 추가할 카드가 없어요!</div>
@@ -114,7 +98,7 @@ watch(() => props.visible, (newVal) => {
       <button 
         v-if="unconnectedCardList.length > 0" 
         @click="addCard"
-        class="w-full mt-1 px-4 py-2 bg-navy text-white rounded-lg hover:bg-blue-600">
+        class="w-full mt-1 px-4 py-4 bg-navy text-white rounded-lg hover:bg-blue-600">
         선택한 자산 연결하기
       </button>
     </div>
