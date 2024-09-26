@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import apiInstance from './axios-instance';
+import { defineStore } from "pinia";
+import apiInstance from "./axios-instance";
 
-export const useAccountHistoryStore = defineStore('accountHistory', {
+export const useAccountHistoryStore = defineStore("accountHistory", {
   state: () => ({
     accountHistory: [],
     accountHistoryThisMonth: [],
@@ -10,10 +10,11 @@ export const useAccountHistoryStore = defineStore('accountHistory', {
   actions: {
     async getAccountHistoryList(memberId) {
       try {
-        const res = await apiInstance.get(`/consumption/account/history/${memberId}`, {
+        const res = await apiInstance.get(`/history/account/${memberId}`, {
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjY5OTAzODMsImV4cCI6MTcyNzA3Njc4M30.ccTmv2HYPALzTt26S2p0Z53YshnRdVidP9finaNG4rs"
-          }
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwOTMxMDQsImV4cCI6MTcyNzQzODcwNH0.CDpk_rBMERwApocgtppe8EtnuQkbxRpjLAJK2A7wBBo",
+          },
         });
         this.accountHistory = res.data.data;
 
@@ -21,16 +22,18 @@ export const useAccountHistoryStore = defineStore('accountHistory', {
         const thisYear = now.getFullYear();
         const thisMonth = now.getMonth() + 1;
 
-        this.accountHistoryThisMonth = this.accountHistory.filter(history => {
+        this.accountHistoryThisMonth = this.accountHistory.filter((history) => {
           const accountDate = new Date(history.accountDate);
           const accountYear = accountDate.getFullYear();
           const accountMonth = accountDate.getMonth() + 1;
 
           return accountYear === thisYear && accountMonth == thisMonth;
         });
+
+        console.log(this.accountHistory);
       } catch (err) {
         console.error(err);
       }
-    }
+    },
   },
 });

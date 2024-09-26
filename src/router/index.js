@@ -3,7 +3,6 @@ import FindMemberId from '@/pages/login/FindMemberId.vue';
 import FindPassword from '@/pages/login/FindPassword.vue';
 import HomePage from '@/pages/home/HomePage.vue';
 import LoginPage from '@/pages/login/LoginPage.vue';
-import SearchPage from '@/pages/login/SearchPage.vue';
 import JoinPage from '@/pages/join/JoinPage.vue';
 import ConnectPage from '@/pages/mypage/ConnectPage.vue';
 import MyPage from '@/pages/mypage/MyPage.vue';
@@ -13,6 +12,7 @@ import ConnectionAssetPage from '@/pages/connection/ConnectionAssetPage.vue';
 import TestStartPage from '@/pages/test/TestStartPage.vue';
 import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
 import TestResultPage from '@/pages/test/TestResultPage.vue';
+import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,11 +28,6 @@ const router = createRouter({
       component: LoginPage
     },
     { 
-      path: '/search',
-      name: 'search',
-      component: SearchPage
-    },
-    { 
       path: '/join',
       name: 'join',
       component: JoinPage
@@ -40,27 +35,32 @@ const router = createRouter({
     {
       path: '/connect',
       name: 'connect',
-      component: ConnectPage
+      component: ConnectPage,
+      meta: { requiresAuth: true }
     },
     {
       path: '/mypage',  
       name: 'mypage',
-      component: MyPage 
+      component: MyPage,
+      meta: { requiresAuth: true }
     },
     {
       path: '/challenge',
       name: 'challenge',
-      component: ChallengePage
+      component: ChallengePage,
+      meta: { requiresAuth: true }
     },
     {
       path: '/consumption',
       name: 'consumption',
-      component: ConsumptionPage
+      component: ConsumptionPage,
+      meta: { requiresAuth: true }
     },
     {
       path: '/mypage/connection/:memberId',
       name: 'connection',
-      component: ConnectionAssetPage
+      component: ConnectionAssetPage,
+      meta: { requiresAuth: true }
     }
     , 
     {
@@ -91,6 +91,20 @@ const router = createRouter({
       component: TestResultPage
     },
   ]
+});
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!authStore.member.id) {
+      next('/');
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 })
 
 export default router;

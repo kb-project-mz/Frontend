@@ -1,47 +1,50 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useConsumptionHistoryStore } from '@/stores/consumption-history';
-import { useAccountHistoryStore } from '@/stores/account-history';
-import MostAndMaximumUsed from '@/components/consumption/MostAndMaximumUsed.vue';
-import CategoryChart from '@/components/consumption/CategoryChart.vue';
-import TotalOutcome from '@/components/consumption/TotalOutcome.vue';
-import TotalIncome from '@/components/consumption/TotalIncome.vue';
-import AverageConsumption from '@/components/consumption/AverageConsumption.vue';
-import AIRecommendation from '@/components/consumption/AIRecommendation.vue';
-import LineChart from '@/components/consumption/LineChart.vue';
-import SomeChart from '@/components/consumption/SomeChart.vue';
+import { ref, onMounted } from "vue";
+import { useConsumptionHistoryStore } from "@/stores/consumption-history"; // 월별 소비 스토어
+import { useAccountHistoryStore } from "@/stores/account-history";
+import AIRecommendation from "@/components/consumption/AIRecommendation.vue";
+import ConsumptionCalendar from "@/components/consumption/ConsumptionCalendar.vue";
+import LineChart from "@/components/consumption/LineChart.vue";
+import AnalysisThisMonth from "@/components/consumption/AnalysisThisMonth.vue";
+import AnalysisSelectedPeriod from "@/components/consumption/AnalysisSelectedPeriod.vue";
+import ConsumptionList from "@/components/consumption/ConsumptionList.vue";
 
-const consumptionHistoryStore = useConsumptionHistoryStore();
-const accountHistoryStore = useAccountHistoryStore();
+const memberId = localStorage.getItem("id");
+const consumptionHistoryStore = useConsumptionHistoryStore(); // 월별 소비 스토어
+const accountHistoryStore = useAccountHistoryStore(); // 계좌 히스토리 스토어
 
 const historyData = ref([]);
-const historyThisMonthData = ref([]);
+const historyThisMonthData = ref([]); //이번달 카드 내역
 const historySelectedPeriodData = ref([]);
-
-const accountHistoryData = ref([]);
+const accountHistoryData = ref([]); //이번달 계좌 입출금 내역
 const accountHistoryThisMonthData = ref([]);
 const accountHistorySelectedPeriodData = ref([]);
 
-const thisMonth = ref("이번 달");
-const selectedPeriod = ref("이 기간 동안");
+const isFlipped = ref(false);
+
+const toggleCardFlip = () => {
+  isFlipped.value = !isFlipped.value;
+};
 
 const today = new Date();
 const year = today.getFullYear();
 const month = today.getMonth() + 1;
 
+// 월의 마지막 날짜 가져오기 함수
 const getEndDay = (year, month) => {
-  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   return daysInMonth[month - 1];
-}
+};
 
 const startYear = ref(year);
-const startMonth =  ref(month - 1);
-const startDay =  ref(1);
-const endYear =  ref(year);
-const endMonth =  ref(month - 1);
-const endDay =  ref(getEndDay(endYear.value, endMonth.value));
+const startMonth = ref(month - 1);
+const startDay = ref(1);
+const endYear = ref(year);
+const endMonth = ref(month - 1);
+const endDay = ref(getEndDay(endYear.value, endMonth.value));
 
+// 소비 내역 불러오기 함수
 const fetchConsumptionHistory = async (memberId) => {
   await consumptionHistoryStore.getCardHistoryList(memberId);
   historyData.value = consumptionHistoryStore.cardHistory;
@@ -50,79 +53,116 @@ const fetchConsumptionHistory = async (memberId) => {
   await accountHistoryStore.getAccountHistoryList(memberId);
   accountHistoryData.value = accountHistoryStore.accountHistory;
   accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
-}
+};
 
+// 선택한 기간 동안의 소비 내역 필터링
 const fetchSelectedPeriodConsumptionHistory = () => {
- 
   const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
   const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
 
-  const filteredHistoryData = historyData.value.filter(item => {
+  const filteredHistoryData = historyData.value.filter((item) => {
     const consumptionDate = new Date(item.consumptionDate);
     return consumptionDate >= startDate && consumptionDate <= endDate;
   });
 
-  const filteredAccountHistoryData = accountHistoryData.value.filter(item => {
+  const filteredAccountHistoryData = accountHistoryData.value.filter((item) => {
     const accountDate = new Date(item.accountDate);
     return accountDate >= startDate && accountDate <= endDate;
-  })
+  });
 
   historySelectedPeriodData.value = filteredHistoryData;
   accountHistorySelectedPeriodData.value = filteredAccountHistoryData;
 };
 
 onMounted(async () => {
-  await fetchConsumptionHistory(1);
+  // 데이터 불러오기
+  await fetchConsumptionHistory(memberId);
+
+  // 만약 상태가 계속 변경되면 무한 렌더링이 발생할 수 있음
   fetchSelectedPeriodConsumptionHistory();
 });
 </script>
 
 <template>
-  <div class="mx-32 mt-10">
-    <div class="flex">
-      <div class="flex-1">
-        <div class="text-lg mb-1">이번 달 홍길동 님의 소비 패턴을 분석해보았어요.</div>
-        <div class="text-xl font-semibold mb-6">{{ year }}년 {{ month }}월</div>
-        <MostAndMaximumUsed :period="thisMonth" />
-        <div class="flex mt-8">
-          <div class="w-1/2 mr-4">
-            <CategoryChart />
-          </div>
-          <div class="w-1/2 ml-4">
-            <div><TotalOutcome :historyData="historyThisMonthData" :accountHistoryData="accountHistoryThisMonthData" /></div>
-            <div class="mt-8"><TotalIncome :accountHistoryData="accountHistoryThisMonthData" /></div>
-            <div class="mt-8"><AverageConsumption /></div>
-          </div>
+  
+  <div class="mx-[22%] mt-10">
+    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">
+      뒤집기
+    </button>
+    <div class="flip">
+      <div class="card" :class="{ flipped: isFlipped }">
+        <div class="front">
+          <AnalysisThisMonth :history-this-month-data="historyThisMonthData" :account-history-this-month-data="accountHistoryThisMonthData" />
         </div>
-      </div>
-
-      <div class="mx-8 border-l border-gray-300"></div>
-
-      <div class="flex-1">
-        <div class="text-lg mb-1">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
-        <div class="text-xl font-semibold mb-6">{{ startYear }}년  {{ startMonth }}월 {{ startDay }}일 - {{ endYear }}년  {{ endMonth }}월 {{ endDay }}일</div>
-        <MostAndMaximumUsed :period="selectedPeriod" />
-        <div class="flex mt-8">
-          <div class="w-1/2 mr-4">
-            <CategoryChart />
-          </div>
-          <div class="w-1/2 ml-4">
-            <LineChart />
-            <div class="mt-8"><SomeChart /></div>
-          </div>
+        <div class="back">
+          <AnalysisSelectedPeriod />
         </div>
       </div>
     </div>
 
-    <div class="mt-20 mb-80">
+    <div class="flex">
+      <div class="flex-1 mt-8 mr-4">
+        <LineChart />
+      </div>
+      <div class="flex-1 mt-8 ml-4">
+        <LineChart />
+      </div>
+    </div>
+
+    <div class="h-6"></div>
+    <div class="flex">
+      <div class="w-3/5 mr-4 border border-gray-200 rounded-2xl shadow">
+        <ConsumptionCalendar :account-history-data="accountHistoryData" :history-data="historyData" />
+      </div>
+      <div class="w-2/5 ml-4 border border-gray-200 rounded-2xl shadow">
+        <ConsumptionList :history-data="historyData" />
+      </div>
+    </div>
+
+    <div class="mt-16 mb-80">
       <AIRecommendation />
     </div>
   </div>
 </template>
 
 <style scoped>
+.bg-navy {
+  background-color: #0B1573;
+}
 .btn-gray {
   border-color: #656363;
   color: #656363;
+}
+
+.flip {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  display: inline-block;
+  perspective: 1100px;
+}
+
+.card {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  transition: .4s;
+  transform-style: preserve-3d;
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  backface-visibility: hidden;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
 }
 </style>

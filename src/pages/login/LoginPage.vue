@@ -1,7 +1,7 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
-import { useAuthStore } from '@/stores/auth';
-import { useRoute, useRouter } from 'vue-router';
+import { computed, reactive, ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRoute, useRouter } from "vue-router";
 
 const cr = useRoute();
 const router = useRouter();
@@ -16,86 +16,113 @@ const error = ref('');
 const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
-  console.log(member);
-  try {
-    const response = await auth.login(member);
-    
-    if (response) {
-      console.log('로그인 성공:', response);
-      localStorage.setItem('accessToken', response.accessToken);
-      
-      if (cr.query.next) {
-        router.push({ name: cr.query.next });
-      } else {
-        router.push('/');
-      }
-    }
-  } catch (e) {
-    console.log('에러=======', e);
-    error.value = e.response?.data || '로그인 실패';
+  if (!member.memberId || !member.password) {
+    error.value = "아이디와 비밀번호를 모두 입력해주세요.";
+    return;
+  }
+  
+  const response = await auth.login(member.memberId, member.password);
+
+  if (response.id) {
+    console.log("로그인 성공:", response);
+    router.push("/");
+  } else {
+    error.value = response;
   }
 };
 </script>
 
 <template>
-    <div class="container mt-5 mx-auto">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <img 
-            src="@/assets/fin.png" 
-            alt="로고" 
-            class="img-fluid my-5 mx-auto d-block" 
-          />
-  
-          <form @submit.prevent="login">
-            <div class="mb-3 mt-3">
-              <label for="memberId" class="form-label">
-                <i class="fa-solid fa-user"></i>
-                ID:
-              </label>
-              <input 
-                type="text" 
-                id="memberId" 
-                class="form-control" 
-                placeholder="회원 ID" 
-                v-model="member.memberId" 
-                required 
-              />
+  <div class="flex flex-col items-center justify-center">
+    <div class="mb-10">
+      <img 
+        src="@/assets/logo.png" 
+        alt="로고"
+      />
+    </div>
+
+    <form class="w-1/4" @submit.prevent="login">
+      <div class="relative mb-6">
+        
+        <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+          <font-awesome-icon :icon="['fas', 'user']" />
+        </div>
+        
+        <input
+          type="text"
+          v-model="member.memberId" 
+          id="memberId"
+          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-5"
+          placeholder="아이디를 입력해주세요." />
+      </div>
+
+      <div class="mb-6">
+        <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+            <font-awesome-icon :icon="['fas', 'lock']" />
+          </div>
+          <div class="flex items-center">
+            <input
+            type="password"
+            v-model="member.password" 
+            id="password"
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-5"
+            placeholder="비밀번호를 입력해주세요." />
+            
+            <div class="tooltip-icon relative inline-block">
+              <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-navy ml-2.5" />
+              <div class="tooltip hidden absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max bg-gray-800 text-white text-sm rounded py-1 px-2 whitespace-no-wrap">
+                비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합해 작성해주세요
+              </div>
             </div>
-  
-            <div class="mb-3">
-              <label for="password" class="form-label">
-                <i class="fa-solid fa-lock"></i>
-                비밀번호:
-              </label>
-              <input 
-                type="password" 
-                id="password" 
-                class="form-control" 
-                placeholder="비밀번호" 
-                v-model="member.password" 
-                required 
-              />
-            </div>
-  
-            <div v-if="error" class="text-danger">{{ error }}</div>
-  
-            <button 
-              type="submit" 
-              class="btn btn-primary w-100 mt-4" 
-              :disabled="disableSubmit"
-              style="background-color: navy; color: white; border: none;">
-              <i class="fa-solid fa-right-to-bracket"></i>
-              로그인
-            </button>
-          </form>
-  
-          <div class="mt-4">
-            <router-link to="/findMemberId" class="btn btn-link">아이디 찾기</router-link>
-            <router-link to="/findPassword" class="btn btn-link">비밀번호 찾기</router-link>
-            <router-link to="/join" class="btn btn-link">회원가입</router-link>
           </div>
         </div>
-      </div>
+        <div v-if="error" class="text-red-500 font-semibold text-lg text-center">{{ error }}</div>
+      </div>      
+
+      <button 
+        type="submit" 
+        class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5" >
+        로그인
+      </button>
+    </form>
+
+    <div class="my-4 flex space-x-4 text-gray-500">
+      <router-link to="findMemberId">아이디 찾기</router-link>
+      <span>|</span>
+      <router-link to="findPassword">비밀번호 찾기</router-link>
+      <span>|</span>
+      <router-link to="join">회원가입</router-link>
     </div>
-  </template>
+
+    <div class="w-1/4">
+      <button 
+        type="submit" 
+        class="cursor-pointer bg-white border border-gray-400 text-sm rounded-xl block w-full ps-10 p-5" 
+        :disabled="disableSubmit">
+        Sign in with Google (Roboto)
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+img {
+  width: 12rem;
+}
+.text-navy {
+  color: #0B1573;
+}
+.bg-navy  {
+  background-color: #0B1573;
+}
+.tooltip {
+  transition: opacity 0.2s;
+  opacity: 0;
+}
+.tooltip-icon:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  display: block;
+}
+</style>

@@ -4,27 +4,47 @@ import apiInstance from './axios-instance';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
-      memberName: '',
-      memberId: '',
-      password: '',
-      email: '',
-      birthday: '',
-      gender: ''
+			id: localStorage.getItem('id') || null,
+      memberName: localStorage.getItem('memberName') || null,
+      memberId: localStorage.getItem('memberId') || null
     }
   }),
   actions: {
-    async login() {
-      try {
-        const response = await apiInstance.post('/member/login', {
-          memberId: this.member.memberId,
-          password: this.member.password
-        });
-        return response.data.data;
-      } catch (error) {
-        console.error('로그인 중 오류:', error);
-        throw error;
-      }
-    },
+    async login(memberId, password) {
+			try {
+				console.log('로그인 시도:', memberId);
+				const response = await apiInstance.post('/member/login', {
+					memberId: memberId,
+					password: password
+				});
+				console.log(response.data);
+		
+				const loginData = response.data.data;
+		
+				if (!response.data.success) {
+					console.error(response.data.error.message);
+					return response.data.error.message;
+				}
+
+        this.member.id = loginData.id;
+        this.member.memberId = loginData.memberId;
+        this.member.memberName = loginData.memberName;
+
+        localStorage.setItem('id', loginData.id);
+				localStorage.setItem('memberId', loginData.memberId);		
+        localStorage.setItem('memberName', loginData.memberName);
+				localStorage.setItem('accessToken', 'Bearer ' + loginData.accessToken);
+				localStorage.setItem('refreshToken', 'Bearer ' + loginData.refreshToken);
+				localStorage.setItem('auth', JSON.stringify(loginData));				
+		
+				console.log('로그인 응답 데이터:', loginData);
+				return loginData;
+			} catch (error) {
+				console.error('로그인 중 오류:', error);
+				throw error;
+			}
+		},
+		
     async create(member) {
       try {
         const response = await apiInstance.post('/member/join', member);
@@ -53,5 +73,25 @@ export const useAuthStore = defineStore('auth', {
         throw error;
       }
     },
+    logout() {
+      this.member.id = null;
+      this.member.memberName = null;
+      this.member.memberId = null;
+      localStorage.clear();
+    }
   },
+	// 로그인 상태 유지
+	loadAuthState() {
+		const authData = localStorage.getItem('auth');
+		if (authData) {
+			this.member = JSON.parse(authData);
+		}
+	},
+
+	isLogin() {
+		const authData = localStorage.getItem('auth');
+		return !!authData;
+	},
+
+
 });

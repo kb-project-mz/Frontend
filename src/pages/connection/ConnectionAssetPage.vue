@@ -7,10 +7,6 @@ import ConnCard from '@/components/connection/ConnCard.vue';
 <template>
   <ConnAccountBook />
   <ConnCard/>
-  <hr>
-  <hr>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
