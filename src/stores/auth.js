@@ -1,7 +1,18 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
 
+function setLocalStorage(loginData) {
+
+  localStorage.setItem('memberId', loginData.memberId);		
+  localStorage.setItem('accessToken', 'Bearer ' + loginData.accessToken);
+  localStorage.setItem('refreshToken', 'Bearer ' + loginData.refreshToken);
+  localStorage.setItem('auth', JSON.stringify(loginData));
+	localStorage.setItem('id', loginData.id);
+	localStorage.setItem('memberName', loginData.memberName);
+}
+
 export const useAuthStore = defineStore('auth', {
+
   state: () => ({
     member: {
 			id: '',
@@ -15,6 +26,7 @@ export const useAuthStore = defineStore('auth', {
   }),
   actions: {
     async login(memberId, password) {
+
 			try {
 				console.log('로그인 시도:', memberId);
 				const response = await apiInstance.post('/member/login', {
@@ -30,16 +42,7 @@ export const useAuthStore = defineStore('auth', {
 					return null;
 				}
 		
-				localStorage.setItem('memberId', loginData.memberId);		
-				localStorage.setItem('accessToken', 'Bearer ' + loginData.accessToken);
-				localStorage.setItem('refreshToken', 'Bearer ' + loginData.refreshToken);
-				localStorage.setItem('auth', JSON.stringify(loginData));
-				
-				const memberResponse = await apiInstance.get(`/member/${loginData.memberId}`);
-        const memberData = memberResponse.data.data;
-
-				localStorage.setItem('id', loginData.id);
-				localStorage.setItem('memberName', loginData.memberName);
+				setLocalStorage(loginData);
 		
 				console.log('로그인 응답 데이터:', loginData);
 				return loginData;
@@ -50,6 +53,7 @@ export const useAuthStore = defineStore('auth', {
 		},
 		
     async create(member) {
+
       try {
         const response = await apiInstance.post('/member/join', member);
         return response.data.data;
@@ -78,7 +82,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
   },
-	// 로그인 상태 유지
+
 	loadAuthState() {
 		const authData = localStorage.getItem('auth');
 		if (authData) {
