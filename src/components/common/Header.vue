@@ -1,13 +1,17 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
+const router = useRouter();
+
 const id = computed(() => authStore.member.id);
 const memberName = computed(() => authStore.member.memberName);
 
 const logout = () => {
   authStore.logout();
+  router.push('/');
 };
 </script>
 
