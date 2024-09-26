@@ -61,3 +61,4 @@ const deleteChallenge = (id) => {
   right: 10px;
 }
 </style>
+

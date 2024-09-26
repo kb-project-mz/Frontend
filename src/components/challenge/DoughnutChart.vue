@@ -1,3 +1,4 @@
+
 <template>
   <div class="chart-container">
     <canvas ref="doughnutChart"></canvas>
@@ -59,3 +60,5 @@ canvas {
   height: 100%;
 }
 </style>
+
+

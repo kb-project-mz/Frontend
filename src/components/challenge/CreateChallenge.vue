@@ -119,6 +119,8 @@ const confirmSubmission = async () => {
   if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
     await challengeStore.addNewChallenge(formData.value); // Pinia의 메서드 호출
     await challengeStore.fetchAllItems(formData.value.memberId); // 새로고침 전에 삭제버튼 클릭시 삭제 안되는 문제 해결.
+
+    window.location.reload(); 
     resetForm();
     closeModal();
   }
@@ -190,3 +192,5 @@ const selectDetailedCategory = (category) => {
   background-color: #ddd;
 }
 </style>
+
+
