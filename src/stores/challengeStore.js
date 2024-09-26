@@ -38,6 +38,7 @@ export const useChallengeStore = defineStore('challengeStore', {
         })
         .then((res) => {
           if (res.data.success) {
+            
             this.challengeList.push(challengeData);
           } else {
             console.error('Error adding challenge:', res.data.error.message);

@@ -99,10 +99,27 @@ const closeModal = () => {
   emit('close');
 };
 
-const confirmSubmission =async () => {
+// 폼을 초기화하는 함수
+const resetForm = () => {
+  formData.value = {
+    category: 1,
+    memberId: 0,
+    challengeName: '',
+    challengeType: '0',
+    challengeLimit: 1,
+    startDate: '',
+    endDate: '',
+    detailedCategory: ''
+  };
+  detailedCategories.value = [];  // 상세 카테고리도 초기화
+  closeModal();  // 모달 닫기
+};
+
+const confirmSubmission = async () => {
   if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
     await challengeStore.addNewChallenge(formData.value); // Pinia의 메서드 호출
-    await challengeStore.fetchAllItems(2);//새로고침 전에 삭제버튼 클릭시 삭제 안되는 문제 해결. 하지만 memberId로 보내야한다.
+    await challengeStore.fetchAllItems(formData.value.memberId);//새로고침 전에 삭제버튼 클릭시 삭제 안되는 문제 해결.
+    resetForm();
     closeModal();
   }
 };
@@ -119,21 +136,6 @@ const onConditionChange = () => {
 // 카테고리 변경 시 상세 카테고리 가져오기
 const onCategoryChange = async () => {
   detailedCategories.value = await challengeStore.fetchDetailedCategory(formData.value.category);
-};
-
-const resetForm = () => {
-  formData.value = {
-    category: 1,
-    memberId: 0,
-    challengeName: '',
-    challengeType: '0',
-    challengeLimit: 1,
-    startDate: '',
-    endDate: '',
-    detailedCategory: ''
-  };
-  detailedCategories.value = [];  // 상세 카테고리도 초기화
-  closeModal();  // 모달 닫기
 };
 
 const selectDetailedCategory = (category) => {
