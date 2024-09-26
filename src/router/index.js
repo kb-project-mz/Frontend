@@ -8,7 +8,7 @@ import ConnectPage from '@/pages/mypage/ConnectPage.vue';
 import MyPage from '@/pages/mypage/MyPage.vue';
 import ChallengePage from '@/pages/challenge/ChallengePage.vue';
 import ConsumptionPage from '@/pages/consumption/ConsumptionPage.vue'
-import ConnectionAssetPage from '@/pages/connection/ConnectionAssetPage.vue';
+import AssetPage from '@/pages/connection/AssetPage.vue';
 import TestStartPage from '@/pages/test/TestStartPage.vue';
 import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
 import TestResultPage from '@/pages/test/TestResultPage.vue';
@@ -57,18 +57,16 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/mypage/connection/:memberId',
-      name: 'connection',
-      component: ConnectionAssetPage,
+      path: '/mypage/asset',
+      name: 'asset',
+      component: AssetPage,
       meta: { requiresAuth: true }
-    }
-    , 
+    },
     {
       path: '/findMemberId',
       name: 'findMemberId',
       component: FindMemberId
-    }
-    ,
+    },
     {
       path: '/findPassword',
       name: 'findPassword',

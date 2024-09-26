@@ -1,153 +1,63 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { useAssetStore } from '@/stores/asset-history';;
+import { useAssetStore } from '@/stores/asset';
 import PopUpAccountBook from '@/components/connection/PopUpAccountBook.vue';
 
 const memberId = localStorage.getItem("id");
 
 const assetStore = useAssetStore();
-const assetData = ref([]);
-const accountData = ref([]);
-
-const fetchAsset = async (memberId) => {
-  await assetStore.getConnAssetList(memberId);
-  assetData.value = assetStore.ConnAssetList;
-  const acctData = assetData.value.slice();
-  accountData.value = acctData.filter(data => data.financeKind == 2);
-};
-
-const formatAmount = (amount) => {
-  const actualAmount = amount?.__v_isRef ? amount.value : amount;
-  return new Intl.NumberFormat().format(actualAmount);
-};
+const connectedAccountList = ref([]);
 
 const isModalVisible = ref(false);
 
-function openModal () {
+const openModal = async () => {
+  await fetchAsset();
   isModalVisible.value = true;
 }
-function closeModal () {
+
+const closeModal = () => {
   isModalVisible.value = false;
 }
 
-const handleAddAccount = async (newAccount) => {
-  console.log(newAccount);
-  accountData.value.push(newAccount);
-}
-
-const handleAccountDataUpdate = (updatedAccountData) => {
-  accountData.value = updatedAccountData;
+const fetchAsset = async () => {
+  await assetStore.getAssetList(memberId);
+  const accountList = assetStore.allAccountList;
+  connectedAccountList.value = accountList.filter(account => account.connStatus === 1);
 };
 
-watch(() => assetStore.ConnAssetList, (newValue) => {
-  if (newValue.length > 0) {
-    fetchAsset(memberId);
-  }
-});
-
-onMounted( async () => {
-  await fetchAsset(memberId);
+onMounted(async () => {
+  await fetchAsset();
 });
 </script>
 
 <template>
 
-  <div class="about">
-  <div class="account-list">
-    <h2>연동된 계좌</h2>
-
-      <ul v-if="accountData.length > 0">
-        <li v-for="(account, index) in accountData" :key="index" class="account-item">
-          <img :src="account.image" alt="Account Image" class="account-image" />
-          <div class="account-info">
-          <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
-          <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
+  <div class="flex flex-col items-center">
+    <div class="text-lg font-semibold">연동된 계좌 목록</div>
+    <div class="w-full p-6 bg-white border border-gray-200 rounded-2xl shadow">
+      <div v-if="connectedAccountList.length > 0">
+        <div v-for="(account, index) in connectedAccountList" :key="index" class="mb-7 flex items-center">
+          <img :src="account.image" alt="account" class="w-12 h-12 mr-3 account-image" />
+          <div>
+            <div class="text-medium">{{ account.prdtName }}</div>
+            <div class="text-lg font-bold">{{ account.totalAmount.toLocaleString() }}원</div>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
 
-      <p v-else>텅</p>
+      <div v-else>
+        텅
+      </div>
       <button @click="openModal">계좌 추가하기</button>
     </div>
   </div>
 
-  <PopUpAccountBook @updateAccount="handleAddAccount"
-    :member-id="memberId"
+  <PopUpAccountBook
+    @updateAccount="fetchAsset"
     :onClose="closeModal"
-    :visible="isModalVisible" @updateAccountData="handleAccountDataUpdate"/>
+    :visible="isModalVisible" />
 </template>
 
 <style scoped>
-.account-list {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.account-list h2 {
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.account-list ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.account-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.account-image {
-  width: 40px;
-  height: 40px;
-  margin-right: 15px;
-}
-
-.account-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.account-name {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.account-balance {
-  font-size: 14px;
-  color: #666;
-}
-
-.add-account {
-  display: flex;
-  align-items: center;
-}
-
-.add-account button {
-  background-color: transparent;
-  border: none;
-  color: #007bff;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.add-account button img.add-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-}
-
-.add-account button:hover {
-  text-decoration: underline;
-}
 
 </style>

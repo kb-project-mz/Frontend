@@ -3,46 +3,41 @@ import apiInstance from './axios-instance';
 
 export const useAssetStore = defineStore('asset', {
   state: () => ({
-    AllAssetList: [],
-    ConnAssetList: [],
+    allAssetList: [],
+    allAccountList: [],
+    connectedAccountList: [],
+    allCardList: [],
+    connectedCardList: [],
   }),
   actions: {
     async getAssetList(id) {
       try {
         const response = await apiInstance.get(`/connection/asset/${id}`);
-        this.AllAssetList = response.data.data;
-
-        console.log(this.AllAssetList);
+        this.allAssetList = response.data.data;
+        this.allAccountList = this.allAssetList.filter(asset => asset.financeKind === 2);
+        this.allCardList = this.allAssetList.filter(asset => asset.financeKind === 1);
+        this.connectedAccountList = this.allAccountList.filter(asset => asset.connStatus === 1);
+        this.connectedCardList = this.allCardList.filter(asset => asset.connStatus === 1);
+        console.log(this.allAssetList);
       } catch (error) {
         console.error('Failed to fetch asset list:', error);
         throw error;
       }
     },
 
-    async getConnAssetList(id) {
-        try {
-          const response = await apiInstance.get(`/connection/asset/connected/${id}`);
-          this.ConnAssetList = response.data.data;
-        } catch (error) {
-          console.error('Failed to fetch asset list:', error);
-          throw error;
-        }
-      },
-
-     async updateAccountStatus(id) {
+    async updateAccountStatus(selectedAccount) {
       try {
+        const id = selectedAccount.prdtId;
         const response = await apiInstance.post(`/connection/account/${id}`);
-        this.AllAssetList.push(response.data.data);
-        this.ConnAssetList.push(response.data.data);
-        console.log(this.AllAssetList);
-        return response.data; // 서버 응답 데이터 반환
+        this.connectedAccountList.push(selectedAccount);
+        console.log(this.connectedAccountList);
+        return response.data;
       } catch (error) {
         console.error('Failed to update account status:', error);
         throw error;
       }
-    }
-    ,
-    // 카드 연동 action 추가
+    },
+    
     async updateCardStatus(id) {
       try {
         const response = await apiInstance.post(`/connection/card/${id}`);

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useAssetStore } from '@/stores/asset-history';
+import { useAssetStore } from '@/stores/asset';
 import { useRoute } from 'vue-router';
 import { defineProps, defineEmits } from 'vue';
 import apiInstance from '@/stores/axios-instance';
@@ -22,7 +22,7 @@ onMounted(() => {
 
 const fetchAsset = async (memberId) => {
   await assetStore.getAssetList(memberId);
-  assetData.value = assetStore.AllAssetList;
+  assetData.value = assetStore.allAssetList;
   cardData.value = assetData.value.filter(data => data.financeKind === 1);
 };
 

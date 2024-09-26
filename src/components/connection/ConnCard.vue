@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { useAssetStore } from '@/stores/asset-history';
+import { useAssetStore } from '@/stores/asset';
 import { useRoute } from 'vue-router';
 import PopUpCard from '@/components/connection/PopUpCard.vue'; 
 import { useConsumptionHistoryStore } from '@/stores/consumption-history';
@@ -27,7 +27,7 @@ const cardData = ref([]);
 const route = useRoute();
 const memberId = route.params.memberId;
 
-// watch(() => assetStore.ConnAssetList, (newValue) => {
+// watch(() => assetStore.connectedAssetList, (newValue) => {
 //   if (newValue.length > 0) {
 //     fetchAsset(memberId);
 //   }
@@ -39,8 +39,8 @@ const memberId = route.params.memberId;
 // });
 
 const fetchAsset = async (memberId) => {
-  await assetStore.getConnAssetList(memberId);
-  assetData.value = assetStore.ConnAssetList;
+  await assetStore.getconnectedAssetList(memberId);
+  assetData.value = assetStore.connectedAssetList;
   const acctData = assetData.value.slice();
   cardData.value = acctData.filter(data => data.financeKind == 1);
 };

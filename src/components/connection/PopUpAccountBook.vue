@@ -1,198 +1,108 @@
 <script setup>
-import { ref, onMounted, defineEmits } from 'vue';
-import { useAssetStore } from '@/stores/asset-history';
-import apiInstance from '@/stores/axios-instance';
+import { ref, watch } from 'vue';
+import { useAssetStore } from '@/stores/asset';
 
 const props = defineProps({
   visible: { type: Boolean, required: true },
-  onClose: { type: Function, required: true },
-  memberId: { type: Number, required: true }
+  onClose: { type: Function, required: true }
 });
+
+const memberId = localStorage.getItem("id");
 
 const emit = defineEmits(['updateAccount']);
 
 const assetStore = useAssetStore();
-const assetData = ref([]);
-const accountData = ref([]);
-const newAccount = ref(null); 
+const unconnectedAccountList = ref([]);
+const selectedAccount = ref(null);
 const message = ref('');
-
-const fetchAsset = async (memberId) => {
-  await assetStore.getAssetList(memberId);
-  assetData.value = assetStore.AllAssetList;
-  accountData.value = assetData.value.filter(data => data.financeKind === 2);
-};
 
 const close = () => {
   props.onClose();
-}
+};
 
 const selectAccount = (account) => {
-  newAccount.value = account;
+  selectedAccount.value = account;
   message.value = ''; 
 };
 
 const addAccount = async () => {
   try {
-    if(!newAccount.value){
+    if (!selectedAccount.value) {
       message.value = '선택된 계좌가 없습니다.';
       return;
     }
-    accountData.value.push(newAccount.value);
-    console.log(newAccount.value);
-    
-    
-    const id = newAccount.value.prdtId;
-    const store = useAssetStore();
-    await store.updateAccountStatus(id);
-    const response = await apiInstance.post(`/connection/account/${id}`);
-    accountData.value = accountData.value.filter(account => account.prdtId != newAccount.value.prdtId);
-    await assetStore.getAssetList(id);
-    if (response.data.success) {
-      emit('updateAccount', newAccount);
-    } else {
-      console.error('서버 요청 실패:', response.status);
-    }
-
+    await assetStore.updateAccountStatus(selectedAccount.value);
+    emit('updateAccount', selectedAccount.value);
     close();
   } catch (error) {
     console.error('서버 통신 중 오류 발생: ', error);
   }
 };
 
-onMounted(() => {
-  fetchAsset(props.memberId);
+const fetchAsset = async () => {
+  await assetStore.getAssetList(memberId);
+  const accountList = assetStore.allAccountList;
+  unconnectedAccountList.value = accountList.filter(account => account.connStatus === 0);
+};
+
+watch(() => props.visible, (newVal) => {
+  if (newVal) {
+    fetchAsset();
+    selectedAccount.value = null;
+  }
 });
 </script>
 
 <template>
-  <div v-if="visible" class="modal-overlay" @click="close">
-    <div class="modal-content" @click.stop>
-      <div class="account-list">
-        <h2>연동할 계좌 선택</h2>
-
-        <ul v-if="accountData && accountData.length > 0">
-          <li v-for="(account, index) in accountData" :key="index" class="account-item">
-            <input 
+  <div v-if="visible" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" @click="close">
+    <div class="bg-white p-5 rounded-lg shadow-lg fixed max-w-lg w-1/2 box-border" @click.stop>
+      <div class="flex flex-col account-list items-center">
+        <div class="relative w-full mb-5">
+          <div class="text-lg font-bold text-center">연동할 계좌 선택</div>
+          <button
+            class="absolute right-0 top-0 text-gray-700 rounded hover:bg-gray-400"
+            @click="close">
+            X
+          </button>
+        </div>
+        <div class="w-full flex flex-col items-center">
+          <div v-if="unconnectedAccountList.length > 0" class="list-none p-0 m-0">
+            <div v-for="(account, index) in unconnectedAccountList" :key="index" class="px-7 flex items-center mb-4">
+              <input 
               type="radio" 
               name="selectedAccount"
               :id="'account-' + index"
               :value="account" 
-              v-model="newAccount" 
+              v-model="selectedAccount" 
               @change="selectAccount(account)"
+              class="mr-3"
             />
-            <img :src="account.image" alt="Account Image" class="account-image" />
-            <div class="account-info">
-              <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
-              <div class="account-balance">{{ account.totalAmount.toLocaleString() }}원</div>
+            <img :src="account.image" alt="account" class="w-10 h-10 mr-3" />
+            <div class="flex flex-col">
+              <div class="text-sm font-bold">{{ account.prdtName }} ({{ account.financeName }})</div>
+              <div class="text-gray-600">{{ account.totalAmount.toLocaleString() }}원</div>
             </div>
-          </li>
-        </ul>
+            </div>
+          </div>
 
-        <p v-if="message">{{ message }}</p>
-        <p v-if="accountData.length === 0">더 이상 추가할 계좌가 없습니다.</p>
-        <button v-if="accountData.length > 0 && !message" @click="addAccount">추가하기</button>
+          <p v-if="message" class="text-red-500">{{ message }}</p>
+          <p v-if="unconnectedAccountList.length === 0" class="text-gray-500">더 이상 추가할 계좌가 없습니다.</p>
+        </div>
+        <button 
+          v-if="unconnectedAccountList.length > 0 && !message" 
+          @click="addAccount"
+          class="w-full mt-4 px-4 py-2 bg-navy text-white rounded hover:bg-blue-600"
+        >
+          선택한 자산 연결하기
+        </button>
       </div>
-      <button @click="close">닫기</button>
+      
     </div>
   </div>
 </template>
 
-
 <style scoped>
-.account-list {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.account-list h2 {
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.account-list ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.account-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.account-image {
-  width: 40px;
-  height: 40px;
-  margin-right: 15px;
-}
-
-.account-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.account-name {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.account-balance {
-  font-size: 14px;
-  color: #666;
-}
-
-.add-account {
-  display: flex;
-  align-items: center;
-}
-
-.add-account button {
-  background-color: transparent;
-  border: none;
-  color: #007bff;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.add-account button img.add-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-}
-
-.add-account button:hover {
-  text-decoration: underline;
-}
-
-/* 모달 스타일링 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* 투명한 배경 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 그림자 효과 */
-  position: fixed;
-  max-width: 600px; /* 모달의 최대 너비를 50%로 설정 */
-  width: 50%; /* 자동 크기 조정 */
-  box-sizing: border-box; /* 패딩을 포함한 전체 크기 계산 */
+.bg-navy {
+  background-color: #0B1573
 }
 </style>
