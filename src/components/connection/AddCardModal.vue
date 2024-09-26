@@ -13,26 +13,34 @@ const emit = defineEmits(['updateCard']);
 
 const assetStore = useAssetStore();
 const unconnectedCardList = ref([]);
-const selectedCard = ref(null);
+const selectedCards = ref(null);
 const message = ref('');
 
 const close = () => {
   props.onClose();
 }
 
-const selectCard = (card) => {
-  selectedCard.value = card;
-  message.value = ''; 
-}
+const toggleCardSelection = (card) => {
+  const index = selectedCards.value.findIndex(a => a === card);
+  if (index === -1) {
+    selectedCards.value.push(card);
+  } else {
+    selectedCards.value.splice(index, 1); // 이미 선택된 계좌를 해제
+  }
+  message.value = '';
+};
 
 const addCard = async () => {
-  if (!selectedCard.value) {
+  if (selectedCards.value.length === 0) {
     message.value = '연결할 카드를 선택해주세요!';
     return;
-  } 
+  }
 
-  await assetStore.updateCardStatus(selectedCard.value);
-  emit('updateCard', selectedCard.value);
+  for (const card of selectedCards.value) {
+    await assetStore.updateCardStatus(card);
+  }
+
+  emit('updateCard', selectedCards.value);
   close();
 };
 
@@ -45,7 +53,7 @@ const fetchAsset = async () => {
 watch(() => props.visible, (newVal) => {
   if (newVal) {
     fetchAsset();
-    selectedCard.value = null;
+    selectedCards.value = [];
   }
 });
 </script>
@@ -63,7 +71,27 @@ watch(() => props.visible, (newVal) => {
       </div>
       <div>
         <div v-if="unconnectedCardList.length > 0">
-          <div v-for="(card, index) in unconnectedCardList" :key="index" class="flex items-center mb-6">
+          <div v-for="(card, index) in unconnectedCardList" :key="index">
+            <input 
+              type="checkbox" 
+              :id="'card-' + index" 
+              :value="card"
+              :checked="selectedCards.includes(card)"
+              @change="toggleCardSelection(card)"
+              class="hidden peer"
+            />
+            <label 
+              :for="'card-' + index"
+              class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
+            >
+              <img :src="card.image" alt="card" class="h-10 rounded-sm mr-3" />
+              <div class="block">
+                <div class="text-sm text-gray-600">{{ card.financeName }}</div>
+                <div class="font-bold">{{ card.prdtName }}</div>
+              </div>
+            </label>
+          </div>
+          <!-- <div v-for="(card, index) in unconnectedCardList" :key="index" class="flex items-center mb-6">
             <input 
               type="radio" 
               name="selectedCard"
@@ -78,7 +106,7 @@ watch(() => props.visible, (newVal) => {
               <div class="text-sm text-gray-600">{{ card.financeName }} </div>
               <div class="font-bold">{{ card.prdtName }}</div>
             </div>
-          </div>
+          </div> -->
           <div v-if="message" class="mb-4 text-red-500 text-lg font-bold text-center">{{ message }}</div>
         </div>
         <div v-else class="text-red-500 text-lg font-bold text-center">더 이상 추가할 카드가 없어요!</div>

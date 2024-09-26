@@ -13,26 +13,34 @@ const emit = defineEmits(['updateAccount']);
 
 const assetStore = useAssetStore();
 const unconnectedAccountList = ref([]);
-const selectedAccount = ref(null);
+const selectedAccounts = ref([]);
 const message = ref('');
 
 const close = () => {
   props.onClose();
 };
 
-const selectAccount = (account) => {
-  selectedAccount.value = account;
-  message.value = ''; 
+const toggleAccountSelection = (account) => {
+  const index = selectedAccounts.value.findIndex(a => a === account);
+  if (index === -1) {
+    selectedAccounts.value.push(account);
+  } else {
+    selectedAccounts.value.splice(index, 1); // 이미 선택된 계좌를 해제
+  }
+  message.value = '';
 };
 
 const addAccount = async () => {
-  if (!selectedAccount.value) {
+  if (selectedAccounts.value.length === 0) {
     message.value = '연결할 계좌를 선택해주세요!';
     return;
   }
 
-  await assetStore.updateAccountStatus(selectedAccount.value);
-  emit('updateAccount', selectedAccount.value);
+  for (const account of selectedAccounts.value) {
+    await assetStore.updateAccountStatus(account);
+  }
+
+  emit('updateAccount', selectedAccounts.value);
   close();
 };
 
@@ -45,7 +53,7 @@ const fetchAsset = async () => {
 watch(() => props.visible, (newVal) => {
   if (newVal) {
     fetchAsset();
-    selectedAccount.value = null;
+    selectedAccounts.value = [];
   }
 });
 </script>
@@ -63,21 +71,25 @@ watch(() => props.visible, (newVal) => {
       </div>
       <div>
         <div v-if="unconnectedAccountList.length > 0">
-          <div v-for="(account, index) in unconnectedAccountList" :key="index" class="flex items-center mb-6">
+          <div v-for="(account, index) in unconnectedAccountList" :key="index">
             <input 
-              type="radio" 
-              name="selectedAccount"
-              :id="'account-' + index"
-              :value="account" 
-              v-model="selectedAccount" 
-              @change="selectAccount(account)"
-              class="mr-3"
+              type="checkbox" 
+              :id="'account-' + index" 
+              :value="account"
+              :checked="selectedAccounts.includes(account)"
+              @change="toggleAccountSelection(account)"
+              class="hidden peer"
             />
-            <img :src="account.image" alt="account" class="w-10 h-10 mr-3 rounded-full" />
-            <div class="flex flex-col">
-              <div class="text-sm text-gray-600">{{ account.financeName }} </div>
-              <div class="font-bold">{{ account.prdtName }}</div>
-            </div>
+            <label 
+              :for="'account-' + index"
+              class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
+            >
+              <img :src="account.image" alt="account" class="w-10 h-10 rounded-full mr-3" />
+              <div class="block">
+                <div class="text-sm text-gray-600">{{ account.financeName }}</div>
+                <div class="font-bold">{{ account.prdtName }}</div>
+              </div>
+            </label>
           </div>
           <div v-if="message" class="mb-4 text-red-500 text-lg font-bold text-center">{{ message }}</div>
         </div>
