@@ -9,11 +9,12 @@
 
 import { useBalanceStore } from '@/stores/balance';
 import { useAuthStore } from '@/stores/auth';
-
 import { ref, computed, onMounted } from 'vue';
+import { io } from 'socket.io-client';
 
 const authStore = useAuthStore();
 const balanceStore = useBalanceStore();
+const socket = io('http://localhost:3001');
 
 // 로그인 한 사용자의 id
 const id = computed(() => authStore.member.memberId);
@@ -23,6 +24,15 @@ const totalBalance = ref(null);
 
 onMounted(() => {
   fetchBalance();
+
+  // 서버로부터 실시간 balance 업데이트 수신
+  socket.on('balanceUpdate', (data) => {
+    if (data.memberId === id.value) {
+      // 로그인한 사용자의 업데이트만 처리
+      balances.value = data.balanceList;
+      findMemberBalance(); // 업데이트 후 balance 찾기
+    }
+  });
 });
 
 const fetchBalance = async () => {
@@ -41,26 +51,6 @@ function findMemberBalance() {
 }
 </script>
 
-<!-- <script>
-import { io } from 'socket.io-client';
-
-export default {
-  data() {
-    return {
-      balances: [],
-    };
-  },
-  created() {
-    // 서버에 연결
-    const socket = io('http://localhost:3001');
-
-    // 서버로부터 balance 업데이트 수신
-    socket.on('balanceUpdate', (data) => {
-      this.balances = data.balanceList;
-    });
-  },
-};
-</script> -->
 <template>
   <div>
     <h1 v-if="totalBalance !== null">Your Balance: {{ totalBalance }}</h1>
