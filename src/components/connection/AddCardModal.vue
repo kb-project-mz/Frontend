@@ -82,7 +82,7 @@ watch(() => props.visible, (newVal) => {
             />
             <label 
               :for="'card-' + index"
-              class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
+              class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-indigo-900 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
             >
               <img :src="card.image" alt="card" class="h-10 rounded-sm mr-3" />
               <div class="block">

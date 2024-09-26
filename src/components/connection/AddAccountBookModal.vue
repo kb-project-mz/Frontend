@@ -82,7 +82,7 @@ watch(() => props.visible, (newVal) => {
             />
             <label 
               :for="'account-' + index"
-              class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
+              class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-indigo-900 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
             >
               <img :src="account.image" alt="account" class="w-10 h-10 rounded-full mr-3" />
               <div class="block">
