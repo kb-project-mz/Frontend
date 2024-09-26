@@ -1,9 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
-import { useRoute } from 'vue-router';
-import { defineProps, defineEmits } from 'vue';
 import apiInstance from '@/stores/axios-instance';
+
+const props = defineProps({
+  visible: { type: Boolean, required: true },
+  onClose: { type: Function, required: true },
+  memberId: { type: Number, required: true }
+});
+
+const emit = defineEmits(['updateAccount']);
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
@@ -11,29 +17,13 @@ const accountData = ref([]);
 const newAccount = ref(null); 
 const message = ref('');
 
-const route = useRoute();
-const memberId = route.params.memberId;
-
-const emit = defineEmits(['updateAccount']);
-
-onMounted(() => {
-  fetchAsset(memberId);
-});
-
 const fetchAsset = async (memberId) => {
   await assetStore.getAssetList(memberId);
   assetData.value = assetStore.AllAssetList;
   accountData.value = assetData.value.filter(data => data.financeKind === 2);
 };
 
-const formatAmount = (amount) => {
-  return new Intl.NumberFormat().format(amount);
-};
-const props = defineProps({
-  visible: { type: Boolean, required: true },
-  onClose: { type: Function, required: true }
-});
-function close() {
+const close = () => {
   props.onClose();
 }
 
@@ -49,22 +39,30 @@ const addAccount = async () => {
       return;
     }
     accountData.value.push(newAccount.value);
-    close();
+    console.log(newAccount.value);
+    
+    
     const id = newAccount.value.prdtId;
     const store = useAssetStore();
     await store.updateAccountStatus(id);
     const response = await apiInstance.post(`/connection/account/${id}`);
     accountData.value = accountData.value.filter(account => account.prdtId != newAccount.value.prdtId);
-    
+    await assetStore.getAssetList(id);
     if (response.data.success) {
       emit('updateAccount', newAccount);
     } else {
       console.error('서버 요청 실패:', response.status);
     }
+
+    close();
   } catch (error) {
     console.error('서버 통신 중 오류 발생: ', error);
   }
 };
+
+onMounted(() => {
+  fetchAsset(props.memberId);
+});
 </script>
 
 <template>
@@ -86,7 +84,7 @@ const addAccount = async () => {
             <img :src="account.image" alt="Account Image" class="account-image" />
             <div class="account-info">
               <div class="account-name">{{ account.prdtName }} ({{ account.financeName }})</div>
-              <div class="account-balance">{{ formatAmount(account.totalAmount) }}원</div>
+              <div class="account-balance">{{ account.totalAmount.toLocaleString() }}원</div>
             </div>
           </li>
         </ul>

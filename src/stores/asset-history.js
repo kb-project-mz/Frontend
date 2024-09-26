@@ -11,6 +11,8 @@ export const useAssetStore = defineStore('asset', {
       try {
         const response = await apiInstance.get(`/connection/asset/${id}`);
         this.AllAssetList = response.data.data;
+
+        console.log(this.AllAssetList);
       } catch (error) {
         console.error('Failed to fetch asset list:', error);
         throw error;
@@ -30,6 +32,9 @@ export const useAssetStore = defineStore('asset', {
      async updateAccountStatus(id) {
       try {
         const response = await apiInstance.post(`/connection/account/${id}`);
+        this.AllAssetList.push(response.data.data);
+        this.ConnAssetList.push(response.data.data);
+        console.log(this.AllAssetList);
         return response.data; // 서버 응답 데이터 반환
       } catch (error) {
         console.error('Failed to update account status:', error);

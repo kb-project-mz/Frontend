@@ -1,9 +1,21 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useAssetStore } from '@/stores/asset-history';
 import { useRoute } from 'vue-router';
 import PopUpCard from '@/components/connection/PopUpCard.vue'; 
 import { useConsumptionHistoryStore } from '@/stores/consumption-history';
+
+
+
+const fetchConsumptionHistory = async (memberId) => {
+  await consumptionHistoryStore.getCardHistoryList(memberId);
+  historyData.value = consumptionHistoryStore.cardHistoryThisMonth;
+}
+
+onMounted(() =>  {
+  fetchConsumptionHistory(1);
+});
+
 
 const consumptionHistoryStore = useConsumptionHistoryStore();
 const comsumptionData = ref([]);
@@ -15,10 +27,16 @@ const cardData = ref([]);
 const route = useRoute();
 const memberId = route.params.memberId;
 
-onMounted(async ()  => {
-  await fetchAsset(memberId);
-  await fetchConsumption(memberId);
-});
+// watch(() => assetStore.ConnAssetList, (newValue) => {
+//   if (newValue.length > 0) {
+//     fetchAsset(memberId);
+//   }
+// });
+
+// onMounted(async ()  => {
+//   await fetchAsset(memberId);
+//   await fetchConsumption(memberId);
+// });
 
 const fetchAsset = async (memberId) => {
   await assetStore.getConnAssetList(memberId);
@@ -60,14 +78,13 @@ const handleCardDataUpdate = (updatedCardData) => {
 
 <template>
   
-  <div class="about">
-    <!-- 연동된 카드 목록 -->
+  <!-- <div class="about">
     <div class="card-list">
       <h2>연동된 카드</h2>
 
       <ul v-if="cardData.length > 0">
         <li v-for="(card, index) in cardData" :key="index" class="card-item">
-          <img :src="card.image" alt="Card Image" class="card-image" />
+          <img :src="card.image" alt="Card Image" class="card-image rounded" />
           <div class="card-info">
           <div class="card-name">{{ card.prdtName }} ({{ card.financeName }})</div>
           <div class="card-balance">{{ formatAmount(card.totalAmount) }}원</div>
@@ -81,7 +98,7 @@ const handleCardDataUpdate = (updatedCardData) => {
   </div>
   
   <PopUpCard @updateCard="handleAddCard" 
-    :onClose="closeModal" :visible="isModalVisible" @updateCardData="handleCardDataUpdate"/>
+    :onClose="closeModal" :visible="isModalVisible" @updateCardData="handleCardDataUpdate"/> -->
 </template>
 
 
@@ -113,7 +130,6 @@ const handleCardDataUpdate = (updatedCardData) => {
 
 .card-image {
   width: 40px;
-  height: 40px;
   margin-right: 15px;
 }
 

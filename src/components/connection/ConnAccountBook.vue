@@ -1,19 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useAssetStore } from '@/stores/asset-history';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, watch } from 'vue';
+import { useAssetStore } from '@/stores/asset-history';;
 import PopUpAccountBook from '@/components/connection/PopUpAccountBook.vue';
+
+const memberId = localStorage.getItem("id");
 
 const assetStore = useAssetStore();
 const assetData = ref([]);
 const accountData = ref([]);
-
-const route = useRoute();
-const memberId = route.params.memberId;
-
-onMounted( async () => {
-  await fetchAsset(memberId);
-});
 
 const fetchAsset = async (memberId) => {
   await assetStore.getConnAssetList(memberId);
@@ -28,6 +22,7 @@ const formatAmount = (amount) => {
 };
 
 const isModalVisible = ref(false);
+
 function openModal () {
   isModalVisible.value = true;
 }
@@ -35,7 +30,8 @@ function closeModal () {
   isModalVisible.value = false;
 }
 
-const handleAddAccount = (newAccount) => {
+const handleAddAccount = async (newAccount) => {
+  console.log(newAccount);
   accountData.value.push(newAccount);
 }
 
@@ -43,6 +39,15 @@ const handleAccountDataUpdate = (updatedAccountData) => {
   accountData.value = updatedAccountData;
 };
 
+watch(() => assetStore.ConnAssetList, (newValue) => {
+  if (newValue.length > 0) {
+    fetchAsset(memberId);
+  }
+});
+
+onMounted( async () => {
+  await fetchAsset(memberId);
+});
 </script>
 
 <template>
@@ -66,8 +71,10 @@ const handleAccountDataUpdate = (updatedAccountData) => {
     </div>
   </div>
 
-  <PopUpAccountBook @updateAccount="handleAddAccount" 
-    :onClose="closeModal" :visible="isModalVisible" @updateAccountData="handleAccountDataUpdate"/>
+  <PopUpAccountBook @updateAccount="handleAddAccount"
+    :member-id="memberId"
+    :onClose="closeModal"
+    :visible="isModalVisible" @updateAccountData="handleAccountDataUpdate"/>
 </template>
 
 <style scoped>
