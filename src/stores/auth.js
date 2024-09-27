@@ -4,13 +4,9 @@ import apiInstance from './axios-instance';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
-			id: null,
-      memberName: null,
-      memberId: null,
-      password: null,
-      email: null,
-      birthday: null,
-      gender: null
+			id: localStorage.getItem('id') || null,
+      memberName: localStorage.getItem('memberName') || null,
+      memberId: localStorage.getItem('memberId') || null
     }
   }),
   actions: {
@@ -79,12 +75,8 @@ export const useAuthStore = defineStore('auth', {
     },
     logout() {
       this.member.id = null;
-      this.member.memberName = null,
-      this.member.memberId = null,
-      this.member.password = null,
-      this.member.email = null,
-      this.member.birthday = null,
-      this.member.gender = null;
+      this.member.memberName = null;
+      this.member.memberId = null;
       localStorage.clear();
     }
   },

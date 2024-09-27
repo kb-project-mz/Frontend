@@ -3,7 +3,9 @@ import { ref, onMounted } from 'vue';
 import { useConsumptionAnalysisStore } from '@/stores/consumption-analysis';
 import MostUsed from './MostUsed.vue';
 import MaximumUsed from './MaximumUsed.vue';
-import { defineProps } from 'vue';
+import medalFirst from '@/assets/medal_first.png';
+import medalSecond from '@/assets/medal_second.png';
+import medalThird from '@/assets/medal_third.png';
 
 const props = defineProps({
   period: {
@@ -56,11 +58,11 @@ const formatMostUsed = (dataStr) => {
 const getMedal = (index) => {
   switch(index) {
     case 0:
-      return '🥇';
+      return medalFirst;
     case 1:
-      return '🥈';
+      return medalSecond;
     case 2:
-      return '🥉';
+      return medalThird;
     default:
       return '';
   }
@@ -76,9 +78,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-6 bg-white border border-gray-200 rounded-2xl shadow flex">
-    <MostUsed class="flex-1 ml-8" :mostUsed="mostUsed" :get-medal="getMedal" :period="period" />
-    <MaximumUsed class="flex-1" :maximumUsed="maximumAmount" :get-medal="getMedal" :period="period" />
+  <div class="py-6 px-8 bg-white border border-gray-200 rounded-2xl shadow">
+    <div class="w-72">
+      <MostUsed class="mb-7" :mostUsed="mostUsed" :get-medal="getMedal" :period="period" />
+      <MaximumUsed :maximumUsed="maximumAmount" :get-medal="getMedal" :period="period" />
+    </div>
+    
   </div>
 </template>
 
