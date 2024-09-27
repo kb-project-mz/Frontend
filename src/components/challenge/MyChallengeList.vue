@@ -1,3 +1,26 @@
+<script setup>
+import { useChallengeStore } from '@/stores/challengeStore';
+import { ref, onMounted } from 'vue';
+import DoughnutChart from './DoughnutChart.vue';
+
+const memberIdx = localStorage.getItem("memberIdx");
+
+const challengeStore = useChallengeStore();
+const chartData = ref([]);
+
+const deleteChallenge = (id) => {
+  if (confirm('정말로 삭제하시겠습니까?')) {
+    challengeStore.deleteChallenge(id);
+  }
+};
+
+onMounted(async () => {
+  await challengeStore.getChallengeList(memberIdx);
+  await challengeStore.getChallengeStatus(memberIdx);
+  chartData.value = challengeStore.chartData;
+});
+</script>
+
 <template>
   <div class="list-group" style="margin-top: 50px;">
     <div
@@ -34,29 +57,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { useChallengeStore } from '@/stores/challengeStore';
-import { ref, onMounted } from 'vue';
-import DoughnutChart from './DoughnutChart.vue'; // 도넛 차트 컴포넌트 가져오기
-
-const challengeStore = useChallengeStore();
-const chartData = ref([]); // 서버에서 받은 데이터를 저장할 변수
-
-// 페이지 로드 시 챌린지 목록과 차트 데이터 불러오기
-onMounted(async () => {
-  const memberId = 2;
-  await challengeStore.fetchAllItems(memberId); // 챌린지 목록 불러오기
-  chartData.value = await challengeStore.fetchChallengeLimitCardCount(memberId); // 차트 데이터 불러오기
-});
-
-// 챌린지 삭제 함수
-const deleteChallenge = (id) => {
-  if (confirm('정말로 삭제하시겠습니까?')) {
-    challengeStore.deleteChallenge(id); // 챌린지 삭제 메서드 호출
-  }
-};
-</script>
 
 <style scoped>
 .list-group-item {

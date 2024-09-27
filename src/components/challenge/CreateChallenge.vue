@@ -1,13 +1,82 @@
+<script setup>
+import { ref } from 'vue';
+import { useChallengeStore } from '@/stores/challengeStore';
+
+const memberIdx = localStorage.getItem("memberIdx");
+
+const props = defineProps(['showModal']);
+const emit = defineEmits(['close', 'challengeAdded']);
+
+const challengeStore = useChallengeStore();
+
+const detailedCategories = ref([]);  // OpenAI의 응답을 저장하는 배열
+const maxLimit = ref(100);  // 기본값으로 횟수제한일 경우 최대값 100
+
+const formData = ref({
+  category: 1, // 기본값: 식비
+  memberId: memberIdx,
+  challengeName: '',
+  challengeType: '0',
+  challengeLimit: 1,
+  startDate: '',
+  endDate: '',
+  detailedCategory: ''
+});
+
+const closeModal = () => {
+  emit('close');
+};
+
+const resetForm = () => {
+  formData.value = {
+    category: 1,
+    memberId: memberIdx,
+    challengeName: '',
+    challengeType: '0',
+    challengeLimit: 1,
+    startDate: '',
+    endDate: '',
+    detailedCategory: ''
+  };
+  detailedCategories.value = [];
+  closeModal();
+};
+
+const confirmSubmission = async () => {
+  if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
+    await challengeStore.insertChallenge(formData.value);
+    await challengeStore.getChallengeList(formData.value.memberId); // 새로고침 전에 삭제버튼 클릭시 삭제 안되는 문제 해결
+
+    window.location.reload(); 
+    resetForm();
+    closeModal();
+  }
+};
+
+// 조건이 변경될 때마다 maxLimit 값을 동적으로 변경
+const onConditionChange = () => {
+  if (formData.value.challengeType === '0') {
+    maxLimit.value = 100;  // 횟수 제한일 때 최대 100
+  } else {
+    maxLimit.value = 1000000;  // 금액 제한일 때 최대 1,000,000원
+  }
+};
+
+const onCategoryChange = async () => {
+  await challengeStore.getDetailedCategory(memberIdx, formData.value.category);
+  detailedCategories.value = challengeStore.detailedCategories;
+};
+
+const selectDetailedCategory = (category) => {
+  formData.value.detailedCategory = category;
+};
+</script>
+
 <template>
   <div v-if="showModal" class="modal-overlay">
     <div class="modal-content">
       <h3>나의 챌린지 등록하기</h3>
       <form @submit.prevent="confirmSubmission">
-        <div class="form-group">
-          <label>Member ID</label>
-          <input type="number" v-model="formData.memberId" class="form-control" required />
-        </div>
-
         <div class="form-group">
           <label>챌린지 이름</label>
           <input type="text" v-model="formData.challengeName" class="form-control" required />
@@ -72,81 +141,7 @@
   </div>
 </template>
 
-<script setup>
-import { ref, defineProps, defineEmits } from 'vue';
-import { useChallengeStore } from '@/stores/challengeStore'; // Pinia 스토어 가져오기
-
-const props = defineProps(['showModal']);
-const emit = defineEmits(['close', 'challengeAdded']);
-
-const challengeStore = useChallengeStore(); // Pinia 스토어 초기화
-
-const formData = ref({
-  category: 1, // 기본값: 식비
-  memberId: 0,
-  challengeName: '',
-  challengeType: '0',
-  challengeLimit: 1,
-  startDate: '',
-  endDate: '',
-  detailedCategory: ''
-});
-
-const detailedCategories = ref([]);  // OpenAI의 응답을 저장하는 배열
-const maxLimit = ref(100);  // 기본값으로 횟수제한일 경우 최대값 100
-
-const closeModal = () => {
-  emit('close');
-};
-
-// 폼을 초기화하는 함수
-const resetForm = () => {
-  formData.value = {
-    category: 1,
-    memberId: 0,
-    challengeName: '',
-    challengeType: '0',
-    challengeLimit: 1,
-    startDate: '',
-    endDate: '',
-    detailedCategory: ''
-  };
-  detailedCategories.value = [];  // 상세 카테고리도 초기화
-  closeModal();  // 모달 닫기
-};
-
-const confirmSubmission = async () => {
-  if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
-    await challengeStore.addNewChallenge(formData.value); // Pinia의 메서드 호출
-    await challengeStore.fetchAllItems(formData.value.memberId); // 새로고침 전에 삭제버튼 클릭시 삭제 안되는 문제 해결.
-
-    window.location.reload(); 
-    resetForm();
-    closeModal();
-  }
-};
-
-// 조건이 변경될 때마다 maxLimit 값을 동적으로 변경
-const onConditionChange = () => {
-  if (formData.value.challengeType === '0') {
-    maxLimit.value = 100;  // 횟수 제한일 때 최대 100
-  } else {
-    maxLimit.value = 1000000;  // 금액 제한일 때 최대 1,000,000원
-  }
-};
-
-// 카테고리 변경 시 상세 카테고리 가져오기
-const onCategoryChange = async () => {
-  detailedCategories.value = await challengeStore.fetchDetailedCategory(formData.value.category);
-};
-
-const selectDetailedCategory = (category) => {
-  formData.value.detailedCategory = category;
-};
-</script>
-
 <style scoped>
-/* 모달 스타일 */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -192,5 +187,3 @@ const selectDetailedCategory = (category) => {
   background-color: #ddd;
 }
 </style>
-
-
