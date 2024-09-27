@@ -37,7 +37,7 @@ const renderChart = () => {
 };
 
 onMounted(() => {
-  renderChart(); // 차트 렌더링
+  renderChart();
 });
 
 // props가 변경될 때마다 차트 업데이트
@@ -54,8 +54,8 @@ watch([() => props.limit, () => props.completed], () => {
 
 <style scoped>
 .chart-container {
-  width: 100px; /* 고정된 너비 설정 */
-  height: 100px; /* 고정된 높이 설정 */
+  width: 100px;
+  height: 100px;
 }
 
 canvas {

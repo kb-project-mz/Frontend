@@ -27,12 +27,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container" style="margin-top:80px; position:relative;">
-    <h2>나의 챌린지 목록</h2>
-    
-    <div style="position: absolute; top: 0; right: 0;">
-      <button class="btn btn-primary" @click="openCreateChallengeModal">챌린지 추가</button>
-    </div> 
+  <div class="mx-[20%] px-8 py-4 bg-white border border-gray-200 rounded-2xl shadow">
+    <div class="text-2xl font-bold mb-4">나의 챌린지 목록</div> 
+    <button class="px-3 py-2 rounded-xl bg-navy text-white" @click="openCreateChallengeModal">챌린지 추가</button>
 
     <MyChallengeList :items="challengeStore.challengeList" />
     <CreateChallenge :showModal="showCreateModal" @close="closeCreateChallengeModal" @challengeAdded="addNewChallenge" />
@@ -40,11 +37,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.container {
-  margin-top: 80px;
-  position: relative;
-}
-.btn {
-  margin-top: 10px;
+.bg-navy{ 
+  background-color: #0B1573;
 }
 </style>
