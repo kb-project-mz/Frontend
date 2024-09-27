@@ -23,12 +23,11 @@ const toGoogleLogin = async () => {
   }
 };
 
-// 구글 로그인 콜백 처리 함수
 const googleLoginCallback = async (google_id_token) => {
   try {
     const response = await authStore.googleLogin(google_id_token);
 
-    if (response && (response.message === "Login success" || response.message === "Registration success")) {
+    if (response && (response.success === true)) {
       console.log("구글 로그인 성공");
       window.location.href = '/home';
     } else {
@@ -38,6 +37,7 @@ const googleLoginCallback = async (google_id_token) => {
     console.error('Error during login/join:', error);
   }
 };
+
 </script>
 
 <template>
