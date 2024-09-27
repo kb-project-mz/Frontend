@@ -1,18 +1,22 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
+const router = useRouter();
+
 const id = computed(() => authStore.member.id);
 const memberName = computed(() => authStore.member.memberName);
 
 const logout = () => {
   authStore.logout();
+  router.push('/');
 };
 </script>
 
 <template>
-  <nav class="bg-white shadow-lg p-4 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
+  <nav class="bg-white shadow-md p-4 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
     <div class="max-w-7.5xl mx-auto flex justify-between items-center">
       <router-link to="/" class="flex items-center">
         <img src="/src/assets/logo.png" alt="Logo" class="h-8 w-auto" />

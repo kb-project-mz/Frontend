@@ -15,13 +15,9 @@ export const useAuthStore = defineStore('auth', {
 
   state: () => ({
     member: {
-			id: '',
-      memberName: '',
-      memberId: '',
-      password: '',
-      email: '',
-      birthday: '',
-      gender: ''
+			id: localStorage.getItem('id') || null,
+      memberName: localStorage.getItem('memberName') || null,
+      memberId: localStorage.getItem('memberId') || null
     }
   }),
   actions: {
@@ -81,6 +77,12 @@ export const useAuthStore = defineStore('auth', {
         throw error;
       }
     },
+    logout() {
+      this.member.id = null;
+      this.member.memberName = null;
+      this.member.memberId = null;
+      localStorage.clear();
+    }
   },
 
 	loadAuthState() {

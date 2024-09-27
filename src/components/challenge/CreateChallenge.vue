@@ -21,7 +21,7 @@
 
         <div class="form-group">
           <label>조건</label>
-          <select v-model="formData.challengeType" class="form-control">
+          <select v-model="formData.challengeType" @change="onConditionChange" class="form-control">
             <option value="0">횟수제한</option>
             <option value="1">제한금액</option>
           </select>
@@ -29,7 +29,7 @@
 
         <div class="form-group">
           <label>카테고리</label>
-          <select v-model="formData.category" @change="fetchDetailedCategory(formData.category)" class="form-control">
+          <select v-model="formData.category" @change="onCategoryChange" class="form-control">
             <option value="1">식비</option>
             <option value="2">카페/디저트</option>
             <option value="3">교통비</option>
@@ -74,10 +74,12 @@
 
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue';
-import axios from 'axios';
+import { useChallengeStore } from '@/stores/challengeStore'; // Pinia 스토어 가져오기
 
 const props = defineProps(['showModal']);
 const emit = defineEmits(['close', 'challengeAdded']);
+
+const challengeStore = useChallengeStore(); // Pinia 스토어 초기화
 
 const formData = ref({
   category: 1, // 기본값: 식비
@@ -91,67 +93,16 @@ const formData = ref({
 });
 
 const detailedCategories = ref([]);  // OpenAI의 응답을 저장하는 배열
-const maxLimit = ref(1);
+const maxLimit = ref(100);  // 기본값으로 횟수제한일 경우 최대값 100
 
 const closeModal = () => {
   emit('close');
 };
 
-const confirmSubmission = () => {
-  if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
-    submitForm();
-  }
-};
-
-// Fetch detailed categories when a category is selected
-const fetchDetailedCategory = (categoryId) => {
-  axios
-    .post("http://localhost:8080/api/v1/challenge/detailedCategory", { category: categoryId }, {
-      headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwNTkyNDksImV4cCI6MTcyNzQwNDg0OX0.6Z-07i5nQhAMBnzlcwfDXcSc-6wuL46bcn2hpx5wLxA"
-      }
-    })
-    .then((res) => {
-      if (res.data.success) {
-        detailedCategories.value = res.data.data.detailedCategories; 
-      } else {
-        console.error("Error from server:", res.data.error.message);
-      }
-    })
-    .catch((err) => {
-      console.error("Error fetching detailed categories:", err);
-    });
-};
-
-// 사용자가 상세 카테고리를 클릭하면 formData에 저장
-const selectDetailedCategory = (category) => {
-  formData.value.detailedCategory = category;
-};
-
-const submitForm = () => {
-  axios.post("http://localhost:8080/api/v1/challenge/write", formData.value, {
-    headers: {
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcxNjIxODIsImV4cCI6MTcyNzUwNzc4Mn0.shTPN61p68SsQ-5Q1Ctm1FKi1f98zkYwP_MrIBOrLJI"
-    }
-  })
-  .then((res) => {
-    if (res.data.success) {
-      emit('challengeAdded', formData.value);  // 성공 시 데이터 전송
-      resetForm();  // 폼 데이터 초기화
-      closeModal();
-    } else {
-      console.error(res.data.error.message);  // 오류 처리
-    }
-  })
-  .catch(err => {
-    console.log(err);
-  });
-};
-
-// 폼 데이터 초기화 함수
+// 폼을 초기화하는 함수
 const resetForm = () => {
   formData.value = {
-    category: 1, // 기본값: 식비
+    category: 1,
     memberId: 0,
     challengeName: '',
     challengeType: '0',
@@ -162,6 +113,35 @@ const resetForm = () => {
   };
   detailedCategories.value = [];  // 상세 카테고리도 초기화
   closeModal();  // 모달 닫기
+};
+
+const confirmSubmission = async () => {
+  if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
+    await challengeStore.addNewChallenge(formData.value); // Pinia의 메서드 호출
+    await challengeStore.fetchAllItems(formData.value.memberId); // 새로고침 전에 삭제버튼 클릭시 삭제 안되는 문제 해결.
+
+    window.location.reload(); 
+    resetForm();
+    closeModal();
+  }
+};
+
+// 조건이 변경될 때마다 maxLimit 값을 동적으로 변경
+const onConditionChange = () => {
+  if (formData.value.challengeType === '0') {
+    maxLimit.value = 100;  // 횟수 제한일 때 최대 100
+  } else {
+    maxLimit.value = 1000000;  // 금액 제한일 때 최대 1,000,000원
+  }
+};
+
+// 카테고리 변경 시 상세 카테고리 가져오기
+const onCategoryChange = async () => {
+  detailedCategories.value = await challengeStore.fetchDetailedCategory(formData.value.category);
+};
+
+const selectDetailedCategory = (category) => {
+  formData.value.detailedCategory = category;
 };
 </script>
 
@@ -212,11 +192,5 @@ const resetForm = () => {
   background-color: #ddd;
 }
 </style>
-
-
-
-
-
-
 
 

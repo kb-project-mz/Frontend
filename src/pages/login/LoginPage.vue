@@ -105,7 +105,7 @@ const login = async () => {
 
 <style scoped>
 img {
-  width: 14rem;
+  width: 12rem;
 }
 .text-navy {
   color: #0B1573;
