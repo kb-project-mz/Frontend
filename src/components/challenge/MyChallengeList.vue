@@ -8,9 +8,10 @@ const memberIdx = localStorage.getItem("memberIdx");
 const challengeStore = useChallengeStore();
 const chartData = ref([]);
 
-const deleteChallenge = (id) => {
+const deleteChallenge = async (id) => {
   if (confirm('정말로 삭제하시겠습니까?')) {
     challengeStore.deleteChallenge(id);
+    await challengeStore.getChallengeList(memberIdx);
   }
 };
 
