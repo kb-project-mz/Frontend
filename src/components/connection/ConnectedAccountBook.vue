@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset';
 import AddAccountBookModal from '@/components/connection/AddAccountBookModal.vue';
 
-const memberId = localStorage.getItem("id");
+const memberIdx = localStorage.getItem("memberIdx");
 
 const assetStore = useAssetStore();
 
@@ -23,7 +23,7 @@ const closeModal = async () => {
 
 const fetchAsset = async () => {
   isLoading.value = true;
-  await assetStore.getAssetList(memberId);
+  await assetStore.getAssetList(memberIdx);
   const accountList = assetStore.allAccountList;
   connectedAccountList.value = accountList.filter(account => account.connStatus === 1);
   isLoading.value = false;
@@ -50,7 +50,7 @@ onMounted(async () => {
           <img :src="account.image" alt="account" class="w-12 h-12 mr-4 rounded-full" />
           <div>
             <div class="text-medium">{{ account.prdtName }}</div>
-            <div class="text-lg font-bold">{{ account.totalAmount.toLocaleString() }}원</div>
+            <div class="text-lg font-bold">balance 원</div>
           </div>
         </div>
         <button @click="openModal" class="w-full">
