@@ -27,11 +27,6 @@ const router = createRouter({
       name: 'login',
       component: LoginPage
     },
-		// {
-		// 	path: '/login/google',
-		// 	name: 'GoogleLogin',
-		// 	component: GoogleLoginComponent
-		// },
     { 
       path: '/join',
       name: 'join',
