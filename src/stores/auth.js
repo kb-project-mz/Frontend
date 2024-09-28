@@ -13,99 +13,77 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(memberId, password) {
-      console.log('login 호출: memberId=', memberId);
-      try {x	
+      try {
         const response = await apiInstance.post('/member/login', { memberId, password });
         const loginData = response.data.data;
 
         if (!loginData || !loginData.accessToken) {
-          console.error('응답에 accessToken이 없습니다.', loginData);
           return null;
         }
 
         setLocalStorage(loginData);
         this.loadAuthState(); 
-        console.log('로그인 성공:', loginData);
         return loginData;
       } catch (error) {
-        console.error('로그인 중 오류:', error.response ? error.response.data : error.message);
         throw error;
       }
     },
 
     async create(member) {
-      console.log('create 호출: member=', member);
       try {
         const response = await apiInstance.post('/member/join', member);
-        console.log('회원가입 성공:', response.data.data);
         return response.data.data;
       } catch (error) {
-        console.error('회원가입 중 오류:', error.response ? error.response.data : error.message);
         throw error;
       }
     },
 
     async checkMemberId(memberId) {
-      console.log('checkMemberId 호출: memberId=', memberId);
       try {
         const response = await apiInstance.get(`/member/check-memberId/${memberId}`);
-        console.log('ID 중복 확인 성공:', response.data.data);
         return response.data.data;
       } catch (error) {
-        console.error('ID 중복 확인 중 오류:', error.response ? error.response.data : error.message);
         throw error;
       }
     },
 
     async checkEmail(email) {
-      console.log('checkEmail 호출: email=', email);
       try {
         const response = await apiInstance.get(`/member/check-email?email=${encodeURIComponent(email)}`);
-        console.log('이메일 체크 성공:', response.data.data);
         return response.data.data;
       } catch (error) {
-        console.error('이메일 체크 중 오류:', error.response ? error.response.data : error.message);
         throw error;
       }
     },
 
     async logout() {
-      console.log('logout 호출');
       try {
         await apiInstance.post('/member/logout');
-        clearTokens(); // 토큰 삭제
+        clearTokens();
         this.clearAuthState();
-        console.log('로그아웃 성공');
       } catch (error) {
         console.error('로그아웃 중 오류:', error.response ? error.response.data : error.message);
       }
     },
 
     clearAuthState() {
-      console.log('clearAuthState 호출');
       this.member.id = null;
       this.member.memberName = null;
       this.member.memberId = null;
-      localStorage.clear(); // 로컬 스토리지 초기화
-      console.log('로컬 스토리지 초기화 완료');
+      localStorage.clear();
     },
 
     loadAuthState() {
-      console.log('loadAuthState 호출');
       const authData = JSON.parse(localStorage.getItem('auth'));
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
-        console.log('authStore 상태 업데이트 완료:', this.member);
-      } else {
-        console.log('로컬 스토리지에 저장된 인증 데이터가 없습니다.');
       }
     },
 
     isLogin() {
       const authData = localStorage.getItem('auth');
-      const isLoggedIn = !!authData; // 인증 상태 여부 확인
-      console.log('로그인 상태:', isLoggedIn);
+      const isLoggedIn = !!authData;
       return isLoggedIn;
     }
   }
