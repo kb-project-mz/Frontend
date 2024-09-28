@@ -13,6 +13,7 @@ import TestStartPage from '@/pages/test/TestStartPage.vue';
 import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
 import TestResultPage from '@/pages/test/TestResultPage.vue';
 import { useAuthStore } from '@/stores/auth';
+import GoogleCallBack from '@/pages/login/GoogleCallBack.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       name: 'join',
       component: JoinPage
     },
+		{
+			path: '/google-callback',
+			name: 'googleCallback',
+			component: GoogleCallBack
+		},
     {
       path: '/connect',
       name: 'connect',

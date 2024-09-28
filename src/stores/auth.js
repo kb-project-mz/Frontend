@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
-import { setTokens, clearTokens } from '@/util/token';
+import { setTokens, clearTokens, setGoogleIdToken } from '@/util/token';
 
 function setLocalStorage(loginData) {
     console.log('setLocalStorage 호출:', loginData);
@@ -50,30 +50,6 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.error('로그인 중 오류:', error.response ? error.response.data : error.message);
         throw error;
-      }
-    },
-
-    async googleLogin(googleIdToken) {
-      console.log('googleLogin 호출: googleIdToken=', googleIdToken);
-      try {
-        const response = await apiInstance.post('/member/login/google/callback', {
-          id_token: googleIdToken
-        });
-
-        const loginData = response.data.data;
-        console.log('로그인 데이터:', loginData);
-
-        if (response.data.success && loginData) {
-          setLocalStorage(loginData);
-          console.log('로그인 성공:', loginData);
-          return { success: true };
-        } else {
-          console.error('로그인 실패:', response.data.error);
-          return { success: false };
-        }
-      } catch (error) {
-        console.error('로그인 중 오류:', error.response ? error.response.data : error.message);
-        return { success: false, error: error.response ? error.response.data : error.message };
       }
     },
 

@@ -6,6 +6,10 @@ export function setTokens(accessToken, refreshToken) {
    localStorage.setItem('refreshToken', 'Bearer ' + refreshToken);
 }
 
+export function setGoogleIdToken(googleIdToken) {
+  localStorage.setItem('googleIdToken', googleIdToken);
+}
+
 // 토큰 갱신
 export async function refreshAccessToken() {
    try {
