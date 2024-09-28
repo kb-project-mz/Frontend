@@ -35,11 +35,11 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(memberId, password) {
       console.log('login 호출: memberId=', memberId);
-      try {
+      try {x	
         const response = await apiInstance.post('/member/login', { memberId, password });
         const loginData = response.data.data;
 
-        if (!loginData || !loginData.accessToken) {
+        if (!loginData || !loginData.accessToken) {x	
           console.error('응답에 accessToken이 없습니다.', loginData);
           return null;
         }
