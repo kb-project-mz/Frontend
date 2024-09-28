@@ -1,14 +1,24 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { io } from "socket.io-client";
+import { useBalanceStore } from "@/stores/balance";
 
 // 서버에서 데이터를 수신할 배열
 const balanceByMember = ref([]);
 
+const balanceStore = useBalanceStore();
+const memberIndex = localStorage.getItem("id");
+
 // Socket.IO 클라이언트 연결
 const socket = io("http://localhost:3000");
 
+const fetchBalance = async(memberIndex) => {
+  await balanceStore.getTotalBalance(member_index);
+}
+
 onMounted(() => {
+  fetchBalance(memberIndex);
+
   // 연결 성공 시 출력
   socket.on("connect", () => {
     console.log("Socket.IO connected!");
