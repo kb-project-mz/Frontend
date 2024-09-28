@@ -12,8 +12,7 @@ export const useAccountHistoryStore = defineStore("accountHistory", {
       try {
         const res = await apiInstance.get(`/history/account/${memberId}`, {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwOTMxMDQsImV4cCI6MTcyNzQzODcwNH0.CDpk_rBMERwApocgtppe8EtnuQkbxRpjLAJK2A7wBBo",
+            Authorization: localStorage.getItem("accessToken")
           },
         });
         this.accountHistory = res.data.data;
