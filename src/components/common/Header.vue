@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 const authStore = useAuthStore();
 const router = useRouter();
 
-const id = computed(() => authStore.member.id);
+const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
 
 const logout = () => {
@@ -22,7 +22,7 @@ const logout = () => {
         <img src="/src/assets/logo.png" alt="Logo" class="h-8 w-auto" />
       </router-link>
 
-    <div v-if="id">
+    <div v-if="memberId">
       <router-link to="/mypage">
         {{ memberName }}님
       </router-link>

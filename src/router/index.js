@@ -98,17 +98,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
-
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!authStore.member.id) {
-      next('/');
-    } else {
-      next();
-    }
+  const isLoggedIn = !!localStorage.getItem('auth');
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login');
   } else {
     next();
   }
-})
+});
+
 
 export default router;

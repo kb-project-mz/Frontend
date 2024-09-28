@@ -2,27 +2,6 @@ import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
 import { setTokens, clearTokens, setGoogleIdToken } from '@/util/token';
 
-function setLocalStorage(loginData) {
-    console.log('setLocalStorage 호출:', loginData);
-    localStorage.setItem('memberId', loginData.memberId);
-
-    // expires_in 값 확인 및 로컬 스토리지에 저장
-    if (loginData.expiresIn) {
-        localStorage.setItem('expires_in', loginData.expiresIn);
-        console.log('expires_in 값 저장됨:', loginData.expiresIn);
-    } else {
-        console.warn('expires_in 값이 없습니다.');
-    }
-    
-    setTokens(loginData.accessToken, loginData.refreshToken);
-    
-    localStorage.setItem('auth', JSON.stringify(loginData));
-    localStorage.setItem('id', loginData.id);
-    localStorage.setItem('memberName', loginData.memberName);
-    
-    console.log('로컬 스토리지에 로그인 데이터 설정 완료');
-  }
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
@@ -39,12 +18,13 @@ export const useAuthStore = defineStore('auth', {
         const response = await apiInstance.post('/member/login', { memberId, password });
         const loginData = response.data.data;
 
-        if (!loginData || !loginData.accessToken) {x	
+        if (!loginData || !loginData.accessToken) {
           console.error('응답에 accessToken이 없습니다.', loginData);
           return null;
         }
 
         setLocalStorage(loginData);
+        this.loadAuthState(); 
         console.log('로그인 성공:', loginData);
         return loginData;
       } catch (error) {
@@ -112,12 +92,13 @@ export const useAuthStore = defineStore('auth', {
 
     loadAuthState() {
       console.log('loadAuthState 호출');
-      const authData = localStorage.getItem('auth');
-      if (authData) {
-        this.member = JSON.parse(authData);
-        console.log('인증 데이터 로드 완료:', this.member);
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      if (authData && authData.memberId) {
+        this.member.memberId = authData.memberId;
+        this.member.memberName = authData.memberName;
+        console.log('authStore 상태 업데이트 완료:', this.member);
       } else {
-        console.log('인증 데이터가 없습니다.');
+        console.log('로컬 스토리지에 저장된 인증 데이터가 없습니다.');
       }
     },
 

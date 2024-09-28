@@ -29,3 +29,19 @@ export function clearTokens() {
    localStorage.removeItem('accessToken');
    localStorage.removeItem('refreshToken');
 }
+
+export function setLocalStorage(loginData) {
+   console.log('setLocalStorage 호출:', loginData);
+   localStorage.setItem('memberId', loginData.memberId);
+ 
+   if (!loginData.memberId) {
+      console.error('memberId가 null입니다. 로그인 데이터:', loginData);
+    }
+ 
+   setTokens(loginData.accessToken, loginData.refreshToken);
+   localStorage.setItem('auth', JSON.stringify(loginData));
+   localStorage.setItem('memberId', loginData.memberId);
+   localStorage.setItem('memberName', loginData.memberName);
+   
+   console.log('로컬 스토리지에 로그인 데이터 설정 완료');
+ }

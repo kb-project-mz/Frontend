@@ -1,61 +1,52 @@
 <script setup>
-import { setTokens } from '@/util/token';
+import { computed, onMounted, watchEffect } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'; // authStore 가져오기
+import { setLocalStorage } from '@/util/token'; 
 
+const authStore = useAuthStore(); // authStore 인스턴스
 const router = useRouter();
 const route = useRoute();
 
-const googleAccessToken = route.query.access_token;
-const googleRefreshToken = route.query.refresh_token;
-const memberId = route.query.member_id;
-const memberName = route.query.member_name;
-console.log("Extracted googleAccessToken:", googleAccessToken);
+// computed를 사용하여 query 파라미터 추출
+const googleAccessToken = computed(() => route.query.access_token);
+const googleRefreshToken = computed(() => route.query.refresh_token);
+const memberId = computed(() => route.query.member_id);
+const memberName = computed(() => route.query.member_name);
 
-function setLocalStorage(loginData) {
-    console.log('setLocalStorage 호출:', loginData);
-    localStorage.setItem('memberId', loginData.memberId);
+watchEffect(() => {
+  console.log('로그인 상태 변경 감지:', authStore.member);
+});
 
-    // expires_in 값 확인 및 로컬 스토리지에 저장
-    if (loginData.expiresIn) {
-        localStorage.setItem('expires_in', loginData.expiresIn);
-        console.log('expires_in 값 저장됨:', loginData.expiresIn);
-    } else {
-        console.warn('expires_in 값이 없습니다.');
+// onMounted로 컴포넌트가 마운트된 후 실행
+onMounted(() => {
+  if (googleAccessToken.value) {
+    try {
+      // authStore에서 직접 상태 관리 및 로컬 스토리지 설정
+      authStore.$patch({
+        member: {
+          memberId: memberId.value,
+          memberName: memberName.value,
+        }
+      });
+
+      setLocalStorage({
+        memberId: memberId.value,
+        accessToken: googleAccessToken.value,
+        refreshToken: googleRefreshToken.value,
+        memberName: memberName.value
+      });
+
+      console.log('로그인 상태 업데이트:', authStore.member);
+
+      authStore.loadAuthState();
+      console.log("홈 페이지로 리다이렉션합니다.");
+      router.push('/'); 
+    } catch (error) {
+      console.error('토큰 저장 또는 리다이렉트 중 오류 발생:', error);
     }
-    
-    setTokens(loginData.accessToken, loginData.refreshToken);
-    
-    localStorage.setItem('auth', JSON.stringify(loginData));
-    localStorage.setItem('id', loginData.id);
-    localStorage.setItem('memberName', loginData.memberName);
-    
-    console.log('로컬 스토리지에 로그인 데이터 설정 완료');
+  } else {
+    console.error('액세스 토큰이 없습니다.');
   }
-
-if (googleAccessToken) {
-  try {
-    console.log("googleAccessToken이 존재합니다. 토큰을 저장합니다. 토큰 값:", googleAccessToken);
-    setLocalStorage({
-			memberId: memberId,
-			accessToken: googleAccessToken,
-			refreshToken: googleRefreshToken,
-			memberName: memberName
-		})
-    console.log("토큰이 로컬 스토리지에 저장되었습니다. 저장된 토큰 값:", googleAccessToken);
-
-    // 홈 페이지로 리다이렉션
-    console.log("홈 페이지로 리다이렉션합니다.");
-    router.push('/');
-  } catch (error) {
-    console.error('토큰 저장 또는 리다이렉트 중 오류 발생:', error);
-  }
-} else {
-  console.error('액세스 토큰이 없습니다.');
-}
+});
 </script>
-
-<template>
-  <div>
-    <p>구글 로그인 중입니다. 잠시만 기다려 주세요...</p>
-  </div>
-</template>
