@@ -66,7 +66,6 @@ const getMonthInfo = (year, month) => {
     return { startDay, endDate };
 };
 
-// 날짜를 yyyy-MM-dd 형식의 문자열로 반환하는 함수
 const getDateString = (day) => {
     const year = currentYear.value;
     const month = currentMonth.value + 1; // month는 0부터 시작하므로 +1

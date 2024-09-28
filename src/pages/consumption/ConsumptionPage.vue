@@ -91,37 +91,37 @@ onMounted(async () => {
 <template>
     <div class="mx-[22%] mt-10">
         <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">뒤집기</button>
-        <div class="flip">
-            <div class="card" :class="{ flipped: isFlipped }">
-                <div class="front">
+        <div class="flip w-full h-[400px] inline-block perspective-[1100px]">
+            <div class="card w-full inline-block relative transition duration-400 transform-style-[preserve-3d]" :class="{ 'rotate-y-180': isFlipped }">
+                <div class="front absolute w-full backface-visibility-hidden">
                     <AnalysisThisMonth :history-this-month-data="historyThisMonthData" :account-history-this-month-data="accountHistoryThisMonthData" />
                 </div>
-                <div class="back">
+                <div class="back absolute w-full backface-visibility-hidden rotate-y-180">
                     <AnalysisSelectedPeriod />
                 </div>
             </div>
         </div>
 
-        <div class="flex">
-            <div class="flex-1 mt-8 mr-4">
+        <div class="flex gap-[30px] mt-8">
+            <div class="w-2/5 mt-8 border border-gray-200 rounded-2xl shadow-lg h-[300px] p-5">
                 <LineChart />
             </div>
-            <div class="flex-1 mt-8 ml-4">
-                <BarChart />
+            <div class="w-3/5 mt-8 border border-gray-200 rounded-2xl shadow-lg h-[300px] p-5">
+                <BarChart :account-history-data="accountHistoryData" :history-data="historyData" :auth="{ memberName: user.memberName }" />
             </div>
         </div>
 
-        <div class="h-6"></div>
-        <div class="flex">
-            <div class="w-3/5 mr-4 border border-gray-200 rounded-2xl shadow">
+        <div class="flex mt-8 gap-[30px]">
+            <div class="w-3/5 border border-gray-200 rounded-2xl shadow-lg h-[500px] overflow-auto">
                 <ConsumptionCalendar :account-history-data="accountHistoryData" :history-data="historyData" :auth="{ memberName: user.memberName }" />
             </div>
-            <div class="w-2/5 ml-4 border border-gray-200 rounded-2xl shadow">
+
+            <div class="w-2/5 border border-gray-200 rounded-2xl shadow-lg h-[500px] overflow-hidden">
                 <ConsumptionList :history-data="historyData" />
             </div>
         </div>
 
-        <div class="mt-16 mb-80">
+        <div class="mt-16 mb-80 gap-[30px]">
             <AIRecommendation />
         </div>
     </div>
@@ -131,32 +131,18 @@ onMounted(async () => {
 .bg-navy {
     background-color: #0b1573;
 }
-.btn-gray {
-    border-color: #656363;
-    color: #656363;
-}
 
 .flip {
-    width: 100%;
-    height: 400px;
-    position: relative;
-    display: inline-block;
     perspective: 1100px;
 }
 
 .card {
-    width: 100%;
-    position: relative;
-    display: inline-block;
     transition: 0.4s;
     transform-style: preserve-3d;
 }
 
 .front,
 .back {
-    position: absolute;
-    width: 100%;
-    height: auto;
     backface-visibility: hidden;
 }
 
@@ -164,7 +150,7 @@ onMounted(async () => {
     transform: rotateY(180deg);
 }
 
-.card.flipped {
+.card.rotate-y-180 {
     transform: rotateY(180deg);
 }
 </style>
