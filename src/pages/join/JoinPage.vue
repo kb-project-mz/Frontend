@@ -101,7 +101,13 @@ const enhancedSecurityPassword = (password) => {
 
 const checkPasswordStrength = () => {
   isStrong.value = enhancedSecurityPassword(member.password);
-  passwordStrengthMessage.value = isStrong ? '비밀번호가 강합니다.' : '비밀번호가 약합니다.';
+  if (isStrong.value) {
+    passwordStrengthMessage.value = '비밀번호가 강합니다.';
+  } else if (member.password.length > 0) {
+    passwordStrengthMessage.value = '비밀번호가 약합니다.';
+  } else {
+    passwordStrengthMessage.value = '대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.';
+  }
 };
 
 const handleBirthdayInput = (event) => {

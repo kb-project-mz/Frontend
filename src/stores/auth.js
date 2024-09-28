@@ -4,7 +4,7 @@ import apiInstance from "./axios-instance";
 export const useAuthStore = defineStore("auth", {
     state: () => ({
         member: {
-            id: localStorage.getItem("id") || null,
+            memberIdx: localStorage.getItem("memberIdx") || null,
             memberName: localStorage.getItem("memberName") || null,
             memberId: localStorage.getItem("memberId") || null,
         },
@@ -12,7 +12,7 @@ export const useAuthStore = defineStore("auth", {
     actions: {
         async login(memberId, password) {
             try {
-                console.log("로그인 시도:", memberId);
+                console.log("로그인 시도:", memberId, " ", password);
                 const response = await apiInstance.post("/member/login", {
                     memberId: memberId,
                     password: password,
@@ -26,11 +26,11 @@ export const useAuthStore = defineStore("auth", {
                     return response.data.error.message;
                 }
 
-                this.member.id = loginData.id;
+                this.member.memberIdx = loginData.memberIdx;
                 this.member.memberId = loginData.memberId;
                 this.member.memberName = loginData.memberName;
 
-                localStorage.setItem("id", loginData.id);
+                localStorage.setItem("memberIdx", loginData.memberIdx);
                 localStorage.setItem("memberId", loginData.memberId);
                 localStorage.setItem("memberName", loginData.memberName);
                 localStorage.setItem("accessToken", "Bearer " + loginData.accessToken);
@@ -74,7 +74,7 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         logout() {
-            this.member.id = null;
+            this.member.memberIdx = null;
             this.member.memberName = null;
             this.member.memberId = null;
             localStorage.clear();

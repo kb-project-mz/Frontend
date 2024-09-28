@@ -11,7 +11,7 @@ import AnalysisSelectedPeriod from "@/components/consumption/AnalysisSelectedPer
 import ConsumptionList from "@/components/consumption/ConsumptionList.vue";
 import BarChart from "@/components/consumption/BarChart.vue";
 
-const memberId = localStorage.getItem("id");
+const memberId = localStorage.getItem("memberIdx");
 const consumptionHistoryStore = useConsumptionHistoryStore(); // 월별 소비 스토어
 const accountHistoryStore = useAccountHistoryStore(); // 계좌 히스토리 스토어
 
