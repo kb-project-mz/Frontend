@@ -57,6 +57,26 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async sendEmailVerification(email) {
+      try {
+        const response = await apiInstance.post('/member/email/code', { email });
+        return response.data;
+      } catch (error) {
+        console.error('인증코드 전송 오류:', error.response ? error.response.data : error.message);
+        throw new Error('인증코드 전송 실패');
+      }
+    },
+
+    async verifyEmailCode(email, code) {
+      try {
+        const response = await apiInstance.post('/member/email/verification', { email, inputCode: code });
+        return response.data.success;
+      } catch (error) {
+        console.error('인증코드 확인 오류:', error.response ? error.response.data : error.message);
+        throw new Error('인증코드 확인 실패');
+      }
+    },
+
     async logout() {
       try {
         await apiInstance.post('/member/logout');
