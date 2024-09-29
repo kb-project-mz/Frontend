@@ -7,7 +7,6 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const memberId = computed(() => authStore.member.memberId);
-const memberIdx = computed(() => authStore.member.memberIdx);
 const memberName = computed(() => authStore.member.memberName);
 
 const logout = () => {
@@ -20,28 +19,23 @@ const logout = () => {
   <nav class="bg-white shadow-md p-4 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
     <div class="max-w-7.5xl mx-auto flex justify-between items-center">
       <router-link to="/" class="flex items-center">
-        <img src="/src/assets/logo.png" alt="Logo" class="h-8 w-auto" />
+        <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
       </router-link>
 
-    <div v-if="memberId">
-    <div v-if="memberIdx">
-      <router-link to="/mypage">
-        {{ memberName }}님
-      </router-link>
-      <button @click="logout" class="bg-navy ml-2 py-1.5 px-2.5 text-white rounded-md text-xs">로그아웃</button>
-    </div>
+      <div v-if="memberId">
+        <router-link v-if="memberId" to="/mypage" class="mr-2">
+          {{ memberName }}님
+        </router-link>
+        <button @click="logout" class="bg-navy ml-2 py-1.5 px-2.5 text-white rounded-md text-xs">로그아웃</button>
+      </div>
 
-    <div v-else>
-      <div class="flex space-x-4">
-      <router-link to="/login" class="flex items-center">
-        <a href="#" class="gray">로그인</a>
-      </router-link>
-      <span class="gray">|</span>
-      <router-link to="/join" class="flex items-center">
-        <a href="#" class="gray">회원가입</a>
-      </router-link>
-    </div>
-    </div>
+      <div v-else>
+        <div class="flex space-x-4">
+          <router-link to="/login" class="gray">로그인</router-link>
+          <span class="gray">|</span>
+          <router-link to="/join" class="gray">회원가입</router-link>
+        </div>
+      </div>
     </div>
   </nav>
 </template>

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
-import { setTokens, clearTokens, setGoogleIdToken } from '@/util/token';
+import { setLocalStorage, setTokens, clearTokens } from '@/util/token';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
-      id: localStorage.getItem('id') || null,
+      memberIdx: localStorage.getItem('id') || null,
       memberName: localStorage.getItem('memberName') || null,
       memberId: localStorage.getItem('memberId') || null
     }
@@ -23,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
 
         setLocalStorage(loginData);
         this.loadAuthState(); 
+        
         return loginData;
       } catch (error) {
         throw error;
@@ -67,7 +68,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     clearAuthState() {
-      this.member.id = null;
+      this.member.memberIdx = null;
       this.member.memberName = null;
       this.member.memberId = null;
       localStorage.clear();

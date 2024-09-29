@@ -26,6 +26,10 @@ export function clearTokens() {
    localStorage.removeItem('refreshToken');
 }
 
+export function getAccessToken() {
+   return localStorage.getItem('accessToken');
+ }
+
 export function setLocalStorage(loginData) {
    localStorage.setItem('memberId', loginData.memberId);
 
@@ -34,6 +38,12 @@ export function setLocalStorage(loginData) {
    }
 
    setTokens(loginData.accessToken, loginData.refreshToken);
+
    localStorage.setItem('auth', JSON.stringify(loginData));
    localStorage.setItem('memberName', loginData.memberName);
+
+   if (loginData.memberIdx) {
+      localStorage.setItem('memberIdx', loginData.memberIdx);
+}
+
 }

@@ -1,21 +1,23 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
-import axios from 'axios';
 import { useRouter } from 'vue-router';
+import apiInstance from '@/util/axios-instance';
+import { getAccessToken } from '@/util/token';
 
 const member = reactive({
   memberName: '',
   email: '',
 });
 
-const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
+const allowedDomains = ['gmail.com', 'naver.com', 'daum.net']; 
 const selectedDomain = ref('');
-const directEmail = ref('');
+const directEmail = ref(''); 
 const error = ref('');
 const successMessage = ref('');
 const loading = ref(false);
 const isDirectInput = ref(false);
 const router = useRouter();
+
 
 const validateEmail = () => {
   error.value = '';
@@ -39,14 +41,17 @@ const handleDomainChange = () => {
 const findMemberId = async () => {
   loading.value = true;
   error.value = '';
-  const emailToUse = isDirectInput.value ? directEmail.value : member.email;
+ 
+  const emailToUse = isDirectInput.value 
+    ? `${member.email}@${directEmail.value}`
+    : `${member.email}@${selectedDomain.value}`;
 
   try {
-    const response = await axios.post('/api/v1/member/find-member-id', {
-      memberName: member.memberName,
-      email: emailToUse,
-    });
-    successMessage.value = `${response.data.memberName}님의 아이디는 ${response.data.memberId}입니다.`;
+    const response = await apiInstance.get(
+      `/member/memberIdx/${encodeURIComponent(member.memberName)}/${encodeURIComponent(emailToUse)}`
+    );
+    console.log('Response Data2:', response.data.data);
+    successMessage.value = `${response.data.data.memberName}님의 아이디는 ${response.data.data.memberId}입니다.`;
   } catch (err) {
     if (err.response && err.response.status === 404) {
       error.value = '존재하지 않는 사용자입니다.';
@@ -92,7 +97,7 @@ const goToJoin = () => {
       <input 
         v-if="isDirectInput" 
         type="text" 
-        placeholder="이메일을 입력해 주세요" 
+        placeholder="이메일 도메인을 입력해 주세요" 
         v-model="directEmail" 
         class="form-control mt-2" 
       />

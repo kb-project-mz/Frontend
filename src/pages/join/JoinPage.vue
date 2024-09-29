@@ -45,20 +45,24 @@ watch(() => member, (newMember) => {
 });
 
 const checkMemberId = async () => {
-  if (!member.memberId) {
-    memberIdFail.value = '회원 ID를 입력하세요.';
+
+  const trimmedMemberId = member.memberId.trim();
+
+  if (!trimmedMemberId) {
+    memberIdFail.value = '회원 ID는 공백 없이 입력해야 합니다.';
     memberIdSuccess.value = '';
     return;
   }
+
   isLoading.value = true;
 
-  console.log("중복 확인 요청 ID:", member.memberId);
+  console.log("중복 확인 요청 ID:", trimmedMemberId);
 
   try {
-    const result = await auth.checkMemberId(member.memberId);
+    const result = await auth.checkMemberId(trimmedMemberId);
 
     console.log("중복 확인 결과:", result);
-    
+
     if (result) {
       memberIdFail.value = '이미 사용 중인 ID입니다.';
       memberIdSuccess.value = '';
@@ -155,10 +159,9 @@ const join = async () => {
     console.log('회원가입 요청:', member);
     console.log('회원가입 응답:', createResponse);
 
-		// 회원가입 후 로그인 요청
     const loginResponse = await auth.login(member.memberId, member.password);
 
-    if (loginResponse) {
+    if (loginResponse && loginResponse.memberId) {
       console.log('로그인 성공:', loginResponse);
       router.push({ name: 'home' });
     }

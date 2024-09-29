@@ -29,7 +29,7 @@ const login = async () => {
     const response = await auth.login(member.memberId, member.password);
     console.log('로그인 응답:', response);
 
-    if (response.id) {
+    if (response.memberId) {
       console.log("로그인 성공:", response);
       router.push("/");
     } else {

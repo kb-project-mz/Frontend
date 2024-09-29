@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import apiInstance from './axios-instance';
+import apiInstance from '@/util/axios-instance';
 
 export const useChallengeStore = defineStore('challenge', {
   state: () => ({
