@@ -7,6 +7,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const memberId = computed(() => authStore.member.memberId);
+const memberIdx = computed(() => authStore.member.memberIdx);
 const memberName = computed(() => authStore.member.memberName);
 
 const logout = () => {
@@ -23,6 +24,7 @@ const logout = () => {
       </router-link>
 
     <div v-if="memberId">
+    <div v-if="memberIdx">
       <router-link to="/mypage">
         {{ memberName }}님
       </router-link>

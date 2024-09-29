@@ -11,7 +11,7 @@ export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
       try {
         const res = await apiInstance.get(`/consumption/most`, {
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjY5OTAzODMsImV4cCI6MTcyNzA3Njc4M30.ccTmv2HYPALzTt26S2p0Z53YshnRdVidP9finaNG4rs"
+            "Authorization": localStorage.getItem("accessToken")
           }
         },
         {

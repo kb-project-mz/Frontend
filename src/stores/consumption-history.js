@@ -3,7 +3,9 @@ import apiInstance from '@/util/axios-instance';
 
 export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
   state: () => ({
-    cardHistoryToday: [], // 오늘 소비 내역을 저장할 상태
+    cardHistory: [],
+    cardHistoryThisMonth: [],
+    cardHistoryLastMonth: []
   }),
 
   actions: {
@@ -11,31 +13,22 @@ export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
       try {
         const res = await apiInstance.get(`/history/card/${memberId}`, {
           headers: {
-            Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkbGVrZHVkMDEwMiIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MjcwOTMxMDQsImV4cCI6MTcyNzQzODcwNH0.CDpk_rBMERwApocgtppe8EtnuQkbxRpjLAJK2A7wBBo',
+            Authorization: localStorage.getItem("accessToken")
           },
-            }
-        );
+        });
         this.cardHistory = res.data.data;
 
         const now = new Date();
         const thisYear = now.getFullYear();
         const thisMonth = now.getMonth() + 1;
 
-        this.cardHistoryThisMonth = this.cardHistory.filter(
-          (history) => {
-            const consumptionDate = new Date(
-              history.consumptionDate
-            );
+        this.cardHistoryThisMonth = this.cardHistory.filter((history) => {
+            const consumptionDate = new Date(history.consumptionDate);
             const consumptionYear = consumptionDate.getFullYear();
             const consumptionMonth = consumptionDate.getMonth() + 1;
 
-            return (
-              consumptionYear === thisYear &&
-              consumptionMonth == thisMonth
-            );
-          }
-        );
+            return consumptionYear === thisYear && consumptionMonth == thisMonth;
+        });
 
         let lastYear = thisYear;
         let lastMonth = thisMonth - 1;
@@ -45,20 +38,13 @@ export const useConsumptionHistoryStore = defineStore('consumptionHistory', {
           lastMonth = 12;
         }
 
-        this.cardHistoryLastMonth = this.cardHistory.filter(
-          (history) => {
-            const consumptionDate = new Date(
-              history.consumptionDate
-            );
+        this.cardHistoryLastMonth = this.cardHistory.filter((history) => {
+            const consumptionDate = new Date(history.consumptionDate);
             const consumptionYear = consumptionDate.getFullYear();
             const consumptionMonth = consumptionDate.getMonth() + 1;
 
-            return (
-              consumptionYear === lastYear &&
-              consumptionMonth == lastMonth
-            );
-          }
-        );
+            return consumptionYear === lastYear && consumptionMonth == lastMonth;
+        });
       } catch (err) {
         console.error(err);
       }

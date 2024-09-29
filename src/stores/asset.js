@@ -10,15 +10,18 @@ export const useAssetStore = defineStore('asset', {
     connectedCardList: [],
   }),
   actions: {
-    async getAssetList(id) {
+    async getAssetList(memberIdx) {
       try {
-        const response = await apiInstance.get(`/connection/asset/${id}`);
+        const response = await apiInstance.get(`/asset/${memberIdx}`, {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          },
+        });
         this.allAssetList = response.data.data;
         this.allAccountList = this.allAssetList.filter(asset => asset.financeKind === 2);
         this.allCardList = this.allAssetList.filter(asset => asset.financeKind === 1);
         this.connectedAccountList = this.allAccountList.filter(asset => asset.connStatus === 1);
         this.connectedCardList = this.allCardList.filter(asset => asset.connStatus === 1);
-        console.log(this.allAssetList);
       } catch (error) {
         console.error('Failed to fetch asset list:', error);
         throw error;
@@ -28,9 +31,12 @@ export const useAssetStore = defineStore('asset', {
     async updateAccountStatus(selectedAccount) {
       try {
         const id = selectedAccount.prdtId;
-        const response = await apiInstance.post(`/connection/account/${id}`);
+        const response = await apiInstance.post(`/asset/account/${id}`, {}, {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          },
+        });
         this.connectedAccountList.push(selectedAccount);
-        console.log(this.connectedAccountList);
         return response.data;
       } catch (error) {
         console.error('Failed to update account status:', error);
@@ -41,9 +47,12 @@ export const useAssetStore = defineStore('asset', {
     async updateCardStatus(selectedCard) {
       try {
         const id = selectedCard.prdtId;
-        const response = await apiInstance.post(`/connection/card/${id}`);
+        const response = await apiInstance.post(`/asset/card/${id}`, {}, {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          },
+        });
         this.connectedCardList.push(selectedCard);
-        console.log(this.connectedCardList);
         return response.data;
       } catch (error) {
         console.error('Failed to update card status:', error);

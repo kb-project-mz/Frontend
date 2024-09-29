@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset';
 import AddCardModal from '@/components/connection/AddCardModal.vue'; 
 
-const memberId = localStorage.getItem("id");
+const memberIdx = localStorage.getItem("memberIdx");
 
 const assetStore = useAssetStore();
 
@@ -23,7 +23,7 @@ const closeModal = async () => {
 
 const fetchAsset = async () => {
   isLoading.value = true;
-  await assetStore.getAssetList(memberId);
+  await assetStore.getAssetList(memberIdx);
   const cardList = assetStore.allCardList;
   connectedCardList.value = cardList.filter(card => card.connStatus === 1);
   isLoading.value = false;
@@ -50,7 +50,7 @@ onMounted(async ()  => {
           <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
           <div>
             <div class="text-medium">{{ card.prdtName }}</div>
-            <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>
+            <div class="text-lg font-bold">이번 달 카드 사용 금액원</div>
           </div>
         </div>
         <button @click="openModal" class="w-full">

@@ -1,14 +1,7 @@
-<template>
-  <div class="chart-container">
-    <canvas ref="doughnutChart"></canvas>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { Chart, ArcElement, Tooltip, Legend, DoughnutController } from 'chart.js'; // 필요한 요소 임포트
+import { Chart, ArcElement, Tooltip, Legend, DoughnutController } from 'chart.js';
 
-// Chart.js에 필요한 요소들 등록
 Chart.register(ArcElement, Tooltip, Legend, DoughnutController);
 
 const props = defineProps({
@@ -44,7 +37,7 @@ const renderChart = () => {
 };
 
 onMounted(() => {
-  renderChart(); // 차트 렌더링
+  renderChart();
 });
 
 // props가 변경될 때마다 차트 업데이트
@@ -53,10 +46,16 @@ watch([() => props.limit, () => props.completed], () => {
 });
 </script>
 
+<template>
+  <div class="chart-container">
+    <canvas ref="doughnutChart"></canvas>
+  </div>
+</template>
+
 <style scoped>
 .chart-container {
-  width: 100px; /* 고정된 너비 설정 */
-  height: 100px; /* 고정된 높이 설정 */
+  width: 100px;
+  height: 100px;
 }
 
 canvas {
