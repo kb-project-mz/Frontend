@@ -7,7 +7,7 @@ const props = defineProps({
   onClose: { type: Function, required: true }
 });
 
-const memberId = localStorage.getItem("id");
+const memberIdx = localStorage.getItem("memberIdx");
 
 const emit = defineEmits(['updateAccount']);
 
@@ -45,7 +45,7 @@ const addAccount = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberId);
+  await assetStore.getAssetList(memberIdx);
   const accountList = assetStore.allAccountList;
   unconnectedAccountList.value = accountList.filter(account => account.connStatus === 0);
 };

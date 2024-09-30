@@ -7,7 +7,7 @@ const props = defineProps({
   onClose: { type: Function, required: true } 
 });
 
-const memberId = localStorage.getItem("id");
+const memberIdx = localStorage.getItem("memberIdx");
 
 const emit = defineEmits(['updateCard']);
 
@@ -45,7 +45,7 @@ const addCard = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberId);
+  await assetStore.getAssetList(memberIdx);
   const cardList = assetStore.allCardList;
   unconnectedCardList.value = cardList.filter(card => card.connStatus === 0);
 }

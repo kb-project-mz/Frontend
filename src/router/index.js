@@ -95,7 +95,7 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!authStore.member.id) {
+    if (!authStore.member.memberIdx) {
       next('/');
     } else {
       next();

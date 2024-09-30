@@ -5,6 +5,7 @@ import { useAccountHistoryStore } from "@/stores/account-history";
 import MostAndMaximumUsed from "@/components/consumption/MostAndMaximumUsed.vue";
 import CategoryChart from "@/components/consumption/CategoryChart.vue";
 </script>
+
 <template>
     <div class="mx-8 border-l border-gray-300"></div>
     <div class="flex-1">
@@ -22,4 +23,7 @@ import CategoryChart from "@/components/consumption/CategoryChart.vue";
     </div> -->
     </div>
 </template>
-<style></style>
+
+<style scoped>
+
+</style>
