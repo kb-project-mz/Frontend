@@ -88,6 +88,7 @@ const router = createRouter({
       path: '/test/question/:number',
       name: 'testQuestion',
       component: TestQuestionPage
+   
     },
     {
       path: '/test/result',
