@@ -12,7 +12,6 @@ import AssetPage from '@/pages/connection/AssetPage.vue';
 import TestStartPage from '@/pages/test/TestStartPage.vue';
 import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
 import TestResultPage from '@/pages/test/TestResultPage.vue';
-import { useAuthStore } from '@/stores/auth';
 import GoogleCallBack from '@/pages/login/GoogleCallBack.vue';
 
 const router = createRouter({
@@ -94,7 +93,10 @@ const router = createRouter({
       name: 'testResult',
       component: TestResultPage
     },
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  }
 });
 
 router.beforeEach((to, from, next) => {
