@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
+import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
 
 const cr = useRoute();
 const router = useRouter();
@@ -16,18 +17,28 @@ const error = ref('');
 const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
+  console.log('login 호출:', member);
+  
   if (!member.memberId || !member.password) {
     error.value = "아이디와 비밀번호를 모두 입력해주세요.";
+    console.error('입력 오류:', error.value);
     return;
   }
   
-  const response = await auth.login(member.memberId, member.password);
+  try {
+    const response = await auth.login(member.memberId, member.password);
+    console.log('로그인 응답:', response);
 
-  if (response.memberIdx) {
-    console.log("로그인 성공:", response);
-    router.push("/");
-  } else {
-    error.value = response;
+    if (response.memberId) {
+      console.log("로그인 성공:", response);
+      router.push("/");
+    } else {
+      error.value = response;
+      console.error('로그인 실패:', response);
+    }
+  } catch (err) {
+    console.error('로그인 중 예외 발생:', err);
+    error.value = '로그인 중 오류가 발생했습니다.';
   }
 };
 </script>
@@ -95,14 +106,10 @@ const login = async () => {
       <router-link to="join">회원가입</router-link>
     </div>
 
-    <div class="w-1/4">
-      <button 
-        type="submit" 
-        class="cursor-pointer bg-white border border-gray-400 text-sm rounded-xl block w-full ps-10 p-5" 
-        :disabled="disableSubmit">
-        Sign in with Google (Roboto)
-      </button>
+		<div class="mt-3 w-14">
+			<GoogleLoginComponent />
     </div>
+    
   </div>
 </template>
 
