@@ -8,9 +8,9 @@ export const useAccountHistoryStore = defineStore("accountHistory", {
   }),
 
   actions: {
-    async getAccountHistoryList(memberId) {
+    async getAccountHistoryList(memberIdx) {
       try {
-        const res = await apiInstance.get(`/history/account/${memberId}`, {
+        const res = await apiInstance.get(`/history/account/${memberIdx}`, {
           headers: {
             Authorization: localStorage.getItem("accessToken")
           },

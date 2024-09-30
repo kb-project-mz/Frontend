@@ -50,12 +50,12 @@ const endMonth = ref(month - 1);
 const endDay = ref(getEndDay(endYear.value, endMonth.value));
 
 // 소비 내역 불러오기 함수
-const fetchConsumptionHistory = async (memberId) => {
-    await consumptionHistoryStore.getCardHistoryList(memberId);
+const fetchConsumptionHistory = async (memberIdx) => {
+    await consumptionHistoryStore.getCardHistoryList(memberIdx);
     historyData.value = consumptionHistoryStore.cardHistory;
     historyThisMonthData.value = consumptionHistoryStore.cardHistoryThisMonth;
 
-    await accountHistoryStore.getAccountHistoryList(memberId);
+    await accountHistoryStore.getAccountHistoryList(memberIdx);
     accountHistoryData.value = accountHistoryStore.accountHistory;
     accountHistoryThisMonthData.value = accountHistoryStore.accountHistoryThisMonth;
 };
@@ -81,7 +81,7 @@ const fetchSelectedPeriodConsumptionHistory = () => {
 
 onMounted(async () => {
     // 데이터 불러오기
-    await fetchConsumptionHistory(memberId);
+    await fetchConsumptionHistory(memberIdx);
 
     // 만약 상태가 계속 변경되면 무한 렌더링이 발생할 수 있음
     fetchSelectedPeriodConsumptionHistory();

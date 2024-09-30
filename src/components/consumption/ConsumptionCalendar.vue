@@ -38,7 +38,7 @@ const filteredAccountExpenses = computed(() => {
 // 필터링된 카드 지출 내역
 const filteredCardExpenses = computed(() => {
     return props.historyData.filter((item) => {
-        const itemDate = new Date(item.consumptionDate); // 카드 지출 데이터의 날짜 필드 확인 필요
+        const itemDate = new Date(item.cardTransactionDate); // 카드 지출 데이터의 날짜 필드 확인 필요
         return (
             itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount > 0 // 카드 지출 (양수)
         );
@@ -136,7 +136,7 @@ const getExpense = (date) => {
 
     // 카드 지출 필터링 (historyData에서 양수 값)
     const cardExpensesForDate = filteredCardExpenses.value.filter((e) => {
-        const cardDate = new Date(e.consumptionDate).toISOString().split("T")[0];
+        const cardDate = new Date(e.accountTransactionDate).toISOString().split("T")[0];
         return cardDate === date;
     });
 
@@ -148,7 +148,7 @@ const getExpense = (date) => {
 
 const getIncome = (date) => {
     // 해당 날짜에 해당하는 모든 수입 데이터를 필터링 (amount가 양수인 경우만)
-    const incomesForDate = filteredIncomes.value.filter((e) => e.accountDate === date && e.amount > 0);
+    const incomesForDate = filteredIncomes.value.filter((e) => e.accountTransactionDate === date && e.amount > 0);
     const totalAmount = incomesForDate.reduce((sum, e) => sum + e.amount, 0);
 
     return totalAmount ? totalAmount.toLocaleString() : 0;

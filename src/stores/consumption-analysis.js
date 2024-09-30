@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
+import apiInstance from './axios-instance';
 
 export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
   state: () => ({
@@ -7,16 +7,11 @@ export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
   }),
 
   actions: {
-    async getMostAndMaximumUse(memberId, startYear, startMonth, startDay, endYear, endMonth, endDay) {
+    async getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
       try {
         const res = await apiInstance.get(`/consumption/most`, {
-          headers: {
-            "Authorization": localStorage.getItem("accessToken")
-          }
-        },
-        {
           params: {
-            memberId: memberId,
+            memberId: memberIdx,
             startYear: startYear,
             startMonth: startMonth,
             startDay: startDay,
@@ -33,3 +28,4 @@ export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
     }
   },
 });
+

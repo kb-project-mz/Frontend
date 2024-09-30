@@ -51,7 +51,7 @@ const filterExpensesForMonth = (year, month) => {
     const memberName = props.auth.memberName;
 
     const accountExpenses = props.accountHistoryData.filter((item) => {
-        const itemDate = new Date(item.accountDate);
+        const itemDate = new Date(item.accountTransactionDate);
         return itemDate.getFullYear() === year && itemDate.getMonth() === month && item.amount < 0 && (!item.content || !item.content.includes(memberName));
     });
 
