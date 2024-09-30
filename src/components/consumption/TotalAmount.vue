@@ -2,11 +2,11 @@
 import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps({
-  historyData: {
+  CardTransactionData: {
     type: Array,
     required: true,
   },
-  accountHistoryData: {
+  accountTransactionData: {
     type: Array,
     required: true,
   }
@@ -16,7 +16,7 @@ const totalIncome = ref(0);
 const totalOutcome = ref(0);
 
 const getTotalIncome = () => {
-  const accountTotal = props.accountHistoryData.reduce((total, item) => {
+  const accountTotal = props.accountTransactionData.reduce((total, item) => {
     return total + Math.abs(item.amount > 0 ? item.amount : 0);
   }, 0);
 
@@ -24,7 +24,7 @@ const getTotalIncome = () => {
 };
 
 const getTotalOutcome = () => {
-  const historyTotal = props.historyData.reduce((total, item) => {
+  const cardTotal = props.CardTransactionData.reduce((total, item) => {
     return total + item.amount;
   }, 0);
 

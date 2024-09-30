@@ -5,11 +5,11 @@ import TotalAmount from "@/components/consumption/TotalAmount.vue";
 import AverageConsumption from "@/components/consumption/AverageConsumption.vue";
 
 const props = defineProps({
-  historyThisMonthData: {
+  cardTransactionThisMonthData: {
     type: Object,
     required: true
   },
-  accountHistoryThisMonthData: {
+  accountTransactionThisMonthData: {
     type: Object,
     required: true
   }
@@ -24,7 +24,7 @@ const month = new Date().getMonth() + 1;
   <div class="flex justify-between">
     <MostAndMaximumUsed period="이번 달" />
     <div class="flex flex-col justify-between">
-      <TotalAmount :history-data="historyThisMonthData" :account-history-data="accountHistoryThisMonthData" />
+      <TotalAmount :history-data="cardTransactionThisMonthData" :account-history-data="accountTransactionThisMonthData" />
       <AverageConsumption />
     </div>
     <CategoryChart />

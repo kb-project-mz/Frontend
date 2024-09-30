@@ -12,11 +12,11 @@ import { ref, onMounted, computed, watch } from "vue";
 import { Chart } from "chart.js/auto";
 
 const props = defineProps({
-    accountHistoryData: {
+    accountTransactionData: {
         type: Array,
         required: true,
     },
-    historyData: {
+    cardTransactionData: {
         type: Array,
         required: true,
     },
@@ -50,13 +50,13 @@ const chartData = ref({
 const filterExpensesForMonth = (year, month) => {
     const memberName = props.auth.memberName;
 
-    const accountExpenses = props.accountHistoryData.filter((item) => {
+    const accountExpenses = props.accountTransactionData.filter((item) => {
         const itemDate = new Date(item.accountTransactionDate);
         return itemDate.getFullYear() === year && itemDate.getMonth() === month && item.amount < 0 && (!item.content || !item.content.includes(memberName));
     });
 
-    const cardExpenses = props.historyData.filter((item) => {
-        const itemDate = new Date(item.consumptionDate);
+    const cardExpenses = props.cardTransactionData.filter((item) => {
+        const itemDate = new Date(item.cardTransactionDate);
         return itemDate.getFullYear() === year && itemDate.getMonth() === month && item.amount > 0;
     });
 
@@ -159,7 +159,7 @@ onMounted(() => {
 
     // 실시간으로 데이터를 감시하여 업데이트
     watch(
-        () => [props.accountHistoryData, props.historyData],
+        () => [props.accountTransactionData, props.cardTransactionData],
         () => {
             updateChart(); // 데이터가 변경되면 차트 업데이트
         },

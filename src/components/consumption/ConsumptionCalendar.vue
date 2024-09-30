@@ -2,11 +2,11 @@
 import { ref, onMounted, computed, watch } from "vue";
 
 const props = defineProps({
-    accountHistoryData: {
+    accountTransactionData: {
         type: Array,
         required: true,
     },
-    historyData: {
+    cardTransactionData: {
         type: Array,
         required: true,
     },
@@ -27,8 +27,8 @@ const daysInMonth = ref([]);
 // 필터링된 계좌 지출 내역
 const filteredAccountExpenses = computed(() => {
     const memberName = props.auth.memberName;
-    return props.accountHistoryData.filter((item) => {
-        const itemDate = new Date(item.accountDate);
+    return props.accountTransactionData.filter((item) => {
+        const itemDate = new Date(item.accountTransactionDate);
         return (
             itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount < 0 && (!item.content || !item.content.includes(memberName)) // memberName이 content에 포함되지 않은 경우
         );
@@ -37,7 +37,7 @@ const filteredAccountExpenses = computed(() => {
 
 // 필터링된 카드 지출 내역
 const filteredCardExpenses = computed(() => {
-    return props.historyData.filter((item) => {
+    return props.cardTransactionData.filter((item) => {
         const itemDate = new Date(item.cardTransactionDate); // 카드 지출 데이터의 날짜 필드 확인 필요
         return (
             itemDate.getFullYear() === currentYear.value && itemDate.getMonth() === currentMonth.value && item.amount > 0 // 카드 지출 (양수)
@@ -47,8 +47,8 @@ const filteredCardExpenses = computed(() => {
 
 // 필터링된 수입 내역
 const filteredIncomes = computed(() => {
-    return props.accountHistoryData.filter((item) => {
-        const itemDate = new Date(item.accountDate);
+    return props.accountTransactionData.filter((item) => {
+        const itemDate = new Date(item.accountTransactionDate);
         const memberName = props.auth.memberName; // auth 오브젝트에서 memberName 추출
         return (
             itemDate.getFullYear() === currentYear.value &&
@@ -130,13 +130,13 @@ const prevMonth = () => {
 const getExpense = (date) => {
     // 계좌 지출 필터링 (accountHistoryData에서 음수 값)
     const accountExpensesForDate = filteredAccountExpenses.value.filter((e) => {
-        const accountDate = new Date(e.accountDate).toISOString().split("T")[0];
+        const accountDate = new Date(e.accountTransactionDate).toISOString().split("T")[0];
         return accountDate === date; // 일별 필터링
     });
 
     // 카드 지출 필터링 (historyData에서 양수 값)
     const cardExpensesForDate = filteredCardExpenses.value.filter((e) => {
-        const cardDate = new Date(e.accountTransactionDate).toISOString().split("T")[0];
+        const cardDate = new Date(e.cardTransactionDate).toISOString().split("T")[0];
         return cardDate === date;
     });
 

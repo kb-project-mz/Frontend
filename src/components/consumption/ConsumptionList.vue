@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-    historyData: {
+    cardTransactionData: {
         type: Array,
         required: true,
     },
@@ -13,17 +13,17 @@ const props = defineProps({
 
     <!-- 리스트 부분 -->
     <div class="list-content">
-        <div v-for="(history, index) in historyData" :key="index">
+        <div v-for="(transaction, index) in cardTransactionData" :key="index">
             <div class="mx-5">
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-sm">{{ history.consumptionDate }} {{ history.consumptionTime }}</div>
-                        <div class="text-l my-1 font-bold">{{ history.content }}</div>
-                        <div class="text-sm">{{ history.cardName }}</div>
+                        <div class="text-sm">{{ transaction.cardTransactionDate }} {{ transaction.cardTransactionTime }}</div>
+                        <div class="text-l my-1 font-bold">{{ transaction.cardTransactionDescription }}</div>
+                        <div class="text-sm">{{ transaction.cardName }}</div>
                     </div>
                     <div>
                         <div>
-                            <span class="text-xl" style="color: #f55151">{{ history.amount.toLocaleString() }}</span
+                            <span class="text-xl" style="color: #f55151">{{ transaction.amount.toLocaleString() }}</span
                             >원
                         </div>
                     </div>

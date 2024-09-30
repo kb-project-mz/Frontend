@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useConsumptionHistoryStore } from "@/stores/consumption-history";
-import { useAccountHistoryStore } from "@/stores/account-history";
+import { useCardTransactionStore } from "@/stores/card-transaction";
+import { useAccountTransactionStore } from "@/stores/account-transaction";
 import MostAndMaximumUsed from "@/components/consumption/MostAndMaximumUsed.vue";
 import CategoryChart from "@/components/consumption/CategoryChart.vue";
 </script>
