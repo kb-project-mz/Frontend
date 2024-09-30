@@ -7,17 +7,17 @@ import { useBalanceStore } from "@/stores/balance";
 const balanceByMember = ref([]);
 
 const balanceStore = useBalanceStore();
-const memberIndex = localStorage.getItem("id");
+const memberIdx = localStorage.getItem("memberIdx");
 
 // Socket.IO 클라이언트 연결
 const socket = io("http://localhost:3000");
 
-const fetchBalance = async(memberIndex) => {
-  await balanceStore.getTotalBalance(member_index);
+const fetchBalance = async(memberIdx) => {
+  await balanceStore.getTotalBalance(memberIdx);
 }
 
 onMounted(() => {
-  fetchBalance(memberIndex);
+  fetchBalance(memberIdx);
 
   // 연결 성공 시 출력
   socket.on("connect", () => {

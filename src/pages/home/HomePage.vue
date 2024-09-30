@@ -10,11 +10,12 @@ import { ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
-const id = computed(() => authStore.member.id);
+// const memberIdx = computed(() => authStore.member.memberIdx);
+const memberIdx = localStorage.getItem("memberIdx");
 </script>
 
 <template>
-  <div v-if="id">
+  <div v-if="memberIdx">
     <AccountBook />
   </div>
 
