@@ -48,7 +48,7 @@ const findMemberId = async () => {
 
   try {
     const response = await apiInstance.get(
-      `/member/memberIdx/${encodeURIComponent(member.memberName)}/${encodeURIComponent(emailToUse)}`
+      `/member/memberId/${encodeURIComponent(member.memberName)}/${encodeURIComponent(emailToUse)}`
     );
     console.log('Response Data2:', response.data.data);
     successMessage.value = `${response.data.data.memberName}님의 아이디는 ${response.data.data.memberId}입니다.`;
