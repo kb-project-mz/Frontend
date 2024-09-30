@@ -78,6 +78,11 @@ const onCategoryChange = async () => {
 const selectDetailedCategory = (detailedCategory) => {
   formData.value.detailedCategory = detailedCategory;
 };
+
+const selectPublicStatus = (status) => {
+  formData.value.isPublic = status;
+};
+
 </script>
 
 <template>
@@ -141,6 +146,26 @@ const selectDetailedCategory = (detailedCategory) => {
           <label for="challengeLimit" class="block text-sm font-medium mb-1">{{ limitMessage }}</label>
           <input type="range" v-model="formData.challengeLimit" :min="0" :max="maxLimit" :step="formData.challengeType === '횟수' ? 1 : 100" class="form-range w-full" />
           <span class="mt-1 text-center block">{{ formData.challengeLimit }}</span>
+        </div>
+
+        <div class="mb-4">
+          <p class="block text-sm font-medium mb-1">챌린지 공개 여부</p>
+          <div class="flex justify-between">
+            <div
+              class="flex-1 cursor-pointer text-center p-2 rounded-lg"
+              :class="{'bg-green-500 text-white': formData.isPublic === 1, 'bg-gray-200': formData.isPublic !== 1}"
+              @click="selectPublicStatus(1)"
+            >
+              공개
+            </div>
+            <div
+              class="flex-1 cursor-pointer text-center p-2 rounded-lg"
+              :class="{'bg-red-500 text-white': formData.isPublic === 0, 'bg-gray-200': formData.isPublic !== 0}"
+              @click="selectPublicStatus(0)"
+            >
+              비공개
+            </div>
+          </div>
         </div>
 
         <div class="flex justify-end space-x-2">
