@@ -9,7 +9,7 @@ import ConnectedCard from '@/components/connection/ConnectedCard.vue';
       <ConnectedAccount />
     </div>
     <div class="w-1/2">
-      <ConnectedCard/>
+      <ConnectedCard />
     </div>
   </div>
 </template>
