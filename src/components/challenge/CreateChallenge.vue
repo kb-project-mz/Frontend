@@ -45,6 +45,12 @@ const closeModal = () => {
 
 const confirmSubmission = async () => {
   if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
+    const today = new Date();
+    const challengeStartDate = new Date(formData.value.challengeStartDate);
+
+    const challengeStatus = challengeStartDate > today ? "예정" : "진행";
+    formData.value.challengeStatus = challengeStatus;
+
     await challengeStore.insertChallenge(formData.value);
     await challengeStore.getChallengeList(formData.value.memberIdx);
 
@@ -61,6 +67,7 @@ const onConditionChange = () => {
     maxLimit.value = 1000000;
     limitMessage.value = "제한 금액"
   }
+  formData.value.challengeLimit = 0;
 };
 
 const onCategoryChange = async () => {
