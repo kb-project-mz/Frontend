@@ -1,6 +1,9 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import apiInstance from '@/util/axios-instance';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth'; 
+import { setLocalStorage } from '@/util/token'; 
 
 // 입력 필드 상태 관리
 const member = reactive({
@@ -10,6 +13,7 @@ const member = reactive({
   verificationCode: '', // 사용자 입력할 인증 코드
 });
 
+const router = useRouter();
 const error = ref('');
 const successMessage = ref('');
 const isVerificationSent = ref(false);
@@ -108,34 +112,48 @@ const verifyPassword = async () => {
 
   try {
     // 비밀번호 비교 API 호출
-    const response = await apiInstance.post(`/member/verify-password`, {
+    const response = await apiInstance.post(`/member/password/verify-password`, {
       memberName: member.memberName,
       email: member.email,
-      verificationCode: member.verificationCode,
+      newPassword: member.verificationCode,
     });
 
-    if (response.data.success) {
+    console.log('API Response:', response.data);
+
+    if (response.data.success && response.data.data) {
+      const memberId = response.data.data; // 서버에서 memberId를 받아옴
+      if (!memberId) {
+        throw new Error('memberId가 null입니다.');
+      }
+
+      // 이름, 이메일, 아이디 모두 저장
+      const loginData = {
+        memberId: memberId,
+        memberName: member.memberName,
+        email: member.email,
+        ...response.data.tokenData, // 추가적인 토큰 데이터가 있다면 포함
+      };
+      setLocalStorage(loginData); // 토큰과 로그인 데이터를 로컬 스토리지에 저장
       successMessage.value = '비밀번호가 성공적으로 확인되었습니다.';
       isPasswordSet.value = true;
+
+      // 로그인 상태 불러오기
+      const authStore = useAuthStore();
+      authStore.loadAuthState(); // 상태 저장
+
+      // 홈 화면으로 리다이렉트
+      router.push('/');
     } else {
-      error.value = response.data.message;
+      error.value = response.data.message || '비밀번호가 일치하지 않습니다.';
     }
   } catch (err) {
+    console.error(err);
     error.value = '비밀번호 확인에 실패했습니다.';
   } finally {
     loading.value = false;
   }
 };
 
-// 비밀번호 확인 후 로그인
-const login = () => {
-  if (isPasswordSet.value) {
-    console.log('로그인 성공:', member.memberName);
-    // 로그인 후 페이지 이동 처리
-  } else {
-    error.value = '인증 코드가 일치하지 않습니다.';
-  }
-};
 </script>
 
 <template>
@@ -204,11 +222,6 @@ const login = () => {
           인증 코드 확인
         </button>
       </form>
-
-      <!-- 로그인 버튼 -->
-      <button @click="login" v-if="isPasswordSet" class="w-full py-4 bg-navy text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-4">
-        로그인
-      </button>
     </div>
   </div>
 </template>
