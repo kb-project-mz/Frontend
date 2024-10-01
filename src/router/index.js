@@ -7,12 +7,11 @@ import JoinPage from '@/pages/join/JoinPage.vue';
 import ConnectPage from '@/pages/mypage/ConnectPage.vue';
 import MyPage from '@/pages/mypage/MyPage.vue';
 import ChallengePage from '@/pages/challenge/ChallengePage.vue';
-import ConsumptionPage from '@/pages/consumption/ConsumptionPage.vue'
+import AnalysisPage from '@/pages/analysis/AnalysisPage.vue'
 import AssetPage from '@/pages/connection/AssetPage.vue';
 import TestStartPage from '@/pages/test/TestStartPage.vue';
 import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
 import TestResultPage from '@/pages/test/TestResultPage.vue';
-import { useAuthStore } from '@/stores/auth';
 import GoogleCallBack from '@/pages/login/GoogleCallBack.vue';
 
 const router = createRouter({
@@ -57,9 +56,9 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/consumption',
-      name: 'consumption',
-      component: ConsumptionPage,
+      path: '/analysis',
+      name: 'analysis',
+      component: AnalysisPage,
       meta: { requiresAuth: true }
     },
     {
@@ -95,7 +94,10 @@ const router = createRouter({
       name: 'testResult',
       component: TestResultPage
     },
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  }
 });
 
 router.beforeEach((to, from, next) => {

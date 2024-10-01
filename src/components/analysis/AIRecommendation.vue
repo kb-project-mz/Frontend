@@ -11,11 +11,11 @@
       <div class="question py-5 px-8 mr-10 bg-white border border-gray-200 rounded-2xl shadow-lg items-end">
         어떻게 하면 다음달 소비를 줄일 수 있을까요?
       </div>
-      <img src="https://github.com/user-attachments/assets/259c3690-7944-4ac0-a398-220b49f956b6">
+      <img src="https://item.kakaocdn.net/do/a82271aeb7610a35edd4ec9e68704c8dac8e738cb631e72fdb9a96b36413984e">
     </div>
     
     <div class="flex items-center">
-      <img src="https://github.com/user-attachments/assets/259c3690-7944-4ac0-a398-220b49f956b6">
+      <img src="https://item.kakaocdn.net/do/a82271aeb7610a35edd4ec9e68704c8db3a18fdf58bc66ec3f4b6084b7d0b570">
       <div class="answer py-5 px-8 ml-10 bg-white border border-gray-200 rounded-2xl shadow-lg">
         <p>홍길동 님은 이번 달 배달의 민족에 소비를 많이 하신 편입니다.</p>
         <p>배달의 민족에서 5번만 소비를 덜하게 된다면, 평균 50,000원을 아낄 수 있어요 !</p>

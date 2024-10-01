@@ -2,37 +2,45 @@
 import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps({
-  historyData: {
+  cardTransactionData: {
     type: Array,
     required: true,
   },
-  accountHistoryData: {
+  accountTransactionData: {
     type: Array,
     required: true,
   }
 });
 
+const memberName = localStorage.getItem("memberName");
+
 const totalIncome = ref(0);
 const totalOutcome = ref(0);
 
 const getTotalIncome = () => {
-  const accountTotal = props.accountHistoryData.reduce((total, item) => {
-    return total + Math.abs(item.amount > 0 ? item.amount : 0);
+  const accountTotal = props.accountTransactionData.reduce((total, item) => {
+    if (!item.accountTransactionDescription.includes(memberName)) {
+      return total + Math.abs(item.amount > 0 ? item.amount : 0);
+    }
+    return total;
   }, 0);
 
   return accountTotal;
 };
 
 const getTotalOutcome = () => {
-  const historyTotal = props.historyData.reduce((total, item) => {
+  const cardTotal = props.cardTransactionData.reduce((total, item) => {
     return total + item.amount;
   }, 0);
 
-  const accountTotal = props.accountHistoryData.reduce((total, item) => {
-    return total + Math.abs(item.amount < 0 ? item.amount : 0);
+  const accountTotal = props.accountTransactionData.reduce((total, item) => {
+    if (!item.accountTransactionDescription.includes(memberName)) {
+      return total + Math.abs(item.amount < 0 ? item.amount : 0);
+    }
+    return total;
   }, 0);
 
-  return historyTotal + accountTotal;
+  return cardTotal + accountTotal;
 };
 
 onMounted(() => {
@@ -40,7 +48,7 @@ onMounted(() => {
   totalOutcome.value = getTotalOutcome();
 });
 
-watch([() => props.historyData, () => props.accountHistoryData], () => {
+watch([() => props.cardTransactionData, () => props.accountTransactionData], () => {
   totalIncome.value = getTotalIncome();
   totalOutcome.value = getTotalOutcome();
 });

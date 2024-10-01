@@ -20,8 +20,8 @@ export const useAssetStore = defineStore('asset', {
         this.allAssetList = response.data.data;
         this.allAccountList = this.allAssetList.filter(asset => asset.financeKind === 2);
         this.allCardList = this.allAssetList.filter(asset => asset.financeKind === 1);
-        this.connectedAccountList = this.allAccountList.filter(asset => asset.connStatus === 1);
-        this.connectedCardList = this.allCardList.filter(asset => asset.connStatus === 1);
+        this.connectedAccountList = this.allAccountList.filter(asset => asset.connectedStatus === 1);
+        this.connectedCardList = this.allCardList.filter(asset => asset.connectedStatus === 1);
       } catch (error) {
         console.error('Failed to fetch asset list:', error);
         throw error;
@@ -30,8 +30,8 @@ export const useAssetStore = defineStore('asset', {
 
     async updateAccountStatus(selectedAccount) {
       try {
-        const id = selectedAccount.prdtId;
-        const response = await apiInstance.post(`/asset/account/${id}`, {}, {
+        const accountIdx = selectedAccount.prdtId;
+        const response = await apiInstance.post(`/asset/account/${accountIdx}`, {}, {
           headers: {
             Authorization: localStorage.getItem("accessToken")
           },
@@ -46,8 +46,8 @@ export const useAssetStore = defineStore('asset', {
     
     async updateCardStatus(selectedCard) {
       try {
-        const id = selectedCard.prdtId;
-        const response = await apiInstance.post(`/asset/card/${id}`, {}, {
+        const cardIdx = selectedCard.prdtId;
+        const response = await apiInstance.post(`/asset/card/${cardIdx}`, {}, {
           headers: {
             Authorization: localStorage.getItem("accessToken")
           },
