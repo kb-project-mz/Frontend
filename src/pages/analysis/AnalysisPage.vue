@@ -12,7 +12,6 @@ import ConsumptionList from "@/components/analysis/ConsumptionList.vue";
 import BarChart from "@/components/analysis/BarChart.vue";
 
 const memberIdx = localStorage.getItem("memberIdx");
-const memberName = localStorage.getItem("memberName");
 const cardTransactionStore = useCardTransactionStore();
 const accountTransactionStore = useAccountTransactionStore();
 
@@ -81,7 +80,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="isDataLoaded" class="mx-[22%] mt-10">
+  <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1">
     <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">뒤집기</button>
     <div class="flip w-full h-[400px] inline-block perspective-[1100px]">
       <div class="card w-full inline-block relative transition duration-400 transform-style-[preserve-3d]"
@@ -96,28 +95,31 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="flex gap-[30px] mt-8">
-      <div class="w-2/5 mt-8 border border-gray-200 rounded-2xl shadow-lg h-[300px] p-5">
+
+    <div class="grid grid-cols-1 lg:grid-cols-5">
+      <div class="lg:col-span-2">
         <LineChart />
       </div>
-      <div class="w-3/5 mt-8 border border-gray-200 rounded-2xl shadow-lg h-[300px] p-5">
+      <div class="lg:col-span-3">
         <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
       </div>
     </div>
 
-    <div class="flex mt-8 gap-[30px]">
-      <div class="w-3/5 border border-gray-200 rounded-2xl shadow-lg h-[500px] overflow-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-5">
+      <div class="lg:col-span-3">
         <ConsumptionCalendar :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
       </div>
-
-      <div class="w-2/5 border border-gray-200 rounded-2xl shadow-lg h-[500px] overflow-hidden">
+      <div class="lg:col-span-2">
         <ConsumptionList :card-transaction-data="cardTransactionData" />
       </div>
     </div>
 
-    <div class="mt-16 mb-80 gap-[30px]">
+    <div>
       <AIRecommendation />
     </div>
+
+    
+    
   </div>
 </template>
 
