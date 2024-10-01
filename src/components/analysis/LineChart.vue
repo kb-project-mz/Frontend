@@ -24,33 +24,120 @@ const props = defineProps({
   }
 });
 
-// TODO: 10월 소비 내역이 없는 관계로 now를 9월로 고정, 추후 new Date()로 변경해야 함
-const now = new Date(2024, 8, 30);
-const currentYear = now.getFullYear();
-const currentMonth = now.getMonth() + 1;
-const currentDate = now.getDate();
+// TODO: 10월 소비 내역이 없는 관계로 today를 9월로 고정, 추후 new Date()로 변경해야 함
+const today = new Date(2024, 8, 13);
+const currentMonth = today.getMonth();
+const currentDate = today.getDate();
 
-const generatePointRadius = (dataLength) => {
-  console.log(dataLength);
-  return Array.from({ length: dataLength }, (v, i) => (i + 1 === currentDate ? 5 : 0));
+const memberName = localStorage.getItem("memberName");
+
+const lastMonthCompareData = ref(0);
+const thisMonthCompareData = ref(0);
+
+const generatePointRadius = () => {
+  const result = new Array(currentDate).fill(0);
+  result[currentDate - 1] = 5;
+  return result;
 };
 
-const cumulativeData = (cardData, accountData) => {
-  let combinedData = [];
-  const dataLength = Math.max(cardData.length, accountData.length);
-  const memberName = localStorage.getItem("memberName");
+const getEndDay = (year, month) => {
+  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return daysInMonth[month - 1];
+};
 
-  for (let i = 0; i < dataLength; i++) {
-    const cardAmount = cardData[i]?.amount || 0;
-    const accountAmount = accountData[i]?.amount || 0;
-    const accountDescription = accountData[i]?.account_transaction_description || '';
+const calculateDailyTotal = (cardTransactions, accountTransactions) => {
+  
+  const dailyTotals = {};
 
-    const combinedAmount = cardAmount + (accountAmount < 0 && !accountDescription.includes(memberName) ? Math.abs(accountAmount) : 0);
-    combinedData.push(combinedAmount);
-  }
+  accountTransactions.forEach(transaction => {
+    const date = transaction.accountTransactionDate;
+    const amount = transaction.amount;
+    const description = transaction.accountTransactionDescription;
 
+    if (amount < 0 && !description.includes(memberName)) {
+      dailyTotals[date] = (dailyTotals[date] || 0) + Math.abs(amount);
+    }
+  });
+
+  cardTransactions.forEach(transaction => {
+    const date = transaction.cardTransactionDate;
+    const amount = transaction.amount;
+    const description = transaction.cardTransactionDescription;
+
+    if (!description.includes(memberName)) {
+      dailyTotals[date] = (dailyTotals[date] || 0) + amount;
+    }
+  });
+
+  const sortedDates = Object.keys(dailyTotals).sort();
+  const cumulativeTotals = {};
   let cumulativeSum = 0;
-  return combinedData.map(item => cumulativeSum += item);
+
+  let lastProcessedDate = null;
+
+  sortedDates.forEach(date => {
+    let currentDate = new Date(date);
+    
+    if (lastProcessedDate) {
+      let previousDate = new Date(lastProcessedDate);
+      
+      while (previousDate < currentDate) {
+        previousDate.setDate(previousDate.getDate() + 1);
+        const formattedDate = previousDate.toISOString().split('T')[0];
+        cumulativeTotals[formattedDate] = cumulativeSum;
+      }
+    }
+
+    cumulativeSum += dailyTotals[date];
+    cumulativeTotals[date] = cumulativeSum;
+    
+    lastProcessedDate = date;
+  });
+
+  if (lastProcessedDate) {
+    let lastDate = new Date(lastProcessedDate);
+    if (lastDate.getMonth() == today.getMonth()) {
+      while (lastDate < today) {
+        lastDate.setDate(lastDate.getDate() + 1);
+        const formattedDate = lastDate.toISOString().split('T')[0];
+        cumulativeTotals[formattedDate] = cumulativeSum;
+      }
+
+      thisMonthCompareData.value = cumulativeTotals[today.toISOString().split('T')[0]];
+    } else {
+      const year = today.getFullYear();
+      const month = today.getMonth();
+
+      let lastMonthYear = year;
+      let lastMonth = month - 1;
+
+      if (lastMonth < 0) {
+        lastMonth = 11;
+        lastMonthYear--;
+      }
+
+      const lastMonthDay = new Date(lastMonthYear, lastMonth, getEndDay(lastMonthYear, lastMonth));
+      while (lastDate < lastMonthDay) {
+        lastDate.setDate(lastDate.getDate() + 1);
+        const formattedDate = lastDate.toISOString().split('T')[0];
+        cumulativeTotals[formattedDate] = cumulativeSum;
+      }
+      
+      const compareDate = new Date(lastMonthYear, lastMonth, today.getDate());
+      if (getEndDay(lastMonthYear, lastMonth) < today.getDate()) {
+        compareDate.setDate(getEndDay(lastMonthYear, lastMonth)); 
+      }
+      
+      lastMonthCompareData.value = cumulativeTotals[compareDate.toISOString().split('T')[0]];
+    }
+  }
+  
+  return Object.values(cumulativeTotals);
+};
+
+const getDifference = () => {
+  return thisMonthCompareData.value - lastMonthCompareData.value;
 }
 
 const LineChart = Line;
@@ -66,20 +153,16 @@ const chartData = ref({
       label: "지난달 소비",
       borderColor: "#D6D7D9",
       pointRadius: 0,
-      data: cumulativeData(props.cardTransactionLastMonthData, props.accountTransactionLastMonthData),
-      tension: 0.1
+      data: calculateDailyTotal(props.cardTransactionLastMonthData, props.accountTransactionLastMonthData),
+      tension: 0.2
     },
     {
       label: '이번달 소비',
       borderColor: '#2E7EED',
       pointBackgroundColor: '#2E7EED',
-      pointRadius: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5],
-      data: [
-        1000, 5000, 7000, 16000, 27000, 30000, 50000, 50700, 64000,
-        100000, 120000, 250000, 273000, 284000, 310000, 345000,
-        385000, 410000, 462000, 540000
-      ],
-      tension: 0.1,
+      pointRadius: generatePointRadius(),
+      data: calculateDailyTotal(props.cardTransactionThisMonthData, props.accountTransactionThisMonthData),
+      tension: 0.2
     }
   ],
 });
@@ -106,16 +189,16 @@ const chartOptions = ref({
 </script>
 
 <template>
-  <div class="py-5 px-8 bg-white border border-gray-200 rounded-2xl shadow overflow-hidden">
+  <div class="py-5 px-8 bg-white border border-gray-200 rounded-2xl shadow">
     <div class="flex items-center justify-between">
       <div>
         <div>지난 달보다</div>
-        <div><span class="text-red font-bold">10,000</span>원 더</div>
+        <div><span class="text-red font-bold">{{ Math.abs(getDifference()).toLocaleString() }}</span>원 {{ getDifference() > 0 ? "더" : "덜" }}</div>
         <div>사용하고 있어요</div>
       </div>
 
-      <div class="flex w-32 justify-end h-16">
-        <line-chart class="w-full h-full" :data="chartData" :options="chartOptions" />
+      <div class="h-full w-2/5 items-end">
+        <line-chart :data="chartData" :options="chartOptions" />
       </div>
     </div>
   </div>
@@ -126,5 +209,3 @@ const chartOptions = ref({
   color: #F55151;
 }
 </style>
-
-
