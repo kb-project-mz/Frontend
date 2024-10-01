@@ -8,7 +8,7 @@ export const useBalanceStore = defineStore("balance", {
   actions: {
     async getTotalBalance(memberIdx) {
       try {
-        const response = await apiInstance.post(`/home/balance/${memberIdx}`, {memberIdx});
+        const response = await apiInstance.post(`/home/balance/${memberIdx}`);
         this.TotalBalanceList = response.data.data;
       } catch (error) {
         console.error("Failed to fetch total balance: ", error);

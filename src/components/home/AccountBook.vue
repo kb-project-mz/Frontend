@@ -12,12 +12,13 @@ const memberIdx = localStorage.getItem("memberIdx");
 // Socket.IO 클라이언트 연결
 const socket = io("http://localhost:3000");
 
-const fetchBalance = async(memberIdx) => {
+const fetchBalance = async (memberIdx) => {
   await balanceStore.getTotalBalance(memberIdx);
-}
+};
 
-onMounted(() => {
-  fetchBalance(memberIdx);
+onMounted(async () => {
+  await fetchBalance(memberIdx);
+  balanceByMember.value = balanceStore.TotalBalanceList; // 업데이트된 데이터 반영
 
   // 연결 성공 시 출력
   socket.on("connect", () => {
