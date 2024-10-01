@@ -25,11 +25,11 @@ const renderChart = () => {
       ],
     },
     options: {
-      responsive: true, // 부모 요소 크기에 맞춰 차트 크기 조정
-      maintainAspectRatio: false, // 캔버스의 비율을 유지하지 않고, 부모의 크기에 맞추기
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
-          display: false, // 차트 위의 막대기와 텍스트 숨기기
+          display: false,
         },
       },
     },
