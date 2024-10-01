@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useConsumptionAnalysisStore } from '@/stores/consumption-analysis';
+import { useTransactionAnalysisStore } from '@/stores/transaction-analysis';
 import MostUsed from './MostUsed.vue';
 import MaximumUsed from './MaximumUsed.vue';
 import medalFirst from '@/assets/medal_first.png';
@@ -14,13 +14,13 @@ const props = defineProps({
   }
 });
 
-const consumptionAnalysisStore = useConsumptionAnalysisStore();
+const transactionAnalysisStore = useTransactionAnalysisStore();
 const mostUsed = ref({});
 const maximumAmount = ref({});
 
-const fetchConsumptionAnalysis = async (memberId, startYear, startMonth, startDay, endYear, endMonth, endDay) => {
-  await consumptionAnalysisStore.getMostAndMaximumUse(memberId, startYear, startMonth, startDay, endYear, endMonth, endDay);
-  const formattedData = formatMostUsed(consumptionAnalysisStore.mostAndMaximum);
+const fetchTransactionAnalysis = async (memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) => {
+  await transactionAnalysisStore.getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay);
+  const formattedData = formatMostUsed(transactionAnalysisStore.mostAndMaximum);
   
   mostUsed.value = formattedData.mostUsed;
   maximumAmount.value = formattedData.maximumAmount;

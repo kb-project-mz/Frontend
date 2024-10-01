@@ -1,22 +1,17 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
 
-export const useConsumptionAnalysisStore = defineStore('consumptionAnalysis', {
+export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   state: () => ({
     mostAndMaximum: ""
   }),
 
   actions: {
-    async getMostAndMaximumUse(memberId, startYear, startMonth, startDay, endYear, endMonth, endDay) {
+    async getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
       try {
-        const res = await apiInstance.get(`/consumption/most`, {
-          headers: {
-            "Authorization": localStorage.getItem("accessToken")
-          }
-        },
-        {
+        const res = await apiInstance.get(`/transaction/most`, {
           params: {
-            memberId: memberId,
+            memberIdx: memberIdx,
             startYear: startYear,
             startMonth: startMonth,
             startDay: startDay,

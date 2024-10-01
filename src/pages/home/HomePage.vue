@@ -18,7 +18,7 @@ const memberIdx = localStorage.getItem("memberIdx");
   <div v-if="memberIdx">
     <AccountBook />
   </div>
-
+  
   <div v-else>
     <!-- 상단 글자 -->
     <div class="max-w-7.5xl mx-auto flex">
@@ -43,7 +43,7 @@ const memberIdx = localStorage.getItem("memberIdx");
 
       <Button
         :img-src="chartImage"
-        :router-to="{ name: 'consumption' }"
+        :router-to="{ name: 'analysis' }"
         text-above="나의 소비"
         text-below="습관 분석"
       />
