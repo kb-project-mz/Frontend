@@ -22,13 +22,13 @@ const getEndDay = (year, month) => {
 };
 
 const splitRecommendation = computed(() => {
-  return recommendation.value.split(/(?<=[.!?🤔🙂😊😄])/g);
+  return recommendation.value.split(/(?<=[.!?])/g);
 });
 
 onMounted(async () => {
   // recommendation.value = await transactionAnalysisStore.fetchAiRecommendation(memberIdx, currentYear, currentMonth + 1, getEndDay(currentYear, currentMonth));
-  isLoaded.value = true;
   recommendation.value = "홍길동 님은 이번 달 배달의 민족에 소비를 많이 하신 편입니다. 배달의 민족에서 5번만 소비를 덜하게 된다면, 평균 50,000원을 아낄 수 있어요 ! 다음 달에는 배달 음식을 조금 줄여보는 것이 어떨까요?";
+  isLoaded.value = true;
 });
 </script>
 
@@ -49,7 +49,7 @@ onMounted(async () => {
       <div class="max-w-fit bg-yellow py-5 px-8 ml-10 border border-gray-200 rounded-2xl shadow-lg">
         <div v-if="isLoaded">
           <div v-for="(sentence, index) in splitRecommendation" :key="index">
-            {{ sentence }}
+            {{ sentence }}<span v-if="index === splitRecommendation.length - 1"> 🤗</span>
           </div>
         </div>
         <div v-else>
