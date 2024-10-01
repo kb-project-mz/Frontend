@@ -33,11 +33,14 @@ const filteredAccountExpenses = computed(() => {
     // 로그 추가 - 데이터 확인
     console.log("Account Transaction Data:", props.accountTransactionData);
 
-    return props.accountTransactionData.filter((item) => {
+    const filteredData = props.accountTransactionData.filter((item) => {
         const itemDate = new Date(item.accountTransactionDate); // 정확한 날짜 객체 생성
         console.log("Account transaction date:", item.accountTransactionDate, "Parsed date:", itemDate); // 로그 추가
         return itemDate.getFullYear() === currentYear.value && itemDate.getMonth() + 1 === currentMonth.value && item.amount < 0;
     });
+
+    console.log("Filtered Account Expenses:", filteredData); // 필터링된 데이터 로그
+    return filteredData;
 });
 
 // 필터링된 카드 지출 내역
@@ -50,11 +53,14 @@ const filteredCardExpenses = computed(() => {
     // 로그 추가 - 데이터 확인
     console.log("Card Transaction Data:", props.cardTransactionData);
 
-    return props.cardTransactionData.filter((item) => {
+    const filteredData = props.cardTransactionData.filter((item) => {
         const itemDate = new Date(item.cardTransactionDate); // 정확한 날짜 객체 생성
         console.log("Card transaction date:", item.cardTransactionDate, "Parsed date:", itemDate); // 로그 추가
         return itemDate.getFullYear() === currentYear.value && itemDate.getMonth() + 1 === currentMonth.value && item.amount > 0;
     });
+
+    console.log("Filtered Card Expenses:", filteredData); // 필터링된 데이터 로그
+    return filteredData;
 });
 
 // 일별 지출 총합 계산 함수 (계좌 지출 + 카드 지출)
@@ -62,15 +68,19 @@ const getDailyExpenses = () => {
     const daysInMonth = new Date(currentYear.value, currentMonth.value, 0).getDate(); // 현재 월의 총 일 수
     const dailyExpenses = Array(daysInMonth).fill(0); // 날짜별로 초기값 0으로 설정된 배열
 
+    console.log(`Days in month: ${daysInMonth}`);
+
     // 계좌 지출 데이터
     filteredAccountExpenses.value.forEach((e) => {
         const date = new Date(e.accountTransactionDate).getDate();
+        console.log(`Adding ${Math.abs(e.amount)} to account transaction on day ${date}`);
         dailyExpenses[date - 1] += Math.abs(e.amount); // 날짜별로 금액 합산
     });
 
     // 카드 지출 데이터
     filteredCardExpenses.value.forEach((e) => {
         const date = new Date(e.cardTransactionDate).getDate();
+        console.log(`Adding ${e.amount} to card transaction on day ${date}`);
         dailyExpenses[date - 1] += e.amount; // 날짜별로 금액 합산
     });
 
@@ -99,6 +109,7 @@ const renderChart = () => {
     }
 
     const dailyExpenses = getDailyExpenses();
+    console.log("Daily expenses for chart:", dailyExpenses); // 차트 데이터 로그 추가
     const dates = Array.from({ length: dailyExpenses.length }, (_, i) => `${i + 1}일`);
 
     chartInstance.value = new Chart(ctx, {
@@ -132,8 +143,11 @@ const renderChart = () => {
 
 // 컴포넌트가 처음 로드될 때 차트 생성
 onMounted(() => {
+    console.log("Card Transaction Data (initial):", props.cardTransactionData);
+    console.log("Account Transaction Data (initial):", props.accountTransactionData);
+
     // 데이터가 undefined인지 확인
-    if (props.accountTransactionData && props.cardTransactionData) {
+    if (props.accountTransactionData?.length && props.cardTransactionData?.length) {
         renderChart(); // 차트 렌더링
     } else {
         console.log("No transaction data available at mount");
@@ -142,8 +156,10 @@ onMounted(() => {
 
 // 데이터가 변경될 때 차트를 다시 렌더링
 watch([props.accountTransactionData, props.cardTransactionData], ([newAccountData, newCardData]) => {
-    if (newAccountData && newCardData) {
+    if (newAccountData?.length && newCardData?.length) {
         renderChart(); // 데이터가 준비되었을 때 차트 렌더링
+    } else {
+        console.log("Not enough data to render chart");
     }
 });
 </script>
