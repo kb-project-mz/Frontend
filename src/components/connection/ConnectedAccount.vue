@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset';
-import AddAccountBookModal from '@/components/connection/AddAccountBookModal.vue';
+import AddAccountBookModal from '@/components/connection/AddAccountModal.vue';
 
 const memberIdx = localStorage.getItem("memberIdx");
 
@@ -25,7 +25,7 @@ const fetchAsset = async () => {
   isLoading.value = true;
   await assetStore.getAssetList(memberIdx);
   const accountList = assetStore.allAccountList;
-  connectedAccountList.value = accountList.filter(account => account.connStatus === 1);
+  connectedAccountList.value = accountList.filter(account => account.connectedStatus === 1);
   isLoading.value = false;
 };
 
