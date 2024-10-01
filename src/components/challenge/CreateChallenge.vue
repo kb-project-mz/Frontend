@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useChallengeStore } from '@/stores/challengeStore';
+import { useChallengeStore } from '@/stores/challenge';
 
 const memberIdx = localStorage.getItem("memberIdx");
 
@@ -9,98 +9,112 @@ const emit = defineEmits(['close', 'challengeAdded']);
 
 const challengeStore = useChallengeStore();
 
-const detailedCategories = ref([]);  
-const maxLimit = ref(100);  
+const detailedCategories = ref([]);
+const maxLimit = ref(100);
+const limitMessage = ref("제한 횟수");
 
 const formData = ref({
-  category: 1,
-  memberId: memberIdx,
+  memberIdx: memberIdx,
   challengeName: '',
-  challengeType: '0',
-  challengeLimit: 1,
-  startDate: '',
-  endDate: '',
-  detailedCategory: ''
+  challengeType: '횟수',
+  challengeLimit: 0,
+  categoryIdx: 1,
+  detailedCategory: '',
+  challengeStatus: '',
+  challengeStartDate: '',
+  challengeEndDate: '',
+  isPublic: 1,
 });
 
 const closeModal = () => {
-  emit('close');
-};
-
-const resetForm = () => {
   formData.value = {
-    category: 1,
-    memberId: memberIdx,
+    memberIdx: memberIdx,
     challengeName: '',
-    challengeType: '0',
-    challengeLimit: 1,
-    startDate: '',
-    endDate: '',
-    detailedCategory: ''
+    challengeType: '횟수',
+    challengeLimit: 0,
+    categoryIdx: 1,
+    detailedCategory: '',
+    challengeStatus: '',
+    challengeStartDate: '',
+    challengeEndDate: '',
+    isPublic: 1,
   };
   detailedCategories.value = [];
-  closeModal();
+  emit('close');
 };
 
 const confirmSubmission = async () => {
   if (window.confirm('한번 등록한 챌린지는 수정할 수 없습니다. 이대로 진행하시겠습니까?')) {
-    await challengeStore.insertChallenge(formData.value);
-    await challengeStore.getChallengeList(formData.value.memberId);
+    const today = new Date();
+    const challengeStartDate = new Date(formData.value.challengeStartDate);
 
-    window.location.reload(); 
-    resetForm();
+    const challengeStatus = challengeStartDate > today ? "예정" : "진행";
+    formData.value.challengeStatus = challengeStatus;
+
+    await challengeStore.insertChallenge(formData.value);
+    await challengeStore.getChallengeList(formData.value.memberIdx);
+
+    window.location.reload();
     closeModal();
   }
 };
 
 const onConditionChange = () => {
-  if (formData.value.challengeType === '0') {
-    maxLimit.value = 100;  
+  if (formData.value.challengeType === '횟수') {
+    maxLimit.value = 100;
+    limitMessage.value = "제한 횟수";
   } else {
-    maxLimit.value = 1000000;  
+    maxLimit.value = 1000000;
+    limitMessage.value = "제한 금액"
   }
+  formData.value.challengeLimit = 0;
 };
 
 const onCategoryChange = async () => {
-  await challengeStore.getDetailedCategory(memberIdx, formData.value.category);
+  await challengeStore.getDetailedCategory(memberIdx, formData.value.categoryIdx);
   detailedCategories.value = challengeStore.detailedCategories;
 };
 
-const selectDetailedCategory = (category) => {
-  formData.value.detailedCategory = category;
+const selectDetailedCategory = (detailedCategory) => {
+  formData.value.detailedCategory = detailedCategory;
 };
+
+const selectPublicStatus = (status) => {
+  formData.value.isPublic = status;
+};
+
 </script>
 
 <template>
-  <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-      <h3 class="text-xl font-semibold mb-4">나의 챌린지 등록하기</h3>
+  <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30" @click="closeModal">
+    <div class="bg-white p-5 rounded-lg shadow-lg fixed box-border" @click.stop>
+      <h3 class="text-xl font-semibold mb-4 text-center">나의 챌린지 등록하기</h3>
       <form @submit.prevent="confirmSubmission">
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">챌린지 이름</label>
-          <input type="text" v-model="formData.challengeName" class="form-input mt-1 block w-full border-gray-300 rounded-md" required />
+        <div>
+          <label for="challengeName" class="block text-sm font-medium mb-1">챌린지 이름</label>
+          <input id="challengeName" type="text" v-model="formData.challengeName" class="bg-gray border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2" required />
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">기간</label>
-          <div class="flex space-x-2">
-            <input type="date" v-model="formData.startDate" class="form-input w-1/2 border-gray-300 rounded-md" required />
-            <span class="self-center">~</span>
-            <input type="date" v-model="formData.endDate" class="form-input w-1/2 border-gray-300 rounded-md" required />
+          <label for="challengeDuration" class="block text-sm font-medium mb-1">기간</label>
+          <div class="flex">
+            <input type="date" v-model="formData.challengeStartDate" class="form-input border-gray-300 rounded-md" required />
+            <span class="self-center">-</span>
+            <input type="date" v-model="formData.challengeEndDate" class="form-input border-gray-300 rounded-md" required />
           </div>
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">조건</label>
+          <label for="challengeType" class="block text-sm font-medium mb-1">조건</label>
           <select v-model="formData.challengeType" @change="onConditionChange" class="form-select block w-full border-gray-300 rounded-md">
-            <option value="0">횟수제한</option>
-            <option value="1">제한금액</option>
+            <option value="횟수">횟수 제한</option>
+            <option value="금액">금액 제한</option>
           </select>
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">카테고리</label>
-          <select v-model="formData.category" @change="onCategoryChange" class="form-select block w-full border-gray-300 rounded-md">
+          <label for="categoryIdx" class="block text-sm font-medium mb-1">카테고리</label>
+          <select v-model="formData.categoryIdx" @change="onCategoryChange" class="form-select block w-full border-gray-300 rounded-md">
             <option value="1">식비</option>
             <option value="2">카페/디저트</option>
             <option value="3">교통비</option>
@@ -129,14 +143,34 @@ const selectDetailedCategory = (category) => {
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">제한 횟수 / 제한 금액</label>
-          <input type="range" v-model="formData.challengeLimit" :min="1" :max="maxLimit" class="form-range w-full" />
+          <label for="challengeLimit" class="block text-sm font-medium mb-1">{{ limitMessage }}</label>
+          <input type="range" v-model="formData.challengeLimit" :min="0" :max="maxLimit" :step="formData.challengeType === '횟수' ? 1 : 100" class="form-range w-full" />
           <span class="mt-1 text-center block">{{ formData.challengeLimit }}</span>
+        </div>
+
+        <div class="mb-4">
+          <p class="block text-sm font-medium mb-1">챌린지 공개 여부</p>
+          <div class="flex justify-between">
+            <div
+              class="flex-1 cursor-pointer text-center p-2 rounded-lg"
+              :class="{'bg-green-500 text-white': formData.isPublic === 1, 'bg-gray-200': formData.isPublic !== 1}"
+              @click="selectPublicStatus(1)"
+            >
+              공개
+            </div>
+            <div
+              class="flex-1 cursor-pointer text-center p-2 rounded-lg"
+              :class="{'bg-red-500 text-white': formData.isPublic === 0, 'bg-gray-200': formData.isPublic !== 0}"
+              @click="selectPublicStatus(0)"
+            >
+              비공개
+            </div>
+          </div>
         </div>
 
         <div class="flex justify-end space-x-2">
           <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">등록</button>
-          <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" @click="resetForm">취소</button>
+          <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" @click="closeModal">취소</button>
         </div>
       </form>
     </div>
