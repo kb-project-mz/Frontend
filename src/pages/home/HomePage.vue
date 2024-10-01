@@ -29,7 +29,7 @@ import challengeImage from '@/assets/챌린지.png';
 
     <Button 
       :img-src="chartImage" 
-      :router-to="{ name: 'consumption' }" 
+      :router-to="{ name: 'analysis' }" 
       text-above="나의 소비" 
       text-below="습관 분석" 
     />

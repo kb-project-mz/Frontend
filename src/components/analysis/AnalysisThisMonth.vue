@@ -1,15 +1,15 @@
 <script setup>
-import MostAndMaximumUsed from "@/components/consumption/MostAndMaximumUsed.vue";
-import CategoryChart from "@/components/consumption/CategoryChart.vue";
-import TotalAmount from "@/components/consumption/TotalAmount.vue";
-import AverageConsumption from "@/components/consumption/AverageConsumption.vue";
+import MostAndMaximumUsed from "@/components/analysis/MostAndMaximumUsed.vue";
+import CategoryChart from "@/components/analysis/CategoryChart.vue";
+import TotalAmount from "@/components/analysis/TotalAmount.vue";
+import AverageConsumption from "@/components/analysis/AverageConsumption.vue";
 
 const props = defineProps({
-  cardTransactionThisMonthData: {
+  cardTransactionData: {
     type: Object,
     required: true
   },
-  accountTransactionThisMonthData: {
+  accountTransactionData: {
     type: Object,
     required: true
   }
@@ -24,7 +24,7 @@ const month = new Date().getMonth() + 1;
   <div class="flex justify-between">
     <MostAndMaximumUsed period="이번 달" />
     <div class="flex flex-col justify-between">
-      <TotalAmount :history-data="cardTransactionThisMonthData" :account-history-data="accountTransactionThisMonthData" />
+      <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
       <AverageConsumption />
     </div>
     <CategoryChart />

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import apiInstance from './axios-instance';
+import apiInstance from '@/util/axios-instance';
 
 export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   state: () => ({
@@ -28,4 +28,3 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
     }
   },
 });
-

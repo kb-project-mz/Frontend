@@ -2,8 +2,8 @@
 import { ref, onMounted } from "vue";
 import { useCardTransactionStore } from "@/stores/card-transaction";
 import { useAccountTransactionStore } from "@/stores/account-transaction";
-import MostAndMaximumUsed from "@/components/consumption/MostAndMaximumUsed.vue";
-import CategoryChart from "@/components/consumption/CategoryChart.vue";
+import MostAndMaximumUsed from "@/components/analysis/MostAndMaximumUsed.vue";
+import CategoryChart from "@/components/analysis/CategoryChart.vue";
 </script>
 
 <template>
