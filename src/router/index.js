@@ -12,7 +12,7 @@ import AssetPage from '@/pages/connection/AssetPage.vue';
 import TestStartPage from '@/pages/test/TestStartPage.vue';
 import TestQuestionPage from '@/pages/test/TestQuestionPage.vue';
 import TestResultPage from '@/pages/test/TestResultPage.vue';
-import { useAuthStore } from '@/stores/auth';
+import GoogleCallBack from '@/pages/login/GoogleCallBack.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +32,11 @@ const router = createRouter({
       name: 'join',
       component: JoinPage
     },
+		{
+			path: '/google-callback',
+			name: 'googleCallback',
+			component: GoogleCallBack
+		},
     {
       path: '/connect',
       name: 'connect',
@@ -88,21 +93,19 @@ const router = createRouter({
       name: 'testResult',
       component: TestResultPage
     },
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  }
 });
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
-
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!authStore.member.memberIdx) {
-      next('/');
-    } else {
-      next();
-    }
+  const isLoggedIn = !!localStorage.getItem('auth');
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login');
   } else {
     next();
   }
-})
+});
 
 export default router;

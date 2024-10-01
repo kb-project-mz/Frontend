@@ -29,6 +29,11 @@ const memberIdSuccess = ref('');
 const disableSubmit = ref(true);
 const isLoading = ref(false);
 const isStrong = ref(false);
+const isVerificationCodeSent = ref(false);
+const inputCode = ref('');
+const isVerifiedEmail = ref(false);
+const verificationSuccess = ref('');
+const verificationFail = ref('');
 
 watch(() => member, (newMember) => {
   disableSubmit.value = !(
@@ -40,25 +45,29 @@ watch(() => member, (newMember) => {
     newMember.birthday &&
     newMember.gender &&
     newMember.terms &&
-    isMemberIdChecked.value
+    isMemberIdChecked.value &&
+    isVerifiedEmail.value
   );
 });
 
 const checkMemberId = async () => {
-  if (!member.memberId) {
-    memberIdFail.value = '회원 ID를 입력하세요.';
+  const trimmedMemberId = member.memberId.trim();
+
+  if (!trimmedMemberId) {
+    memberIdFail.value = '회원 ID는 공백 없이 입력해야 합니다.';
     memberIdSuccess.value = '';
     return;
   }
+
   isLoading.value = true;
 
-  console.log("중복 확인 요청 ID:", member.memberId);
+  console.log("중복 확인 요청 ID:", trimmedMemberId);
 
   try {
-    const result = await auth.checkMemberId(member.memberId);
+    const result = await auth.checkMemberId(trimmedMemberId);
 
     console.log("중복 확인 결과:", result);
-    
+
     if (result) {
       memberIdFail.value = '이미 사용 중인 ID입니다.';
       memberIdSuccess.value = '';
@@ -138,12 +147,62 @@ const updateDirectEmail = () => {
   }
 };
 
+const sendVerificationCode = async () => {
+  if (!member.email) {
+    return alert('이메일을 입력해 주세요.');
+  }
+
+  try {
+    isLoading.value = true;
+    const result = await auth.sendEmailVerification(member.email);
+    isVerificationCodeSent.value = true;
+    alert('인증 코드가 발송되었습니다. 이메일을 확인하고 인증 코드를 입력해 주세요.');
+    console.log('인증 코드 전송 성공:', result);
+  } catch (error) {
+    alert('인증 코드 전송 중 오류가 발생했습니다.');
+    console.error('인증 코드 전송 오류:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const verifyCode = async () => {
+  if (!inputCode.value) {
+    return alert('인증 코드를 입력해 주세요.');
+  }
+
+  try {
+    isLoading.value = true;
+    const result = await auth.verifyEmailCode(member.email, inputCode.value);
+    
+    if (result) {
+      verificationSuccess.value = '이메일 인증이 완료되었습니다.';
+      verificationFail.value = '';
+      isVerifiedEmail.value = true;
+    } else {
+      verificationFail.value = '인증 코드가 올바르지 않습니다.';
+      verificationSuccess.value = '';
+      isVerifiedEmail.value = false;
+    }
+  } catch (error) {
+    alert('인증 코드 확인 중 오류가 발생했습니다.');
+    console.error('인증 코드 확인 오류:', error);
+    verificationFail.value = '인증 코드 확인 중 오류가 발생했습니다.';
+    isVerifiedEmail.value = false;
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const join = async () => {
   if (!isMemberIdChecked.value) {
-    return alert ('ID 중복 확인을 해 주세요')
+    return alert('ID 중복 확인을 해 주세요.');
   }
   if (member.password !== member.checkPassword) {
     return alert('비밀번호가 일치하지 않습니다.');
+  }
+  if (!isVerifiedEmail.value) {
+    return alert('이메일 인증을 완료해 주세요. ');
   }
   if (!member.terms) {
     return alert('약관에 동의해야 합니다.');
@@ -155,10 +214,9 @@ const join = async () => {
     console.log('회원가입 요청:', member);
     console.log('회원가입 응답:', createResponse);
 
-		// 회원가입 후 로그인 요청
     const loginResponse = await auth.login(member.memberId, member.password);
 
-    if (loginResponse) {
+    if (loginResponse && loginResponse.memberId) {
       console.log('로그인 성공:', loginResponse);
       router.push({ name: 'home' });
     }
@@ -229,7 +287,6 @@ const join = async () => {
             placeholder="비밀번호"
             @input="checkPasswordStrength"
             required />
-            
         </div>
         <div :class="['text-sm', 'mt-1', 'mb-6', isStrong ? 'text-green-500' : 'text-red-500']">
           {{ passwordStrengthMessage }}
@@ -274,24 +331,26 @@ const join = async () => {
             <span class="px-2">●●●●●●</span>
           </div>
         </div>
-        
 
         <div class="mb-4 flex flex-col">
           <div class="flex items-center">
             <input
-            v-model="member.email"
-            type="email"
-            
-            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-            id="email"
-            placeholder="이메일"
-            required />
+              v-model="member.email"
+              type="email"
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+              id="email"
+              placeholder="이메일"
+              required
+            />
             <select v-model="selectedDomain" @change="handleDomainChange"
               class="border border-gray-300 rounded-r-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block p-3">
               <option value="">도메인 선택</option>
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
               <option value="직접입력">직접 입력</option>
             </select>
+            <button @click="sendVerificationCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
+              인증 코드 전송
+            </button>
           </div>
           <input 
             v-if="isDirectInput" 
@@ -299,7 +358,22 @@ const join = async () => {
             class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
             placeholder="직접 도메인을 입력해 주세요" 
             v-model="directEmail" 
-            @input="updateDirectEmail" />
+            @input="updateDirectEmail" 
+          />
+        </div>
+
+        <div v-if="isVerificationCodeSent" class="mt-2">
+          <input
+            v-model="inputCode"
+            type="text"
+            placeholder="인증 코드를 입력해 주세요"
+            class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button @click="verifyCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
+            인증 코드 확인
+          </button>
+          <div v-if="verificationFail" class="text-red-500">{{ verificationFail }}</div>
+          <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
         </div>
 
         <div class="mb-6 form-check">

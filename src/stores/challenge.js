@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
-import apiInstance from './axios-instance';
+import apiInstance from '@/util/axios-instance';
 
 export const useChallengeStore = defineStore('challenge', {
   state: () => ({
@@ -17,7 +16,6 @@ export const useChallengeStore = defineStore('challenge', {
             Authorization: localStorage.getItem("accessToken")
           }
         });
-
         this.challengeList = res.data.data;
       } catch (error) {
         console.error('Error fetching challenges:', error);
@@ -65,7 +63,6 @@ export const useChallengeStore = defineStore('challenge', {
             Authorization: localStorage.getItem("accessToken")
           }
         });
-        console.log(res.data.data);
         this.detailedCategories = res.data.data;
       } catch (errpt) {
         console.error("Error fetching detailed categories:", errpt);
