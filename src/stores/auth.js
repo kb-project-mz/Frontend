@@ -48,15 +48,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async checkEmail(email) {
-      try {
-        const response = await apiInstance.get(`/member/check-email?email=${encodeURIComponent(email)}`);
-        return response.data.data;
-      } catch (error) {
-        throw error;
-      }
-    },
-
 		async checkEmailDuplicate(email) {
 			try {
 				const response = await apiInstance.get(`/member/email/duplicate`, {
