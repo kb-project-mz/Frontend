@@ -5,25 +5,68 @@ import { Chart, Title, Tooltip, Legend, LineElement, PointElement, LinearScale, 
 
 Chart.register(Title, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale);
 
+const props = defineProps({
+  cardTransactionThisMonthData: {
+    type: Object,
+    required: true
+  },
+  cardTransactionLastMonthData: {
+    type: Object,
+    required: true
+  },
+  accountTransactionThisMonthData: {
+    type: Object,
+    required: true
+  },
+  accountTransactionLastMonthData: {
+    type: Object,
+    required: true
+  }
+});
+
+// TODO: 10월 소비 내역이 없는 관계로 now를 9월로 고정, 추후 new Date()로 변경해야 함
+const now = new Date(2024, 8, 30);
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth() + 1;
+const currentDate = now.getDate();
+
+const generatePointRadius = (dataLength) => {
+  console.log(dataLength);
+  return Array.from({ length: dataLength }, (v, i) => (i + 1 === currentDate ? 5 : 0));
+};
+
+const cumulativeData = (cardData, accountData) => {
+  let combinedData = [];
+  const dataLength = Math.max(cardData.length, accountData.length);
+  const memberName = localStorage.getItem("memberName");
+
+  for (let i = 0; i < dataLength; i++) {
+    const cardAmount = cardData[i]?.amount || 0;
+    const accountAmount = accountData[i]?.amount || 0;
+    const accountDescription = accountData[i]?.account_transaction_description || '';
+
+    const combinedAmount = cardAmount + (accountAmount < 0 && !accountDescription.includes(memberName) ? Math.abs(accountAmount) : 0);
+    combinedData.push(combinedAmount);
+  }
+
+  let cumulativeSum = 0;
+  return combinedData.map(item => cumulativeSum += item);
+}
+
 const LineChart = Line;
 
 const chartData = ref({
   labels: [
     '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
     '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
-    '23', '24', '25', '26', '27', '28', '29', '30'
+    '23', '24', '25', '26', '27', '28', '29', '30', '31'
   ],
   datasets: [
     {
       label: "지난달 소비",
       borderColor: "#D6D7D9",
       pointRadius: 0,
-      data: [
-        1000, 5000, 6000, 12000, 20000, 25000, 35000, 50000, 100000,
-        120000, 150000, 200000, 207000, 214000, 220000, 230000,
-        234000, 250000, 300000, 320000, 333000, 345000, 364000,
-        370000, 370000, 400000, 420300, 421000, 453000, 472000
-      ],
+      data: cumulativeData(props.cardTransactionLastMonthData, props.accountTransactionLastMonthData),
       tension: 0.1
     },
     {
