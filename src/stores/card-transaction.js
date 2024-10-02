@@ -5,7 +5,8 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
   state: () => ({
     cardTransaction: [],
     cardTransactionThisMonth: [],
-    cardTransactionLastMonth: []
+    cardTransactionLastMonth: [],
+    cardAmountBycardIdx: {},
   }),
 
   actions: {
@@ -23,32 +24,61 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
         const thisYear = now.getFullYear();
         const thisMonth = now.getMonth() + 1;
 
+        // 이번 달 거래 내역 필터링
         this.cardTransactionThisMonth = this.cardTransaction.filter((transaction) => {
-            const cardTransactionDate = new Date(transaction.cardTransactionDate);
-            const cardTransactionYear = cardTransactionDate.getFullYear();
-            const cardTransactionMonth = cardTransactionDate.getMonth() + 1;
+          const cardTransactionDate = new Date(transaction.cardTransactionDate);
+          const cardTransactionYear = cardTransactionDate.getFullYear();
+          const cardTransactionMonth = cardTransactionDate.getMonth() + 1;
 
-            return cardTransactionYear === thisYear && cardTransactionMonth == thisMonth;
+          return cardTransactionYear === thisYear && cardTransactionMonth === thisMonth;
         });
 
         let lastYear = thisYear;
         let lastMonth = thisMonth - 1;
 
-        if (thisMonth == 1) {
+        if (thisMonth === 1) {
           lastYear = thisYear - 1;
           lastMonth = 12;
         }
 
+        // 지난 달 거래 내역 필터링
         this.cardTransactionLastMonth = this.cardTransaction.filter((transaction) => {
-            const cardTransactionDate = new Date(transaction.cardTransactionDate);
-            const cardTransactionYear = cardTransactionDate.getFullYear();
-            const cardTransactionMonth = cardTransactionDate.getMonth() + 1;
+          const cardTransactionDate = new Date(transaction.cardTransactionDate);
+          const cardTransactionYear = cardTransactionDate.getFullYear();
+          const cardTransactionMonth = cardTransactionDate.getMonth() + 1;
 
-            return cardTransactionYear === lastYear && cardTransactionMonth == lastMonth;
+          return cardTransactionYear === lastYear && cardTransactionMonth === lastMonth;
         });
       } catch (err) {
         console.error(err);
       }
     },
+
+    async getCardTransactionListByCardIdx() {
+      try {
+        if (!this.cardTransactionThisMonth || this.cardTransactionThisMonth.length === 0) {
+          const memberIdx = localStorage.getItem("memberIdx");
+          await this.getCardTransactionList(memberIdx);
+        }
+    
+        const cardAmountBycardIdx = {};
+    
+        // 이번 달 거래 내역을 기준으로 카드별 금액을 합산
+        this.cardTransactionThisMonth.forEach(transaction => {
+          const { cardIdx: transactionCardIdx, amount } = transaction;
+    
+          if (!cardAmountBycardIdx[transactionCardIdx]) {
+            cardAmountBycardIdx[transactionCardIdx] = 0;
+          }
+    
+          // 카드별로 금액을 합산
+          cardAmountBycardIdx[transactionCardIdx] += amount;
+        });
+    
+        this.cardAmountBycardIdx = cardAmountBycardIdx;    
+      } catch (error) {
+        console.error("Error in getCardTransactionListByCardIdx:", error);
+      }
+    }
   },
 });
