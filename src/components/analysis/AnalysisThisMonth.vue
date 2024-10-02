@@ -13,7 +13,18 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    cardTransactionData: {
+        type: Object,
+        required: true,
+    },
+    accountTransactionData: {
+        type: Object,
+        required: true,
+    },
 });
+
+console.log(props.cardTransactionData);
+console.log(props.accountTransactionData);
 
 const memberName = localStorage.getItem("memberName");
 const month = new Date().getMonth() + 1;
@@ -31,4 +42,5 @@ const month = new Date().getMonth() + 1;
     </div>
 </template>
 
+<style scoped></style>
 <style scoped></style>
