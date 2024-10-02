@@ -3,11 +3,10 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset';
 import AddCardModal from '@/components/connection/AddCardModal.vue'; 
 
-//import { useConsumptionHistoryStore } from '@/stores/consumption-history';
-//const consumptionHistoryStore = useConsumptionHistoryStore();
+import { useCardTransactionStore } from '@/stores/card-transaction.js';
+const cardTransactionStore = useCardTransactionStore();
 
 const memberIdx = localStorage.getItem("memberIdx");
-
 const assetStore = useAssetStore();
 
 const connectedCardList = ref([]);
@@ -29,12 +28,31 @@ const fetchAsset = async () => {
   await assetStore.getAssetList(memberIdx);
   const cardList = assetStore.allCardList;
   connectedCardList.value = cardList.filter(card => card.connectedStatus === 1);
+
+  // 카드별 거래 금액을 스토어에서 가져옴
+  await cardTransactionStore.getCardTransactionListByCardIdx();
+
+  // `connectedCardList`에 카드 금액 추가
+  connectedCardList.value.forEach(card => {
+    // prdtId가 카드의 고유 ID라면, 이를 사용
+    const cardIdx = card.prdtId;  // 여기서 필드명이 맞는지 확인해야 합니다
+    if (cardAmountList[cardIdx]) {
+      // 각 카드에 총 금액을 추가
+      card.totalAmount = cardAmountList[cardIdx];
+    } else {
+      // 금액이 없으면 0으로 설정
+      card.totalAmount = 0;
+    }
+  });
+
+    console.log("Updated connectedCardList with totalAmount:", connectedCardList.value);
+
   isLoading.value = false;
 };
 
 onMounted(async ()  => {
   await fetchAsset();
-  //await consumptionHistoryStore.getCardHistoryList(memberIdx);
+  await cardTransactionStore.get(cardIdx);
 });
 </script>
 
@@ -54,7 +72,7 @@ onMounted(async ()  => {
           <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
           <div>
             <div class="text-medium">{{ card.prdtName }}</div>
-            <!-- <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>-->
+            <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>
           </div>
         </div>
         <button @click="openModal" class="w-full">
