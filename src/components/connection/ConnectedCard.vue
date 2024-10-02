@@ -8,7 +8,6 @@ const cardTransactionStore = useCardTransactionStore();
 
 const memberIdx = localStorage.getItem("memberIdx");
 const assetStore = useAssetStore();
-
 const connectedCardList = ref([]);
 
 const isModalVisible = ref(false);
@@ -32,13 +31,14 @@ const fetchAsset = async () => {
   // 카드별 거래 금액을 스토어에서 가져옴
   await cardTransactionStore.getCardTransactionListByCardIdx();
 
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa', connectedCardList);
   // `connectedCardList`에 카드 금액 추가
   connectedCardList.value.forEach(card => {
     // prdtId가 카드의 고유 ID라면, 이를 사용
     const cardIdx = card.prdtId;  // 여기서 필드명이 맞는지 확인해야 합니다
-    if (cardAmountList[cardIdx]) {
+    if (cardTransactionStore.cardAmountBycardIdx[cardIdx]) {
       // 각 카드에 총 금액을 추가
-      card.totalAmount = cardAmountList[cardIdx];
+      card.totalAmount = cardTransactionStore.cardAmountBycardIdx[cardIdx];
     } else {
       // 금액이 없으면 0으로 설정
       card.totalAmount = 0;
