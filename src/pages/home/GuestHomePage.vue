@@ -1,25 +1,16 @@
 <script setup>
 import Button from "@/components/home/Button.vue";
 import testImage from "@/assets/테스트.png";
-import chartImage from "@/assets/파이차트.png";
+import chartImage from "@/assets/차트.png";
 import challengeImage from "@/assets/챌린지.png";
 
-import AccountBook from "@/components/home/AccountBook.vue";
-
-import { ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
-// const memberIdx = computed(() => authStore.member.memberIdx);
-const memberIdx = localStorage.getItem("memberIdx");
 </script>
 
 <template>
-  <div v-if="memberIdx">
-    <AccountBook />
-  </div>
-  
-  <div v-else>
+  <div>
     <!-- 상단 글자 -->
     <div class="max-w-7.5xl mx-auto flex">
       <div class="text-left">
