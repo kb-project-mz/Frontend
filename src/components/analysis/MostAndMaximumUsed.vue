@@ -8,11 +8,17 @@ import medalSecond from '@/assets/medal_second.png';
 import medalThird from '@/assets/medal_third.png';
 
 const props = defineProps({
-  period: {
-    type: String,
+  startDate: {
+    type: Date,
     required: true,
-  }
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
 });
+
+const memberIdx = localStorage.getItem("memberIdx");
 
 const transactionAnalysisStore = useTransactionAnalysisStore();
 const mostUsed = ref({});
@@ -68,8 +74,19 @@ const getMedal = (index) => {
   }
 };
 
+// TODO: new Date()
+const today = new Date(2024, 8, 23);
+const year = today.getFullYear();
+const month = today.getMonth() + 1;
+
+const getEndDay = (year, month) => {
+  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return daysInMonth[month - 1];
+};
+
 onMounted(async () => {
-  // await fetchConsumptionAnalysis(1, 2024, 9, 1, 2024, 9, 30);
+  // await fetchTransactionAnalysis(memberIdx, year, month, 1, year, month, getEndDay(year, month));
 
   // 테스트용 데이터
   mostUsed.value = {"배달의 민족":15, "스타벅스":3, "편의점":4};
@@ -79,7 +96,7 @@ onMounted(async () => {
 
 <template>
   <div class="py-6 px-8 bg-white border border-gray-200 rounded-2xl shadow">
-    <div class="w-72">
+    <div class="w-full">
       <MostUsed class="mb-7" :mostUsed="mostUsed" :get-medal="getMedal" :period="period" />
       <MaximumUsed :maximumUsed="maximumAmount" :get-medal="getMedal" :period="period" />
     </div>

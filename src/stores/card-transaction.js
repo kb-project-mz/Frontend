@@ -50,5 +50,16 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
         console.error(err);
       }
     },
+    getSelectedPeriodCardTransactionData(startYear, startMonth, startDate, endYear, endMonth, endDate) {
+      const start = new Date(startYear, startMonth - 1, startDate);
+      const end = new Date(endYear, endMonth - 1, endDate, 23, 59, 59);
+
+      const filteredCardTransactionData = this.cardTransaction.filter((item) => {
+        const consumptionDate = new Date(item.cardTransactionDate);
+        return consumptionDate >= start && consumptionDate <= end;
+      });
+
+      return filteredCardTransactionData;
+    }
   },
 });

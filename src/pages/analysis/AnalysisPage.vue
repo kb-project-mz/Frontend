@@ -51,25 +51,6 @@ const fetchTransactionData = async (memberIdx) => {
   isDataLoaded.value = true;
 };
 
-// // 선택한 기간 동안의 소비 내역 필터링
-// const fetchSelectedPeriodConsumptionTransaction = () => {
-//   const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
-//   const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
-
-//   const filteredTransactionData = transactionData.value.filter((item) => {
-//     const consumptionDate = new Date(item.consumptionDate);
-//     return consumptionDate >= startDate && consumptionDate <= endDate;
-//   });
-
-//   const filteredAccountTransactionData = accountTransactionData.value.filter((item) => {
-//     const accountDate = new Date(item.accountDate);
-//     return accountDate >= startDate && accountDate <= endDate;
-//   });
-
-//   transactionSelectedPeriodData.value = filteredTransactionData;
-//   accountTransactionSelectedPeriodData.value = filteredAccountTransactionData;
-// };
-
 onMounted(async () => {
   // 데이터 불러오기
   await fetchTransactionData(memberIdx);
@@ -81,7 +62,8 @@ onMounted(async () => {
 
 <template>
   <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1">
-    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">뒤집기</button>
+    <AnalysisSelectedPeriod />
+    <!-- <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded-full">과거 소비와 비교하기</button>
     <div class="flip w-full h-[400px] inline-block perspective-[1100px]">
       <div class="card w-full inline-block relative transition duration-400 transform-style-[preserve-3d]"
         :class="{ 'rotate-y-180': isFlipped }">
@@ -93,7 +75,7 @@ onMounted(async () => {
           <AnalysisSelectedPeriod />
         </div>
       </div>
-    </div>
+    </div> -->
 
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
