@@ -34,6 +34,8 @@ const inputCode = ref('');
 const isVerifiedEmail = ref(false);
 const verificationSuccess = ref('');
 const verificationFail = ref('');
+const emailFail = ref('');
+const emailSuccess = ref('');
 
 watch(() => member, (newMember) => {
   disableSubmit.value = !(
@@ -149,19 +151,38 @@ const updateDirectEmail = () => {
 
 const sendVerificationCode = async () => {
   if (!member.email) {
+    console.log('이메일이 입력되지 않았습니다.');
     return alert('이메일을 입력해 주세요.');
   }
 
   try {
     isLoading.value = true;
+    console.log('이메일 중복 확인 시작:', member.email);
+
+    // 이메일 중복 확인
+    const isEmailExists = await auth.checkEmailDuplicate(member.email);
+    console.log('이메일 중복 확인 결과:', isEmailExists);
+
+    // 이메일이 존재하면 코드 발송 중단
+    if (isEmailExists) {
+      console.log('이미 존재하는 이메일입니다.');
+      alert('이미 존재하는 이메일입니다.');
+      isLoading.value = false;
+      return; // 중복 확인되면 코드 발송 중단
+    }
+
+    // 중복되지 않은 경우 인증 코드 발송
+    console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
     const result = await auth.sendEmailVerification(member.email);
+    console.log('인증 코드 발송 성공:', result);
+    
     isVerificationCodeSent.value = true;
     alert('인증 코드가 발송되었습니다. 이메일을 확인하고 인증 코드를 입력해 주세요.');
-    console.log('인증 코드 전송 성공:', result);
   } catch (error) {
+    console.log('인증 코드 전송 중 오류 발생:', error);
     alert('인증 코드 전송 중 오류가 발생했습니다.');
-    console.error('인증 코드 전송 오류:', error);
   } finally {
+    console.log('인증 코드 발송 프로세스 종료.');
     isLoading.value = false;
   }
 };
