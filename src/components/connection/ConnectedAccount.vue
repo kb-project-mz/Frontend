@@ -50,7 +50,7 @@ onMounted(async () => {
           <img :src="account.image" alt="account" class="w-12 h-12 mr-4 rounded-full" />
           <div>
             <div class="text-medium">{{ account.prdtName }}</div>
-            <div class="text-lg font-bold">{{ account.balance }}원</div>
+            <div class="text-lg font-bold">{{ account.balance.toLocaleString() }}원</div>
           </div>
         </div>
         <button @click="openModal" class="w-full">
