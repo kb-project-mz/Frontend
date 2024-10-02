@@ -54,11 +54,9 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
       }
     },
 
-    async getCardTransactionListByCardIdx(cardIdx) {
+    async getCardTransactionListByCardIdx() {
       try {
-        // 데이터가 없을 경우, 로드
         if (!this.cardTransactionThisMonth || this.cardTransactionThisMonth.length === 0) {
-          console.log("이번 달 카드 거래 내역이 없으므로 데이터를 가져옵니다.");
           const memberIdx = localStorage.getItem("memberIdx");
           await this.getCardTransactionList(memberIdx);
         }
@@ -77,9 +75,7 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
           cardAmountBycardIdx[transactionCardIdx] += amount;
         });
     
-        this.cardAmountBycardIdx = cardAmountBycardIdx;
-        console.log("최종 cardAmountBycardIdx:", this.cardAmountBycardIdx);
-    
+        this.cardAmountBycardIdx = cardAmountBycardIdx;    
       } catch (error) {
         console.error("Error in getCardTransactionListByCardIdx:", error);
       }
