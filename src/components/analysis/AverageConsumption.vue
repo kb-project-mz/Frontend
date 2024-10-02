@@ -21,27 +21,29 @@ const now = new Date();
 const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30)); // 현재 날짜 기준 30일 전
 const today = new Date(); // 오늘 날짜
 
-// 필터링된 계좌 지출 내역 (최근 30일간)
+// 필터링된 계좌 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredAccountExpenses = computed(() => {
-    if (!props.accountTransactionData.length) {
-        return [];
-    }
-
     return props.accountTransactionData.filter((item) => {
         const itemDate = new Date(item.accountTransactionDate);
-        return itemDate >= thirtyDaysAgo && itemDate <= today && item.amount < 0; // 30일 전부터 오늘까지의 데이터 필터링
+        return (
+            itemDate >= thirtyDaysAgo &&
+            itemDate <= today &&
+            item.amount < 0 && // 지출 (음수)
+            (!item.accountTransactionDescription || !item.accountTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
+        );
     });
 });
 
-// 필터링된 카드 지출 내역 (최근 30일간)
+// 필터링된 카드 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredCardExpenses = computed(() => {
-    if (!props.cardTransactionData.length) {
-        return [];
-    }
-
     return props.cardTransactionData.filter((item) => {
         const itemDate = new Date(item.cardTransactionDate);
-        return itemDate >= thirtyDaysAgo && itemDate <= today && item.amount > 0; // 30일 전부터 오늘까지의 데이터 필터링
+        return (
+            itemDate >= thirtyDaysAgo &&
+            itemDate <= today &&
+            item.amount > 0 && // 카드 지출 (양수)
+            (!item.cardTransactionDescription || !item.cardTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
+        );
     });
 });
 
