@@ -48,24 +48,32 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-		async checkEmailDuplicate(email) {
-			try {
-				const response = await apiInstance.get(`/member/email/duplicate`, {
-					params: { email: email }
-				});
-		
-				if (response && response.data) {
-					console.log('이메일 중복 확인 응답 데이터:', response.data);
-					return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
-				} else {
-					console.log('응답 데이터가 존재하지 않습니다.');
-					return false; // 오류 처리
-				}
-			} catch (error) {
-				console.error('이메일 중복 확인 오류:', error);
-				throw error;
-			}
-		},
+    async verifyPassword(password) {
+      try {
+        const response = await apiInstance.post('/member/info', { password });
+        return response.data.isPasswordCorrect;
+      } catch (error) {
+        console.error('비밀번호 확인 중 오류 발생:', error);
+        throw new Error('비밀번호 확인 중 오류가 발생했습니다.');
+      }
+    },
+
+    async checkEmailDuplicate(email) {
+      try {
+        const response = await apiInstance.get(`/member/email/duplicate`, {
+          params: { email: email }
+        });
+    
+        if (response && response.data) {
+          return response.data.exists;
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error('이메일 중복 확인 오류:', error);
+        throw error;
+      }
+    },
 
     async sendEmailVerification(email) {
       try {
@@ -84,6 +92,16 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.error('인증코드 확인 오류:', error.response ? error.response.data : error.message);
         throw new Error('인증코드 확인 실패');
+      }
+    },
+
+    async fetchProfile() {
+      try {
+        const response = await apiInstance.get('/member/info');
+        return response.data;
+      } catch (error) {
+        console.error('프로필 정보 불러오기 오류:', error);
+        throw new Error('프로필 정보를 불러오는 중 오류가 발생했습니다.');
       }
     },
 
