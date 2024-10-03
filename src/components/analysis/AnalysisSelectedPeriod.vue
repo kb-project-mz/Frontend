@@ -1,11 +1,13 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useCardTransactionStore } from "@/stores/card-transaction";
 import { useAccountTransactionStore } from "@/stores/account-transaction";
 import MostAndMaximumUsed from "@/components/analysis/MostAndMaximumUsed.vue";
 import CategoryChart from "@/components/analysis/CategoryChart.vue";
 import TotalAmount from "@/components/analysis/TotalAmount.vue";
 import AverageConsumption from "@/components/analysis/AverageConsumption.vue";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const cardTransactionStore = useCardTransactionStore();
 const accountTransactionStore = useAccountTransactionStore();
@@ -22,8 +24,11 @@ const selectedEndYear = ref(0);
 const selectedEndMonth = ref(0);
 const selectedEndDate = ref(0);
 
+const date = ref(null);
 const startDate = ref(null);
 const endDate = ref(null);
+
+const isLoaded = ref(false);
 
 const getEndDay = (year, month) => {
   const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -46,50 +51,96 @@ const getLastMonth = () => {
   return new Date(lastMonthYear, lastMonth, getEndDay(lastMonthYear, lastMonth));
 }
 
-const isLoaded = ref(false);
+const updateSelectedDates = () => {
+  const [start, end] = date.value;
+
+  if (start) {
+    selectedStartYear.value = start.getFullYear();
+    selectedStartMonth.value = start.getMonth();
+    selectedStartDate.value = start.getDate();
+  }
+
+  if (end) {
+    selectedEndYear.value = end.getFullYear();
+    selectedEndMonth.value = end.getMonth();
+    selectedEndDate.value = end.getDate();
+  }
+
+  startDate.value = new Date(selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value);
+  endDate.value = new Date(selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value);
+
+  loadData();
+}
+
+const loadData = () => {
+  isLoaded.value = false;
+
+  cardTransactionData.value = cardTransactionStore.getSelectedPeriodCardTransactionData(
+    selectedStartYear.value, selectedStartMonth.value + 1, selectedStartDate.value,
+    selectedEndYear.value, selectedEndMonth.value + 1, selectedEndDate.value,
+  );
+  accountTransactionData.value = accountTransactionStore.getSelectedPeriodAccountTransactionData(
+    selectedStartYear.value, selectedStartMonth.value + 1, selectedStartDate.value,
+    selectedEndYear.value, selectedEndMonth.value + 1, selectedEndDate.value,
+  );
+
+  isLoaded.value = true;
+}
 
 onMounted(() => {
   const lastMonthLastDate = getLastMonth();
   selectedStartYear.value = lastMonthLastDate.getFullYear();
-  selectedStartMonth.value = lastMonthLastDate.getMonth() + 1;
+  selectedStartMonth.value = lastMonthLastDate.getMonth();
   selectedStartDate.value = 1;
   selectedEndYear.value = lastMonthLastDate.getFullYear();
-  selectedEndMonth.value = lastMonthLastDate.getMonth() + 1;
+  selectedEndMonth.value = lastMonthLastDate.getMonth();
   selectedEndDate.value = lastMonthLastDate.getDate();
 
-  cardTransactionData.value = cardTransactionStore.getSelectedPeriodCardTransactionData(
-    selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value,
-    selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value,
-  );
-  accountTransactionData.value = accountTransactionStore.getSelectedPeriodAccountTransactionData(
-    selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value,
-    selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value,
-  );
+  startDate.value = new Date(selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value);
+  endDate.value = new Date(selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value);
 
-  console.log(cardTransactionData.value);
-  console.log(accountTransactionData.value);
+  date.value = [startDate.value, endDate.value];
 
-  isLoaded.value = true;
+  loadData();
 });
+
+watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear, selectedEndMonth, selectedEndDate], loadData);
 </script>
 
 <template>
-  <div v-if="isLoaded">
-    <div class="text-xl font-semibold mb-6">
-      {{ selectedStartYear }}년 {{ selectedStartMonth }}월 {{ selectedStartDate }}일부터
-      {{ selectedEndYear }}년 {{ selectedEndMonth }}월 {{ selectedEndDate }}일까지의 소비 패턴을 분석해보았어요.
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-7">
-      <MostAndMaximumUsed class="lg:col-span-3" :start-date="startDate" :end-date="endDate" />
-      <div class="lg:col-span-2 flex flex-col justify-between">
-        <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
-        <AverageConsumption />
+  <div>
+    <div v-if="isLoaded">
+      <div class="flex justify-between">
+        <div class="text-xl font-semibold mb-10">
+          {{ selectedStartYear }}년 {{ selectedStartMonth + 1 }}월 {{ selectedStartDate }}일부터
+          {{ selectedEndYear }}년 {{ selectedEndMonth + 1 }}월 {{ selectedEndDate }}일까지의 소비 패턴을 분석해보았어요.
+        </div>
+        <div>
+          <VueDatePicker v-model="date" range :format="'yyyy-MM-dd'" @update:model-value="updateSelectedDates">
+            <template #time-picker></template>
+            <template #action-row="{ selectDate, closePicker }">
+              <div class="action-row mx-auto">
+                <button class="select-button text-sm px-2 py-1 rounded-lg" @click="closePicker">취소</button>
+                <button class="select-button text-sm px-2 py-1 rounded-lg" @click="selectDate">기간 설정</button>
+              </div>
+            </template>
+          </VueDatePicker>
+        </div>
       </div>
-      <CategoryChart class="lg:col-span-2" />
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <MostAndMaximumUsed class="lg:col-span-1" :start-date="startDate" :end-date="endDate" period="해당 기간" />
+        <div class="lg:col-span-1 flex flex-col justify-between gap-10">
+          <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
+          <AverageConsumption :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
+        </div>
+        <CategoryChart class="lg:col-span-1" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
+.bg-navy { 
+  background-color: #0B1573;
+}
 </style>

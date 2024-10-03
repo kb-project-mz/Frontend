@@ -16,6 +16,9 @@ const props = defineProps({
     type: Date,
     required: true,
   },
+  period: {
+    type: String,
+  }
 });
 
 const memberIdx = localStorage.getItem("memberIdx");
@@ -95,12 +98,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="py-6 px-8 bg-white border border-gray-200 rounded-2xl shadow">
-    <div class="w-full">
-      <MostUsed class="mb-7" :mostUsed="mostUsed" :get-medal="getMedal" :period="period" />
-      <MaximumUsed :maximumUsed="maximumAmount" :get-medal="getMedal" :period="period" />
-    </div>
-    
+  <div class="p-8 bg-white border border-gray-200 rounded-2xl shadow">
+    <MostUsed class="mb-6 lg:mb-12"  :mostUsed="mostUsed" :get-medal="getMedal" :period="period" />
+    <MaximumUsed :maximumUsed="maximumAmount" :get-medal="getMedal" :period="period" />
   </div>
 </template>
 

@@ -51,7 +51,6 @@ export const useAccountTransactionStore = defineStore("accountTransaction", {
       }
     },
     getSelectedPeriodAccountTransactionData(startYear, startMonth, startDate, endYear, endMonth, endDate) {
-      console.log(this.accountTransaction);
       const start = new Date(startYear, startMonth - 1, startDate);
       const end = new Date(endYear, endMonth - 1, endDate, 23, 59, 59);
 
@@ -60,7 +59,6 @@ export const useAccountTransactionStore = defineStore("accountTransaction", {
         return consumptionDate >= start && consumptionDate <= end;
       });
 
-      console.log(filteredAccountTransactionData);
       return filteredAccountTransactionData;
     }
   },

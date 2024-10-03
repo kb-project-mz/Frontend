@@ -168,7 +168,7 @@ watch([props.accountTransactionData, props.cardTransactionData], ([newAccountDat
 </script>
 
 <template>
-    <div class="py-6 px-8 bg-navy text-white border border-gray-200 rounded-2xl shadow">
+    <!-- <div class="py-6 px-8 bg-navy text-white border border-gray-200 rounded-2xl shadow">
         <div class="flex justify-between items-center mb-3">
             <div class="font-medium">하루 평균 소비 금액</div>
             <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>
@@ -176,7 +176,7 @@ watch([props.accountTransactionData, props.cardTransactionData], ([newAccountDat
         <div class="py-12 px-10 bg-white mb-2">
             <canvas id="monthlyExpenseChart"></canvas>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <style scoped>
