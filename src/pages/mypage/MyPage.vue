@@ -15,9 +15,10 @@ const profile = reactive({
 
 const password = ref('');
 const newPassword = ref('');
-const isStrong = ref(false);
-const passwordStrengthMessage = ref('대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.');
+const confirmNewPassword = ref('');
+const isPasswordStrong = ref(false);
 const isPasswordVerified = ref(false);
+const isPasswordMatch = ref(false); 
 
 const selectedDomain = ref('');
 const directEmail = ref('');
@@ -73,15 +74,21 @@ const enhancedSecurityPassword = (password) => {
   );
 };
 const checkPasswordStrength = () => {
-  isStrong.value = enhancedSecurityPassword(newPassword.value);
-  if (isStrong.value) {
-    passwordStrengthMessage.value = '비밀번호가 강합니다.';
-  } else if (newPassword.value.length > 0) {
-    passwordStrengthMessage.value = '비밀번호가 약합니다.';
+  if(enhancedSecurityPassword(newPassword.value)){
+    isPasswordStrong.value = true;
   } else {
-    passwordStrengthMessage.value = '대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.';
+    isPasswordStrong.value = false;
   }
 };
+const checkPasswordConfirmation = () => {
+  if (newPassword.value === confirmNewPassword.value) {
+    isPasswordMatch.value = true;
+  } else {
+    isPasswordMatch.value = false;
+  }
+};
+
+
 const verifyPassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/password', {
@@ -103,6 +110,9 @@ const verifyPassword = async () => {
     alert('기존의 비밀번호와 같지 않습니다.');
   }
 };
+
+
+
 const changePassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/newPassword', {
@@ -306,24 +316,44 @@ const deleteImage = async () => {
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
             placeholder="현재 비밀번호"
           />
-          <button @click="verifyPassword" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">확인</button>
+          <button @click.prevent="verifyPassword" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">확인</button>
         </div>
 
         <!-- 새 비밀번호 -->
         <div v-if="isPasswordVerified" class="relative mb-6">
           <label for="newPassword" class="block mb-2 text-sm font-medium text-gray-900">새 비밀번호</label>
-          <input
-            v-model="newPassword"
-            type="password"
-            id="password"
-            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
-            placeholder="비밀번호"
-            @input="checkPasswordStrength"
-            required />
-            <div :class="['text-sm', 'mt-1', 'mb-6', isStrong ? 'text-green-500' : 'text-red-500']">
-            {{ passwordStrengthMessage }}
-            </div>
-          <button @click="changePassword" :disabled="!isPasswordValid(newPassword)" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">수정</button>
+            <input
+              v-model="newPassword"
+              type="password"
+              id="newPassword"
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
+              placeholder="새 비밀번호"
+              @input="checkPasswordStrength"
+              required />
+              <p v-if="isPasswordStrong === true" class="text-green-500">비밀번호가 강합니다.</p>
+              <p v-else-if="isPasswordStrong == false && newPassword.length > 0" class="text-red-500">비밀번호가 약합니다.</p>
+              <p v-else-if="isPasswordStrong == false && newPassword.length === 0" class="text-red-500">대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.</p>
+        </div>
+
+        <!-- 새 비밀번호 확인 -->
+        <div v-if="isPasswordVerified" class="relative mb-6">
+          <label for="confirmNewPassword" class="block mb-2 text-sm font-medium text-gray-900">새 비밀번호 확인</label>
+            <input
+              v-model="confirmNewPassword"
+              type="password"
+              id="confirmNewPassword"
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+              placeholder="새 비밀번호 확인"
+              @input="checkPasswordConfirmation" /> 
+              <p v-if="isPasswordMatch === true" class="text-green-500">비밀번호가 일치합니다.</p>
+              <p v-else-if="isPasswordMatch === false && confirmNewPassword.length > 0" class="text-red-500">비밀번호가 일치하지 않습니다.</p>
+        </div>
+
+        <!-- 비밀번호 변경 버튼 -->
+        <div v-if="isPasswordVerified" class="flex justify-center mt-6">
+          <button @click="changePassword" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg" :disabled="!isPasswordStrong || newPassword !== confirmNewPassword">
+            비밀번호 변경
+          </button>
         </div>
 
         <!-- 생년월일 (읽기 전용) -->
