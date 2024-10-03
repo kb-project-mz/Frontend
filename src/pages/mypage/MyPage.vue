@@ -26,6 +26,8 @@ const isVerificationCodeSent = ref(false);
 const inputCode = ref('');
 const verificationFail = ref('');
 const verificationSuccess = ref('');
+const isVerifiedEmail = ref(false);
+
 const disableSubmit = ref(false);
 const isLoading = ref(false);
 const profileImageUrl = ref('C:/upload/profile.jpg');
@@ -70,7 +72,6 @@ const enhancedSecurityPassword = (password) => {
     lowerCase.test(password)
   );
 };
-
 const checkPasswordStrength = () => {
   isStrong.value = enhancedSecurityPassword(newPassword.value);
   if (isStrong.value) {
@@ -81,7 +82,6 @@ const checkPasswordStrength = () => {
     passwordStrengthMessage.value = '대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.';
   }
 };
-
 const verifyPassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/password', {
@@ -103,7 +103,6 @@ const verifyPassword = async () => {
     alert('기존의 비밀번호와 같지 않습니다.');
   }
 };
-
 const changePassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/newPassword', {
@@ -126,19 +125,17 @@ const changePassword = async () => {
   }
 };
 
-// 이메일 도메인 리스트
+// 이메일 인증 관련
 const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
-
-// 이메일 도메인 처리
 const handleDomainChange = () => {
   isDirectInput.value = selectedDomain.value === '직접입력';
   if (!isDirectInput.value) {
     profile.email = `${profile.email.split('@')[0]}@${selectedDomain.value}`;
     directEmail.value = '';
+  } else{
+    directEmail.value = '';
   }
 };
-
-// 직접 입력된 이메일 처리
 const updateDirectEmail = () => {
   if (isDirectInput.value && !profile.email.includes('@')) {
     profile.email += '@';
@@ -150,33 +147,26 @@ const updateDirectEmail = () => {
     profile.email = `${profile.email.split('@')[0]}@${directEmail.value}`;
   }
 };
-
-// 이메일 인증코드 
 const sendVerificationCode = async () => {
-  if (!member.email) {
+  if (!profile.email) {
     console.log('이메일이 입력되지 않았습니다.');
     return alert('이메일을 입력해 주세요.');
   }
-
   try {
     isLoading.value = true;
-    console.log('이메일 중복 확인 시작:', member.email);
+    console.log('이메일 중복 확인 시작:', profile.email);
 
-    // 이메일 중복 확인
-    const isEmailExists = await auth.checkEmailDuplicate(member.email);
+    const isEmailExists = await auth.checkEmailDuplicate(profile.email);
     console.log('이메일 중복 확인 결과:', isEmailExists);
 
-    // 이메일이 존재하면 코드 발송 중단
     if (isEmailExists) {
       console.log('이미 존재하는 이메일입니다.');
       alert('이미 존재하는 이메일입니다.');
       isLoading.value = false;
       return; // 중복 확인되면 코드 발송 중단
     }
-
-    // 중복되지 않은 경우 인증 코드 발송
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
-    const result = await auth.sendEmailVerification(member.email);
+    const result = await auth.sendEmailVerification(profile.email);
     console.log('인증 코드 발송 성공:', result);
     
     isVerificationCodeSent.value = true;
@@ -189,16 +179,14 @@ const sendVerificationCode = async () => {
     isLoading.value = false;
   }
 };
-
 // 인증코드 
 const verifyCode = async () => {
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
-
   try {
     isLoading.value = true;
-    const result = await auth.verifyEmailCode(member.email, inputCode.value);
+    const result = await auth.verifyEmailCode(profile.email, inputCode.value);
     
     if (result) {
       verificationSuccess.value = '이메일 인증이 완료되었습니다.';
