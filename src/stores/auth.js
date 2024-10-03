@@ -8,7 +8,8 @@ export const useAuthStore = defineStore('auth', {
       memberIdx: localStorage.getItem('id') || null,
       memberName: localStorage.getItem('memberName') || null,
       memberId: localStorage.getItem('memberId') || null
-    }
+    },
+    profile: {}
   }),
 
   actions: {
@@ -95,15 +96,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async fetchProfile() {
-      try {
-        const response = await apiInstance.get('/member/info');
-        return response.data;
-      } catch (error) {
-        console.error('프로필 정보 불러오기 오류:', error);
-        throw new Error('프로필 정보를 불러오는 중 오류가 발생했습니다.');
-      }
-    },
 
     async logout() {
       try {
@@ -134,6 +126,22 @@ export const useAuthStore = defineStore('auth', {
       const authData = localStorage.getItem('auth');
       const isLoggedIn = !!authData;
       return isLoggedIn;
-    }
+    },
+
+    async getProfile() {
+      try {
+        const response = await apiInstance.get(`/member/info`, {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          },
+        });
+
+        this.profile = response.data.data;
+        console.log("프로필 데이터 불러옴", this.profile);
+      } catch (error) {
+        console.error('Failed to profile data', error);
+        throw error;
+      }
+    },
   }
 });

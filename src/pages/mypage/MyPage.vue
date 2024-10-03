@@ -1,18 +1,16 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/stores/auth.js";
 import apiInstance from '@/util/axios-instance';
 
-const router = useRouter();
 const auth = useAuthStore(); 
 
 const profile = reactive({
-  memberName: '',
   memberId: '',
-  password: '',
+  memberName: '',
   email: '',
-  birthDay: '',
+  birthday: '',
+  imageUrl: '',
 });
 
 const password = ref('');
@@ -33,18 +31,24 @@ const profileImageFile = ref(null);
 // 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
   try {
-    const data = await auth.fetchProfile();
-    Object.assign(profile, data);
+    await auth.getProfile();
+    profile.memberId = auth.profile.memberId;
+    profile.memberName = auth.profile.memberName;
+    profile.birthday = auth.profile.birthday;
+    profile.email = auth.profile.email;
+    profile.imageUrl = auth.profile.imageUrl;
+    console.log("프로필 정보________", profile);
   } catch (error) {
     console.error('프로필 정보 불러오기 오류:', error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
 
-onMounted(() => {
-  fetchProfile();
+onMounted( async () => {
+  await fetchProfile();
 });
 
+// 새 비밀번호 유효성 검사
 const isPasswordValid = (password) => {
   const minLength = 8;
   const specialChars = /[~!@#$%^&*]/;
@@ -59,17 +63,48 @@ const isPasswordValid = (password) => {
   );
 };
 
-const changePassword = async () => {
-  if (isPasswordValid(newPassword.value)) {
-    try {
-      await auth.changePassword(newPassword.value);
-      alert('비밀번호가 변경되었습니다.');
-    } catch (error) {
-      console.error('비밀번호 변경 중 오류:', error);
-      alert('비밀번호 변경 중 오류가 발생했습니다.');
+const verifyPassword = async () => {
+  try {
+    const response = await apiInstance.post('/member/verification/password', {
+      inputPassword: password.value,
+    }, {
+      headers: {
+        Authorization: localStorage.getItem("accessToken")
+      }
     }
-  } else {
-    alert('비밀번호가 안전하지 않습니다.');
+  );
+    console.log("비밀번호 찍어보자",response.data);
+    if(response.data.success){
+      alert('비밀번호 인증 성공');
+      isPasswordVerified.value = true;
+    } else {
+      alert('비밀번호 인증 실패');
+    }
+  } catch (error) {
+    console.log('비밀번호 확인 오류:', error);
+    alert('기존의 비밀번호와 같지 않습니다.');
+  }
+};
+
+const changePassword = async () => {
+  try {
+    const response = await apiInstance.post('/member/verification/newPassword', {
+      memberId: localStorage.getItem("memberId"),
+      newPassword: newPassword.value,
+    }, {
+      headers: {
+        Authorization: localStorage.getItem("accessToken")
+      }
+    }
+  );
+    if(response.data.success){
+      alert('비밀번호가 성공적으로 변경되었습니다.');
+    } else {
+      alert('이전과 같은 비밀번호는 사용하실 수 없습니다.');
+    }
+  } catch (error) {
+    console.log('비밀번호 확인 오류:', error);
+    alert('이전과 같은 비밀번호는 사용하실 수 없습니다.');
   }
 };
 
@@ -98,19 +133,7 @@ const updateDirectEmail = () => {
   }
 };
 
-// 프로필 이미지 업데이트
-const updateImage = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    profileImageFile.value = file;
-    const reader = new FileReader();
-    reader.onload = e => {
-      profileImageUrl.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
+// 이메일 인증코드 
 const sendVerificationCode = async () => {
   if (!member.email) {
     console.log('이메일이 입력되지 않았습니다.');
@@ -149,6 +172,7 @@ const sendVerificationCode = async () => {
   }
 };
 
+// 인증코드 
 const verifyCode = async () => {
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
@@ -177,37 +201,25 @@ const verifyCode = async () => {
   }
 };
 
-// 프로필 저장
-const saveProfile = async () => {
-  const formData = new FormData();
-  formData.append('profileImage', profileImageFile.value);
-  formData.append('password', password.value);
-  formData.append('newPassword', newPassword.value);
-  formData.append('email', profile.email);
+const fileInput = ref(null);
 
-  try {
-    const response = await apiInstance.post('/member/info', formData);
-    if (response.data.success) {
-      alert('프로필이 성공적으로 업데이트되었습니다.');
-    }
-  } catch (error) {
-    console.error('프로필 업데이트 오류:', error);
-    alert('프로필 업데이트 중 오류가 발생했습니다.');
+// 프로필 이미지 업데이트
+const updateImage = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    profileImageFile.value = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      profileImageUrl.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 };
 
-// 프로필 이미지 삭제
-const deleteImage = () => {
-  profileImageUrl.value = 'C:/upload/profile.jpg';// 기본 이미지로 리셋
-  profileImageFile.value = null; // 파일 데이터 초기화
-};
-
-const fileInput = ref(null);
-
-const uploadFile = async () => {
-  const file = fileInput.value.files[0];
+const uploadImage = async (event) => {
+  const file = event.target.files[0];
   if(!file) {
-    alert('파일을 선택해주세요.');
+    alert('이미지를 선택해주세요.');
     return;
   }
 
@@ -215,31 +227,77 @@ const uploadFile = async () => {
   formData.append('profileImage', file);
 
   try {
-    const response = await apiInstance.post(`/member/info`, formData, {
+    const response = await apiInstance.post(`/member/image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log('파일 업로드 성공');
-    alert('파일 업로드 성공');
+    if (response.data.success) {
+      alert('이미지 업로드에 성공했습니다.');
+      const imageUrl = URL.createObjectURL(file); 
+      profile.value.imageUrl = imageUrl; 
+    } else {
+      alert('이미지 업데이트 실패');
+    }
   } catch (error) {
     console.error('파일 업로드 실패:', error);
-    alert('파일 업로드 실패!');
+    alert('이미지 업로드 실패!');
   }
-}
+};
+
+// 프로필 이미지 삭제
+const deleteImage = async () => {
+  try {
+    // 서버에 이미지 삭제 요청하기
+    const response = await apiInstance.delete(`/member/info/profileImage`);
+    console.log('이미지 삭제 성공');
+    alert('파일 삭제 성공');
+    profile.imageUrl = 'C:/upload/profile.jpg'; // 기본 이미지로 리셋
+  } catch (error) {
+    console.error('파일 삭제 실패');
+  }
+
+  // 프로필 저장
+const saveProfile = async () => {
+  const formData = new FormData();
+  if(profileImageFile.value) {
+    formData.append('profileImage', profileImageFile.value); // 이미지 파일 추가
+  }
+  if(profile.email) {
+    formData.append('email', profile.email);
+  }
+
+  try {
+    const response = await apiInstance.post('/member/info', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: localStorage.getItem("accessToken"),
+      },
+    });
+    if (response.data.success) {
+      alert('프로필이 성공적으로 업데이트되었습니다.');
+      profile.imageUrl = response.data.data.imageUrl; // 응답에서 이미지 URL 업데이트
+    }
+  } catch (error) {
+    console.error('프로필 업데이트 오류:', error);
+    alert('프로필 업데이트 중 오류가 발생했습니다.');
+  }
+};
+  
+};
 </script>
 
 <template>
   <div class="flex justify-center">
     <div class="w-1/3 px-16 py-10 bg-white border rounded-lg shadow">
       <div class="mb-5 font-bold text-2xl text-blue ">
-        <div>프로필을 수정하세요</div>
+        <div>나만의 프로필을 완성해보세요</div>
       </div>
     
       <form @submit.prevent="saveProfile">
         <!-- 프로필 이미지 섹션 -->
         <div class="profile-image-section relative flex justify-center">
-          <img :src="profileImageUrl" alt="프로필 이미지" class="profile-image" />
+          <img :src="profile.imageUrl" alt="Profile Image" class="profile-image" />
           
           <!-- 수정/삭제 버튼 -->
           <div class="absolute bottom-0 right-0 flex space-x-2">
@@ -247,7 +305,7 @@ const uploadFile = async () => {
             <button @click="deleteImage" class="btn-delete-image">삭제</button>
           </div>
 
-          <input type="file" @change="updateImage" class="hidden" ref="profileImageInput" />
+          <input type="file" @change="uploadImage" class="hidden" ref="profileImageInput" />
         </div>
 
         <!-- 이름 -->
@@ -270,7 +328,7 @@ const uploadFile = async () => {
             readonly />
         </div>
 
-        <!-- 비밀번호 -->
+        <!-- 현재 비밀번호 검증 -->
         <div class="relative mb-6">
           <label for="password" class="block mb-2 text-sm font-medium text-gray-900">현재 비밀번호</label>
           <input
@@ -357,37 +415,14 @@ const uploadFile = async () => {
         </button>
       </form>
     </div>
-
+ 
     <div class="text-center mt-4">
       <div class="inline-block p-3 bg-navy text-white rounded-lg">
         <router-link to="/mypage/asset">연결된 자산 보기</router-link>
       </div>
     </div>
-    <form @submit.prevent="uploadFile" enctype="multipart/form-data">
-      <li>파일 <input type="file" name="file" ref="fileInput"> </li>
-      <button type="submit" class="p-2 bg-blue-500 text-white rounded-lg"></button>
-    </form>
   </div>
 </template>
-
-<style scoped>
-.profile-image {
-  @apply w-72 h-72 rounded-full border-2 border-gray-200 mb-2;
-}
-
-.btn-edit-image {
-  @apply bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300;
-}
-
-.text-blue {
-  color: #0B1573;
-}
-
-.bg-navy {
-  background-color: #0B1573;
-}
-</style>
-
 
 <style scoped>
 .profile-image {
