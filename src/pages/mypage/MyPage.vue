@@ -243,8 +243,9 @@ const uploadImage = async (event) => {
       alert('이미지 업로드에 성공했습니다.');
       const imageUrl = `http://localhost:8080/upload/${response.data.data.storeFileName}`;
       profile.imageUrl = imageUrl; 
-      console.log("다 반영됐나--------------------", profile);
-      alert('이미지 업데이트 실패');
+     
+      const previewUrl = URL.createObjectURL(file);
+      profile.imageUrl = previewUrl; 
     }
   } catch (error) {
     console.error('파일 업로드 실패:', error);
