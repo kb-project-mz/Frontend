@@ -34,7 +34,6 @@ const isLoading = ref(false);
 const profileImageUrl = ref('C:/upload/profile.jpg');
 const profileImageFile = ref(null);
 
-
 onMounted( async () => {
   await fetchProfile();
 });
@@ -48,17 +47,10 @@ const fetchProfile = async () => {
     profile.birthday = auth.profile.birthday;
     profile.email = auth.profile.email;
     profile.imageUrl = auth.profile.imageUrl;
-    // console.log("프로필 정보________", profile);
   } catch (error) {
-    console.error('프로필 정보 불러오기 오류:', error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
-
-// 비밀번호 관련
-const isPasswordValid = (password) => {
-      return enhancedSecurityPassword(password);
-    };
 
 const enhancedSecurityPassword = (password) => {
   const minLength = 8;
@@ -87,16 +79,12 @@ const checkPasswordConfirmation = () => {
     isPasswordMatch.value = false;
   }
 };
-
-
 const verifyPassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/password', {
       inputPassword: password.value,
     }, {
-      headers: {
-        Authorization: localStorage.getItem("accessToken")
-      }
+      headers: { Authorization: localStorage.getItem("accessToken") }
     }
   );
     if(response.data.success){
@@ -106,22 +94,16 @@ const verifyPassword = async () => {
       alert('비밀번호 인증 실패');
     }
   } catch (error) {
-    console.log('비밀번호 확인 오류:', error);
     alert('기존의 비밀번호와 같지 않습니다.');
   }
 };
-
-
-
 const changePassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/newPassword', {
       memberId: localStorage.getItem("memberId"),
       newPassword: newPassword.value,
     }, {
-      headers: {
-        Authorization: localStorage.getItem("accessToken")
-      }
+      headers: { Authorization: localStorage.getItem("accessToken") }
     }
   );
     if(response.data.success){
@@ -130,12 +112,10 @@ const changePassword = async () => {
       alert('이전과 같은 비밀번호는 사용하실 수 없습니다.');
     }
   } catch (error) {
-    console.log('비밀번호 확인 오류:', error);
     alert('이전과 같은 비밀번호는 사용하실 수 없습니다.');
   }
 };
 
-// 이메일 인증 관련
 const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
 const handleDomainChange = () => {
   isDirectInput.value = selectedDomain.value === '직접입력';
@@ -159,13 +139,10 @@ const updateDirectEmail = () => {
 };
 const sendVerificationCode = async () => {
   if (!profile.email) {
-    console.log('이메일이 입력되지 않았습니다.');
     return alert('이메일을 입력해 주세요.');
   }
   try {
     isLoading.value = true;
-    console.log('이메일 중복 확인 시작:', profile.email);
-
     const isEmailExists = await auth.checkEmailDuplicate(profile.email);
     console.log('이메일 중복 확인 결과:', isEmailExists);
 
@@ -224,13 +201,10 @@ const uploadImage = async (event) => {
     alert('이미지를 선택해주세요.');
     return;
   }
-
   const previewUrl = URL.createObjectURL(file);
   profile.imageUrl = previewUrl; 
-
   const formData = new FormData();
   formData.append('profileImage', file);
-
   try {
     const response = await apiInstance.post(`/member/image`, formData, {
       headers: {
@@ -238,18 +212,15 @@ const uploadImage = async (event) => {
         'Authorization': localStorage.getItem("accessToken")
       },
     });
-
     if (response.data.success) {
       alert('이미지 업로드에 성공했습니다.');
       const imageUrl = `http://localhost:8080/upload/${response.data.data.storeFileName}`;
       profile.imageUrl = imageUrl; 
-     
       const previewUrl = URL.createObjectURL(file);
       profile.imageUrl = previewUrl; 
     }
   } catch (error) {
-    console.error('파일 업로드 실패:', error);
-    alert('이미지 업로드 실패!');
+    alert('이미지 업로드에 실패하셨습니다.');
   }
 };
 
@@ -257,7 +228,6 @@ const deleteImage = async () => {
   try {
     // 서버에 이미지 삭제 요청하기
     const response = await apiInstance.delete(`/member/info/profileImage`);
-    console.log('이미지 삭제 성공');
     alert('파일 삭제 성공');
     profile.imageUrl = 'C:/upload/profile.jpg'; // 기본 이미지로 리셋
   } catch (error) {
