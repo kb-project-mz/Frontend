@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from 'vue';
-import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
+import { computed } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -11,14 +11,21 @@ const memberName = computed(() => authStore.member.memberName);
 
 const logout = () => {
   authStore.logout();
-  router.push('/');
+  router.push("/");
 };
 </script>
 
 <template>
   <nav class="bg-white shadow-md p-4 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
     <div class="max-w-7.5xl mx-auto flex justify-between items-center">
-      <router-link to="/" class="flex items-center">
+      <router-link
+        v-if="memberId"
+        to="/memberHomePage"
+        class="flex items-center"
+      >
+        <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
+      </router-link>
+      <router-link v-else to="/" class="flex items-center">
         <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
       </router-link>
 
@@ -26,7 +33,12 @@ const logout = () => {
         <router-link v-if="memberId" to="/mypage" class="mr-2">
           {{ memberName }}님
         </router-link>
-        <button @click="logout" class="bg-navy ml-2 py-1.5 px-2.5 text-white rounded-md text-xs">로그아웃</button>
+        <button
+          @click="logout"
+          class="bg-navy ml-2 py-1.5 px-2.5 text-white rounded-md text-xs"
+        >
+          로그아웃
+        </button>
       </div>
 
       <div v-else>
@@ -42,6 +54,6 @@ const logout = () => {
 
 <style scoped>
 .bg-navy {
-  background-color: #0B1573;
+  background-color: #0b1573;
 }
 </style>
