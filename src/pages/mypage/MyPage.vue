@@ -15,7 +15,10 @@ const profile = reactive({
 
 const password = ref('');
 const newPassword = ref('');
+const isStrong = ref(false);
+const passwordStrengthMessage = ref('대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.');
 const isPasswordVerified = ref(false);
+
 const selectedDomain = ref('');
 const directEmail = ref('');
 const isDirectInput = ref(false);
@@ -28,6 +31,11 @@ const isLoading = ref(false);
 const profileImageUrl = ref('C:/upload/profile.jpg');
 const profileImageFile = ref(null);
 
+
+onMounted( async () => {
+  await fetchProfile();
+});
+
 // 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
   try {
@@ -37,19 +45,19 @@ const fetchProfile = async () => {
     profile.birthday = auth.profile.birthday;
     profile.email = auth.profile.email;
     profile.imageUrl = auth.profile.imageUrl;
-    console.log("프로필 정보________", profile);
+    // console.log("프로필 정보________", profile);
   } catch (error) {
     console.error('프로필 정보 불러오기 오류:', error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
 
-onMounted( async () => {
-  await fetchProfile();
-});
-
-// 새 비밀번호 유효성 검사
+// 비밀번호 관련
 const isPasswordValid = (password) => {
+      return enhancedSecurityPassword(password);
+    };
+
+const enhancedSecurityPassword = (password) => {
   const minLength = 8;
   const specialChars = /[~!@#$%^&*]/;
   const upperCase = /[A-Z]/;
@@ -63,6 +71,17 @@ const isPasswordValid = (password) => {
   );
 };
 
+const checkPasswordStrength = () => {
+  isStrong.value = enhancedSecurityPassword(newPassword.value);
+  if (isStrong.value) {
+    passwordStrengthMessage.value = '비밀번호가 강합니다.';
+  } else if (newPassword.value.length > 0) {
+    passwordStrengthMessage.value = '비밀번호가 약합니다.';
+  } else {
+    passwordStrengthMessage.value = '대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.';
+  }
+};
+
 const verifyPassword = async () => {
   try {
     const response = await apiInstance.post('/member/verification/password', {
@@ -73,7 +92,6 @@ const verifyPassword = async () => {
       }
     }
   );
-    console.log("비밀번호 찍어보자",response.data);
     if(response.data.success){
       alert('비밀번호 인증 성공');
       isPasswordVerified.value = true;
@@ -201,27 +219,16 @@ const verifyCode = async () => {
   }
 };
 
-const fileInput = ref(null);
-
-// 프로필 이미지 업데이트
-const updateImage = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    profileImageFile.value = file;
-    const reader = new FileReader();
-    reader.onload = e => {
-      profileImageUrl.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
+// 이미지 관련
 const uploadImage = async (event) => {
   const file = event.target.files[0];
   if(!file) {
     alert('이미지를 선택해주세요.');
     return;
   }
+
+  const previewUrl = URL.createObjectURL(file);
+  profile.imageUrl = previewUrl; 
 
   const formData = new FormData();
   formData.append('profileImage', file);
@@ -230,13 +237,15 @@ const uploadImage = async (event) => {
     const response = await apiInstance.post(`/member/image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Authorization': localStorage.getItem("accessToken")
       },
     });
+
     if (response.data.success) {
       alert('이미지 업로드에 성공했습니다.');
-      const imageUrl = URL.createObjectURL(file); 
-      profile.value.imageUrl = imageUrl; 
-    } else {
+      const imageUrl = `http://localhost:8080/upload/${response.data.data.storeFileName}`;
+      profile.imageUrl = imageUrl; 
+      console.log("다 반영됐나--------------------", profile);
       alert('이미지 업데이트 실패');
     }
   } catch (error) {
@@ -245,7 +254,6 @@ const uploadImage = async (event) => {
   }
 };
 
-// 프로필 이미지 삭제
 const deleteImage = async () => {
   try {
     // 서버에 이미지 삭제 요청하기
@@ -256,33 +264,6 @@ const deleteImage = async () => {
   } catch (error) {
     console.error('파일 삭제 실패');
   }
-
-  // 프로필 저장
-const saveProfile = async () => {
-  const formData = new FormData();
-  if(profileImageFile.value) {
-    formData.append('profileImage', profileImageFile.value); // 이미지 파일 추가
-  }
-  if(profile.email) {
-    formData.append('email', profile.email);
-  }
-
-  try {
-    const response = await apiInstance.post('/member/info', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: localStorage.getItem("accessToken"),
-      },
-    });
-    if (response.data.success) {
-      alert('프로필이 성공적으로 업데이트되었습니다.');
-      profile.imageUrl = response.data.data.imageUrl; // 응답에서 이미지 URL 업데이트
-    }
-  } catch (error) {
-    console.error('프로필 업데이트 오류:', error);
-    alert('프로필 업데이트 중 오류가 발생했습니다.');
-  }
-};
   
 };
 </script>
@@ -346,10 +327,14 @@ const saveProfile = async () => {
           <input
             v-model="newPassword"
             type="password"
-            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-            placeholder="새 비밀번호"
-          />
-          <span v-if="!isPasswordValid(newPassword)" class="text-red-500">비밀번호가 안전하지 않습니다.</span>
+            id="password"
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
+            placeholder="비밀번호"
+            @input="checkPasswordStrength"
+            required />
+            <div :class="['text-sm', 'mt-1', 'mb-6', isStrong ? 'text-green-500' : 'text-red-500']">
+            {{ passwordStrengthMessage }}
+            </div>
           <button @click="changePassword" :disabled="!isPasswordValid(newPassword)" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">수정</button>
         </div>
 

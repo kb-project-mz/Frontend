@@ -135,9 +135,7 @@ export const useAuthStore = defineStore('auth', {
             Authorization: localStorage.getItem("accessToken")
           },
         });
-
         this.profile = response.data.data;
-        console.log("프로필 데이터 불러옴", this.profile);
       } catch (error) {
         console.error('Failed to profile data', error);
         throw error;
