@@ -3,13 +3,11 @@ import { ref, onMounted } from 'vue';
 import { useAssetStore } from '@/stores/asset';
 import AddCardModal from '@/components/connection/AddCardModal.vue'; 
 
-//import { useConsumptionHistoryStore } from '@/stores/consumption-history';
-//const consumptionHistoryStore = useConsumptionHistoryStore();
+import { useCardTransactionStore } from '@/stores/card-transaction.js';
+const cardTransactionStore = useCardTransactionStore();
 
 const memberIdx = localStorage.getItem("memberIdx");
-
 const assetStore = useAssetStore();
-
 const connectedCardList = ref([]);
 
 const isModalVisible = ref(false);
@@ -29,12 +27,25 @@ const fetchAsset = async () => {
   await assetStore.getAssetList(memberIdx);
   const cardList = assetStore.allCardList;
   connectedCardList.value = cardList.filter(card => card.connectedStatus === 1);
+
+  console.log('connectedCardList: ', cardTransactionStore.cardAmountBycardIdx);
+  connectedCardList.value.forEach(card => {
+    console.log("card: ", card);
+
+    const cardIdx = card.prdtId;
+    if (cardTransactionStore.cardAmountBycardIdx[cardIdx]) {
+      card.totalAmount = cardTransactionStore.cardAmountBycardIdx[cardIdx];
+    } else {
+      card.totalAmount = 0;
+    }
+  });
+
   isLoading.value = false;
 };
 
 onMounted(async ()  => {
+  await cardTransactionStore.getCardTransactionListByCardIdx();
   await fetchAsset();
-  //await consumptionHistoryStore.getCardHistoryList(memberIdx);
 });
 </script>
 
@@ -54,7 +65,7 @@ onMounted(async ()  => {
           <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
           <div>
             <div class="text-medium">{{ card.prdtName }}</div>
-            <!-- <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>-->
+            <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>
           </div>
         </div>
         <button @click="openModal" class="w-full">
