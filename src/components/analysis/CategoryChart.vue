@@ -53,7 +53,7 @@ onMounted(async () => {
     }
 
     // 백엔드에서 카테고리별 데이터 가져오기
-    await categoryStore.fetchCategoryTransactionCount(memberIdx);
+    await categoryStore.fetchMostSpentCategory(memberIdx);
 });
 </script>
 
