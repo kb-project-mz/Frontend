@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed } from 'vue';
 import { useAuthStore } from "@/stores/auth.js";
 import apiInstance from '@/util/axios-instance';
 
@@ -29,28 +29,36 @@ const verificationFail = ref('');
 const verificationSuccess = ref('');
 const isVerifiedEmail = ref(false);
 
-const disableSubmit = ref(false);
 const isLoading = ref(false);
-const profileImageUrl = ref('C:/upload/profile.jpg');
-const profileImageFile = ref(null);
 
 onMounted( async () => {
   await fetchProfile();
+  console.log("birthday", profile.birthday);
 });
 
 // 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
   try {
-    await auth.getProfile();
-    profile.memberId = auth.profile.memberId;
-    profile.memberName = auth.profile.memberName;
-    profile.birthday = auth.profile.birthday;
-    profile.email = auth.profile.email;
-    profile.imageUrl = auth.profile.imageUrl;
+    const profileData = await auth.getProfile();
+    profile.memberId = profileData.memberId;
+    profile.memberName = profileData.memberName;
+    profile.birthday = profileData.birthday;
+    profile.email = profileData.email;
+    profile.imageUrl = profileData.imageUrl;
+    console.log('Birthday:', profile.birthday); // 콘솔에 출력
   } catch (error) {
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
+
+ const formattedBirthDay = computed(() => {
+      if (!profile.birthday) return ''; 
+      const date = new Date(profile.birthday);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    });
 
 const enhancedSecurityPassword = (password) => {
   const minLength = 8;
@@ -331,7 +339,7 @@ const deleteImage = async () => {
         <div class="mb-6">
           <label for="birthDay" class="block mb-2 text-sm font-medium text-gray-900">생년월일</label>
           <input 
-            v-model="profile.birthDay" 
+            :value="formattedBirthDay" 
             type="date" 
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-4"
             readonly />
