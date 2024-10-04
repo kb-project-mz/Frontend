@@ -239,7 +239,7 @@ const join = async () => {
 
     if (loginResponse && loginResponse.memberId) {
       console.log('로그인 성공:', loginResponse);
-      router.push({ name: 'MemberHomePage' });
+      router.push({ name: 'memberHomePage' });
     }
   } catch (error) {
     alert('회원가입 중 오류가 발생했습니다.');
