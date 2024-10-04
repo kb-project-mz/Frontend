@@ -45,18 +45,16 @@ const renderChart = () => {
     const ctx = document.getElementById("doughnutChart").getContext("2d");
 
     if (doughnutChartInstance) {
-        // 차트가 이미 존재할 경우 데이터를 업데이트
-        doughnutChartInstance.data.labels = chartData.value.labels;
-        doughnutChartInstance.data.datasets[0].data = chartData.value.datasets[0].data;
-        doughnutChartInstance.update(); // 차트 업데이트
-    } else {
-        // 처음 차트를 생성할 때
-        doughnutChartInstance = new Chart(ctx, {
-            type: "doughnut",
-            data: chartData.value,
-            options: chartOptions.value,
-        });
+        // 기존 차트를 제거
+        doughnutChartInstance.destroy();
     }
+
+    // 새로운 차트를 생성
+    doughnutChartInstance = new Chart(ctx, {
+        type: "doughnut",
+        data: chartData.value,
+        options: chartOptions.value,
+    });
 };
 
 onMounted(async () => {
@@ -64,15 +62,24 @@ onMounted(async () => {
 
     if (memberIdx) {
         await categoryTransactionStore.fetchCategoryTransactionCount(memberIdx);
-
+        console.log("categoryData:", categoryTransactionStore.categoryData);
         if (categoryTransactionStore.categoryData.length > 0) {
-            const startOfMonth = getStartOfMonth();
-            const endOfMonth = getEndOfMonth();
+            const startOfMonth = getStartOfMonth().toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
+            const endOfMonth = getEndOfMonth().toISOString().split("T")[0];
+            console.log("Start of Month:", startOfMonth); // 시작일 출력
+            console.log("End of Month:", endOfMonth); // 마지막 날짜 출력
 
             const filteredData = categoryTransactionStore.categoryData.filter((item) => {
                 const transactionDate = new Date(item.transactionDate);
                 return transactionDate >= startOfMonth && transactionDate <= endOfMonth;
             });
+
+            console.log("Filtered Data:", filteredData); // 필터링된 데이터 로그
+
+            if (filteredData.length === 0) {
+                console.error("필터링된 데이터가 없습니다.");
+                return;
+            }
 
             const uniqueCategories = [...new Set(filteredData.map((item) => item.categoryName))];
 
