@@ -1,9 +1,9 @@
-
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from "chart.js";
-import { useCategoryTransactionStore } from "@/stores/category-transaction"; // Pinia store import
+import { useCategoryTransactionStore } from "@/stores/category-transaction"; 
+
+
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
@@ -13,7 +13,7 @@ const chartData = ref({
     datasets: [
         {
             data: [],
-            backgroundColor: ["#FFB3BA", "#B3E5FC", "#FFCE99", "#C8E6C9", "#E1BEE7"], // 파스텔톤 색상
+            backgroundColor: ["#FFB3BA", "#B3E5FC", "#FFCE99", "#C8E6C9", "#E1BEE7"], 
             hoverBackgroundColor: ["#FFB3BA", "#B3E5FC", "#FFCE99", "#C8E6C9", "#E1BEE7"],
         },
     ],
@@ -48,11 +48,10 @@ const renderChart = () => {
     const ctx = document.getElementById("doughnutChart").getContext("2d");
 
     if (doughnutChartInstance) {
-        // 기존 차트를 제거
+    
         doughnutChartInstance.destroy();
     }
 
-    // 새로운 차트를 생성
     doughnutChartInstance = new Chart(ctx, {
         type: "doughnut",
         data: chartData.value,
@@ -65,22 +64,18 @@ onMounted(async () => {
 
     if (memberIdx) {
         await categoryTransactionStore.fetchCategoryTransactionCount(memberIdx);
-        console.log("categoryData:", categoryTransactionStore.categoryData);
+       
         if (categoryTransactionStore.categoryData.length > 0) {
-            const startOfMonth = getStartOfMonth().toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
+            const startOfMonth = getStartOfMonth().toISOString().split("T")[0]; 
             const endOfMonth = getEndOfMonth().toISOString().split("T")[0];
-            console.log("Start of Month:", startOfMonth); // 시작일 출력
-            console.log("End of Month:", endOfMonth); // 마지막 날짜 출력
+            
 
             const filteredData = categoryTransactionStore.categoryData.filter((item) => {
-    const transactionDate = new Date(item.transactionDate).toISOString().split("T")[0]; // YYYY-MM-DD 형식으로 변환
+    const transactionDate = new Date(item.transactionDate).toISOString().split("T")[0];
     return transactionDate >= startOfMonth && transactionDate <= endOfMonth;
 
 
 });
-
-
-            console.log("Filtered Data:", filteredData); // 필터링된 데이터 로그
 
             if (filteredData.length === 0) {
                 console.error("필터링된 데이터가 없습니다.");

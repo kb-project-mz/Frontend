@@ -23,8 +23,6 @@ const props = defineProps({
     },
 });
 
-console.log(props.cardTransactionData);
-console.log(props.accountTransactionData);
 
 const memberName = localStorage.getItem("memberName");
 const month = new Date().getMonth() + 1;
