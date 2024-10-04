@@ -29,6 +29,8 @@ const logout = () => {
         <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
       </router-link>
 
+			<!-- <img :src="member.imageUrl || 'default-profile.jpg'" alt="Profile Image"> -->
+
       <div v-if="memberId">
         <router-link v-if="memberId" to="/mypage" class="mr-2">
           {{ memberName }}님

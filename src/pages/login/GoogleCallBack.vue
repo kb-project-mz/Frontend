@@ -12,6 +12,7 @@ const googleAccessToken = computed(() => route.query.access_token);
 const googleRefreshToken = computed(() => route.query.refresh_token);
 const memberId = computed(() => route.query.member_id);
 const memberName = computed(() => route.query.member_name);
+const memberIdx = computed(() => route.query.member_idx);
 
 onMounted(() => {
   if (googleAccessToken.value) {
@@ -20,6 +21,7 @@ onMounted(() => {
         member: {
           memberId: memberId.value,
           memberName: memberName.value,
+					memberIdx: memberIdx.value
         }
       });
 
@@ -27,7 +29,8 @@ onMounted(() => {
         memberId: memberId.value,
         accessToken: googleAccessToken.value,
         refreshToken: googleRefreshToken.value,
-        memberName: memberName.value
+        memberName: memberName.value,
+				memberIdx: memberIdx.value
       });
 
       authStore.loadAuthState();
