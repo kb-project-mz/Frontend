@@ -89,7 +89,6 @@ const loadData = () => {
 
 onMounted(() => {
   const lastMonthLastDate = getLastMonth();
-  console.log(lastMonthLastDate);
   selectedStartYear.value = lastMonthLastDate.getFullYear();
   selectedStartMonth.value = lastMonthLastDate.getMonth();
   selectedStartDate.value = 1;
@@ -132,7 +131,7 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
         <MostAndMaximumUsed class="lg:col-span-1" :start-date="startDate" :end-date="endDate" period="해당 기간" />
         <div class="lg:col-span-1 flex flex-col justify-between gap-10">
           <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
-          <AverageConsumption :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
+          <AverageConsumption chart-id="selectedPeriod" :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
         </div>
         <CategoryChart class="lg:col-span-1" />
       </div>

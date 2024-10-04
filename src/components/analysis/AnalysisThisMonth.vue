@@ -16,9 +16,6 @@ const props = defineProps({
   }
 });
 
-console.log(props.cardTransactionData);
-console.log(props.accountTransactionData);
-
 const memberName = localStorage.getItem("memberName");
 
 const isLoaded = ref(false);
@@ -38,7 +35,6 @@ const getEndDay = (year, month) => {
 onMounted(() => {
   startDate.value = new Date(year, month, 1);
   endDate.value = new Date(year, month, getEndDay(year, month));
-  console.log(startDate.value, endDate.value);
   isLoaded.value = true;
 });
 </script>
@@ -50,7 +46,7 @@ onMounted(() => {
       <MostAndMaximumUsed period="이번 달" :start-date="startDate" :end-date="endDate"/>
       <div class="lg:col-span-1 flex flex-col justify-between gap-10">
         <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
-        <AverageConsumption :card-transaction-data="cardTransactionData"
+        <AverageConsumption chart-id="thisMonth" :card-transaction-data="cardTransactionData"
           :account-transaction-data="accountTransactionData" />
       </div>
       <CategoryChart class="lg:col-span-1" />
