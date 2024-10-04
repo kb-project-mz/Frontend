@@ -15,7 +15,7 @@ const accountTransactionStore = useAccountTransactionStore();
 const cardTransactionData = ref(null);
 const accountTransactionData = ref(null);
 
-const today = new Date(2024, 8, 23);  // 9월 23일
+const today = new Date();
 
 const selectedStartYear = ref(0);
 const selectedStartMonth = ref(0);
@@ -89,6 +89,7 @@ const loadData = () => {
 
 onMounted(() => {
   const lastMonthLastDate = getLastMonth();
+  console.log(lastMonthLastDate);
   selectedStartYear.value = lastMonthLastDate.getFullYear();
   selectedStartMonth.value = lastMonthLastDate.getMonth();
   selectedStartDate.value = 1;
