@@ -10,14 +10,14 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   actions: {
     async getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
       try {
-        const res = await apiInstance.get(`/transaction/most`, {
+        const res = await apiInstance.get(`/transaction/top-usage`, {
           params: {
             memberIdx: memberIdx,
             startYear: startYear,
-            startMonth: startMonth,
+            startMonth: startMonth + 1,
             startDay: startDay,
             endYear: endYear,
-            endMonth: endMonth,
+            endMonth: endMonth + 1,
             endDay: endDay
           },
           headers: {
@@ -26,6 +26,7 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
         });
 
         this.mostAndMaximum = res.data.data;
+        console.log(res.data.data);
       } catch (err) {
         console.error(err);
       }

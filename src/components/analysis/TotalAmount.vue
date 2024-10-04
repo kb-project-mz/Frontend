@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from "vue";
 
 const props = defineProps({
   cardTransactionData: {
@@ -9,7 +9,7 @@ const props = defineProps({
   accountTransactionData: {
     type: Array,
     required: true,
-  }
+  },
 });
 
 const memberName = localStorage.getItem("memberName");
@@ -56,23 +56,23 @@ watch([() => props.cardTransactionData, () => props.accountTransactionData], () 
 
 <template>
   <div class="py-5 px-10 bg-gray-100 border border-gray-200 rounded-2xl shadow">
-    <div class="flex items-center justify-between mb-2 w-64">
-      <div class="w-1/2 font-medium">이번 달 총 수입</div>
+    <div class="flex items-center justify-between">
+      <div class="font-medium">총 수입</div>
       <div class="font-bold text-lg">{{ totalIncome.toLocaleString() }}원</div>
     </div>
     <div class="flex items-center justify-between">
-      <div class="w-1/2 font-medium">이번 달 총 지출</div>
+      <div class="font-medium">총 지출</div>
       <div div class="font-bold text-lg text-red">{{ totalOutcome.toLocaleString() }}원</div>
     </div>
-    
   </div>
 </template>
 
 <style scoped>
 .text-blue {
-  color: #0B1573;
+  color: #0b1573;
 }
+
 .text-red {
-  color: #F55151;
+  color: #f55151;
 }
 </style>

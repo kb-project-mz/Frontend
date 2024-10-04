@@ -33,14 +33,6 @@ const toggleCardFlip = () => {
 
 const isDataLoaded = ref(false);
 
-// 월의 마지막 날짜 가져오기 함수
-const getEndDay = (year, month) => {
-  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return daysInMonth[month - 1];
-};
-
-// 소비 내역 불러오기 함수
 const fetchTransactionData = async (memberIdx) => {
   await cardTransactionStore.getCardTransactionList(memberIdx);
   cardTransactionData.value = cardTransactionStore.cardTransaction;
@@ -55,50 +47,25 @@ const fetchTransactionData = async (memberIdx) => {
   isDataLoaded.value = true;
 };
 
-// // 선택한 기간 동안의 소비 내역 필터링
-// const fetchSelectedPeriodConsumptionTransaction = () => {
-//   const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
-//   const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
-
-//   const filteredTransactionData = transactionData.value.filter((item) => {
-//     const consumptionDate = new Date(item.consumptionDate);
-//     return consumptionDate >= startDate && consumptionDate <= endDate;
-//   });
-
-//   const filteredAccountTransactionData = accountTransactionData.value.filter((item) => {
-//     const accountDate = new Date(item.accountDate);
-//     return accountDate >= startDate && accountDate <= endDate;
-//   });
-
-//   transactionSelectedPeriodData.value = filteredTransactionData;
-//   accountTransactionSelectedPeriodData.value = filteredAccountTransactionData;
-// };
-
 onMounted(async () => {
-  // 데이터 불러오기
   await fetchTransactionData(memberIdx);
-
-  // 만약 상태가 계속 변경되면 무한 렌더링이 발생할 수 있음
-  // fetchSelectedPeriodConsumptionTransaction();
 });
 </script>
 
 <template>
-  <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1">
-    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">뒤집기</button>
-    <div class="flip w-full h-[450px] inline-block perspective-[1100px]">
-      <div class="card w-full inline-block relative transition duration-400 transform-style-[preserve-3d]"
-        :class="{ 'rotate-y-180': isFlipped }">
-        <div class="front absolute w-full backface-visibility-hidden">
+  <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1 gap-10">
+    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">과거 소비와 비교하기</button>
+    <div class="flip w-full inline-block relative">
+      <div class="card w-full inline-block relative flex" :class="{ '[transform:rotateY(180deg)]': isFlipped }">
+        <div class="front w-full absolute">
           <AnalysisThisMonth :card-transaction-data="cardTransactionThisMonthData"
             :account-transaction-data="accountTransactionThisMonthData" />
         </div>
-        <div class="back absolute w-full backface-visibility-hidden rotate-y-180">
+        <div class="back w-full [transform:rotateY(180deg)]">
           <AnalysisSelectedPeriod />
         </div>
       </div>
     </div>
-
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-span-2">
@@ -114,7 +81,8 @@ onMounted(async () => {
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-span-3">
-        <ConsumptionCalendar :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
+        <ConsumptionCalendar :account-transaction-data="accountTransactionData"
+          :card-transaction-data="cardTransactionData" />
       </div>
       <div class="lg:col-span-2">
         <ConsumptionList :card-transaction-data="cardTransactionData" />
@@ -124,9 +92,6 @@ onMounted(async () => {
     <div>
       <AIRecommendation />
     </div>
-
-    
-    
   </div>
 </template>
 
@@ -136,7 +101,7 @@ onMounted(async () => {
 }
 
 .flip {
-  perspective: 1100px;
+  perspective: 5000px;
 }
 
 .card {
@@ -144,16 +109,7 @@ onMounted(async () => {
   transform-style: preserve-3d;
 }
 
-.front,
-.back {
+.front, .back {
   backface-visibility: hidden;
-}
-
-.back {
-  transform: rotateY(180deg);
-}
-
-.card.rotate-y-180 {
-  transform: rotateY(180deg);
 }
 </style>

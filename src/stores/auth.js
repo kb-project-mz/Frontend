@@ -48,14 +48,24 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async checkEmail(email) {
-      try {
-        const response = await apiInstance.get(`/member/check-email?email=${encodeURIComponent(email)}`);
-        return response.data.data;
-      } catch (error) {
-        throw error;
-      }
-    },
+		async checkEmailDuplicate(email) {
+			try {
+				const response = await apiInstance.get(`/member/email/duplicate`, {
+					params: { email: email }
+				});
+		
+				if (response && response.data) {
+					console.log('이메일 중복 확인 응답 데이터:', response.data);
+					return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
+				} else {
+					console.log('응답 데이터가 존재하지 않습니다.');
+					return false; // 오류 처리
+				}
+			} catch (error) {
+				console.error('이메일 중복 확인 오류:', error);
+				throw error;
+			}
+		},
 
     async sendEmailVerification(email) {
       try {
