@@ -5,7 +5,7 @@ import { setLocalStorage, setTokens, clearTokens } from '@/util/token';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     member: {
-      memberIdx: localStorage.getItem('id') || null,
+      memberIdx: localStorage.getItem('memberIdx') || null,
       memberName: localStorage.getItem('memberName') || null,
       memberId: localStorage.getItem('memberId') || null,
 			imageUrl: localStorage.getItem('imageUrl') || null
