@@ -1,25 +1,26 @@
 <script setup>
-import Button from '@/components/home/Button.vue';
-import testImage from '@/assets/테스트.png';
-import chartImage from '@/assets/차트.png';
-import challengeImage from '@/assets/챌린지.png';
+import Button from "@/components/home/Button.vue";
+import testImage from "@/assets/테스트.png";
+import chartImage from "@/assets/차트.png";
+import challengeImage from "@/assets/챌린지.png";
 
-import Account from '@/components/home/Account.vue';
-import Challenge from '@/components/home/Challenge.vue';
+import Account from "@/components/home/Account.vue";
+import Challenge from "@/components/home/Challenge.vue";
 
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 // const memberIdx = computed(() => authStore.member.memberIdx);
-const memberIdx = localStorage.getItem('memberIdx');
+const memberIdx = localStorage.getItem("memberIdx");
 </script>
 
 <template>
   <div>
-    <div class="max-w-6xl mx-auto space-x-12 flex justify-center">
-      <Challenge />
-      <Account />
-    </div>
+    <h1>[challenge top3]</h1>
+    <Challenge />
+    <h1>---------------------------------</h1>
+    <h1>[Account]</h1>
+    <Account />
     <div class="max-w-6xl mx-auto space-x-12 flex justify-center">
       <Button
         :img-src="testImage"
