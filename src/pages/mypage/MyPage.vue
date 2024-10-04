@@ -13,6 +13,8 @@ const profile = reactive({
   imageUrl: '',
 });
 
+const selectedImage = ref(null);
+
 const password = ref('');
 const newPassword = ref('');
 const confirmNewPassword = ref('');
@@ -33,7 +35,6 @@ const isLoading = ref(false);
 
 onMounted( async () => {
   await fetchProfile();
-  console.log("birthday", profile.birthday);
 });
 
 // 프로필 정보를 API에서 불러오는 함수
@@ -45,7 +46,6 @@ const fetchProfile = async () => {
     profile.birthday = profileData.birthday;
     profile.email = profileData.email;
     profile.imageUrl = profileData.imageUrl;
-    console.log('Birthday:', profile.birthday); // 콘솔에 출력
   } catch (error) {
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
@@ -158,7 +158,7 @@ const sendVerificationCode = async () => {
       console.log('이미 존재하는 이메일입니다.');
       alert('이미 존재하는 이메일입니다.');
       isLoading.value = false;
-      return; // 중복 확인되면 코드 발송 중단
+      return; 
     }
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
     const result = await auth.sendEmailVerification(profile.email);
@@ -187,6 +187,7 @@ const verifyCode = async () => {
       verificationSuccess.value = '이메일 인증이 완료되었습니다.';
       verificationFail.value = '';
       isVerifiedEmail.value = true;
+      
     } else {
       verificationFail.value = '인증 코드가 올바르지 않습니다.';
       verificationSuccess.value = '';
@@ -205,6 +206,8 @@ const verifyCode = async () => {
 // 이미지 관련
 const uploadImage = async (event) => {
   const file = event.target.files[0];
+  selectedImage.value = file;
+  console.log('Selected Image:', file);
   if(!file) {
     alert('이미지를 선택해주세요.');
     return;
@@ -212,7 +215,8 @@ const uploadImage = async (event) => {
   const previewUrl = URL.createObjectURL(file);
   profile.imageUrl = previewUrl; 
   const formData = new FormData();
-  formData.append('profileImage', file);
+  formData.append('profileImage', selectedImage.value);
+  console.log("222222222222222222222222222222222", selectedImage.value);
   try {
     const response = await apiInstance.post(`/member/image`, formData, {
       headers: {
@@ -226,23 +230,38 @@ const uploadImage = async (event) => {
       profile.imageUrl = imageUrl; 
       const previewUrl = URL.createObjectURL(file);
       profile.imageUrl = previewUrl; 
+      console.log("1111111111111111" + imageUrl);
     }
   } catch (error) {
     alert('이미지 업로드에 실패하셨습니다.');
   }
 };
+const deleteImage = async (imageFile) => {
+  const formData = new FormData();
+  formData.append('profileImage', imageFile);
 
-const deleteImage = async () => {
+  console.log('Deleting Image:', formData);
+  console.log('1111111111111111111111111111');
   try {
-    // 서버에 이미지 삭제 요청하기
-    const response = await apiInstance.delete(`/member/info/profileImage`);
-    alert('파일 삭제 성공');
-    profile.imageUrl = 'C:/upload/profile.jpg'; // 기본 이미지로 리셋
+    const response = await apiInstance.post(`/member/image/default`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    console.log('Response Data:', response.data); // 서버 응답 로그 추가
+    console.log(response.data.storeFileName);
+    if(response.data.success){
+      alert('이미지를 삭제하였습니다.');
+      const imageUrl = `http://localhost:8080/upload/${response.data.data.storeFileName}`;
+      profile.imageUrl = imageUrl; 
+    }
   } catch (error) {
     console.error('파일 삭제 실패');
   }
-  
 };
+
+
 </script>
 
 <template>
@@ -390,9 +409,7 @@ const deleteImage = async () => {
           <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
         </div>
 
-        <button
-          type="submit"
-          class="cursor-pointer w-full bg-navy text-white py-1 rounded-xl flex justify-center items-center">
+        <button @click="saveProfile" class="cursor-pointer w-full bg-navy text-white py-1 rounded-xl flex justify-center items-center">
           <span class="ml-2">프로필 저장하기</span>
         </button>
       </form>
