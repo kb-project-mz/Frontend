@@ -31,14 +31,6 @@ const toggleCardFlip = () => {
 
 const isDataLoaded = ref(false);
 
-// 월의 마지막 날짜 가져오기 함수
-const getEndDay = (year, month) => {
-  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return daysInMonth[month - 1];
-};
-
-// 소비 내역 불러오기 함수
 const fetchTransactionData = async (memberIdx) => {
   await cardTransactionStore.getCardTransactionList(memberIdx);
   cardTransactionData.value = cardTransactionStore.cardTransaction;
@@ -52,11 +44,7 @@ const fetchTransactionData = async (memberIdx) => {
 };
 
 onMounted(async () => {
-  // 데이터 불러오기
   await fetchTransactionData(memberIdx);
-
-  // 만약 상태가 계속 변경되면 무한 렌더링이 발생할 수 있음
-  // fetchSelectedPeriodConsumptionTransaction();
 });
 </script>
 

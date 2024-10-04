@@ -111,9 +111,13 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
   <div>
     <div v-if="isLoaded">
       <div class="flex justify-between">
-        <div class="text-xl font-semibold mb-10">
-          {{ selectedStartYear }}년 {{ selectedStartMonth + 1 }}월 {{ selectedStartDate }}일부터
-          {{ selectedEndYear }}년 {{ selectedEndMonth + 1 }}월 {{ selectedEndDate }}일까지의 소비 패턴을 분석해보았어요.
+        <div>
+          <div class="text-lg">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
+          <div class="text-xl font-semibold mb-5">
+            {{ selectedStartYear }}년 {{ selectedStartMonth + 1 }}월 {{ selectedStartDate }}일 -
+          {{ selectedEndYear }}년 {{ selectedEndMonth + 1 }}월 {{ selectedEndDate }}일
+          </div>
+          
         </div>
         <div>
           <VueDatePicker v-model="date" range :format="'yyyy-MM-dd'" @update:model-value="updateSelectedDates">

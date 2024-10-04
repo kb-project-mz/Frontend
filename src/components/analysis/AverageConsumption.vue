@@ -23,6 +23,7 @@ const chartInstance = ref(null);
 
 const now = new Date();
 const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30)); // 현재 날짜 기준 30일 전
+
 const today = new Date(); // 오늘 날짜
 
 // 필터링된 계좌 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
@@ -179,7 +180,7 @@ watch([props.accountTransactionData, props.cardTransactionData], ([newAccountDat
       <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>
     </div>
     <div class="py-12 px-10 bg-white mb-2">
-      <canvas :id="chartId"></canvas>
+      <!-- <canvas :id="chartId"></canvas> -->
     </div>
   </div>
 </template>

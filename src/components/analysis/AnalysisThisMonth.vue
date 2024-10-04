@@ -41,7 +41,10 @@ onMounted(() => {
 
 <template>
   <div v-if="isLoaded">
-    <div class="text-xl font-semibold mb-10">{{ memberName }}님의 {{ month + 1 }}월 소비 패턴을 분석해보았어요.</div>
+    <div>
+      <div class="text-lg">이번 달 {{ memberName }}님의 소비 패턴을 분석해보았어요.</div>
+      <div class="text-xl font-semibold mb-5">{{ year }}년 {{ month + 1 }}월</div>
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
       <MostAndMaximumUsed period="이번 달" :start-date="startDate" :end-date="endDate"/>
       <div class="lg:col-span-1 flex flex-col justify-between gap-10">
