@@ -7,12 +7,13 @@ export const useAuthStore = defineStore('auth', {
     member: {
       memberIdx: localStorage.getItem('id') || null,
       memberName: localStorage.getItem('memberName') || null,
-      memberId: localStorage.getItem('memberId') || null
+      memberId: localStorage.getItem('memberId') || null,
+			imageUrl: localStorage.getItem('imageUrl') || null
     }
   }),
 
   actions: {
-    async login(memberId, password) {
+    async login(memberId, password ) {
       try {
         const response = await apiInstance.post('/member/login', { memberId, password });
         const loginData = response.data.data;
@@ -109,6 +110,8 @@ export const useAuthStore = defineStore('auth', {
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
+				this.member.memberIdx = authData.memberIdx;
+				this.member.imageUrl = authData.imageUrl || '';
       }
     },
 
