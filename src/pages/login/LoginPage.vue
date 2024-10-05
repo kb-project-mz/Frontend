@@ -9,8 +9,9 @@ const router = useRouter();
 const auth = useAuthStore();
 
 const member = reactive({
-    memberId: "",
-    password: "",
+  memberId: "",
+  password: "",
+  memberIdx: "",
 });
 
 const error = ref("");

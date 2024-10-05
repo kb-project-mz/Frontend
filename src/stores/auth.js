@@ -2,20 +2,21 @@ import { defineStore } from "pinia";
 import apiInstance from "@/util/axios-instance";
 import { setLocalStorage, setTokens, clearTokens } from "@/util/token";
 
-export const useAuthStore = defineStore("auth", {
-    state: () => ({
-        member: {
-            memberIdx: localStorage.getItem("memberIdx") || null, // memberIdx 저장
-            memberName: localStorage.getItem("memberName") || null,
-            memberId: localStorage.getItem("memberId") || null,
-        },
-    }),
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    member: {
+      memberIdx: localStorage.getItem('memberIdx') || null,
+      memberName: localStorage.getItem('memberName') || null,
+      memberId: localStorage.getItem('memberId') || null,
+			imageUrl: localStorage.getItem('imageUrl') || null
+    }
+  }),
 
-    actions: {
-        async login(memberId, password) {
-            try {
-                const response = await apiInstance.post("/member/login", { memberId, password });
-                const loginData = response.data.data;
+  actions: {
+    async login(memberId, password ) {
+      try {
+        const response = await apiInstance.post('/member/login', { memberId, password });
+        const loginData = response.data.data;
 
                 if (!loginData || !loginData.accessToken) {
                     return null;
@@ -110,14 +111,15 @@ export const useAuthStore = defineStore("auth", {
             localStorage.clear();
         },
 
-        loadAuthState() {
-            const authData = JSON.parse(localStorage.getItem("auth"));
-            if (authData && authData.memberId) {
-                this.member.memberIdx = localStorage.getItem("memberIdx"); // memberIdx 불러오기
-                this.member.memberId = authData.memberId;
-                this.member.memberName = authData.memberName;
-            }
-        },
+    loadAuthState() {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      if (authData && authData.memberId) {
+        this.member.memberId = authData.memberId;
+        this.member.memberName = authData.memberName;
+				this.member.memberIdx = authData.memberIdx;
+				this.member.imageUrl = authData.imageUrl || '';
+      }
+    },
 
         isLogin() {
             const authData = localStorage.getItem("auth");

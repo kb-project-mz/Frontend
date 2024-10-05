@@ -44,6 +44,10 @@ export function setLocalStorage(loginData) {
 
    if (loginData.memberIdx) {
       localStorage.setItem('memberIdx', loginData.memberIdx);
-}
+		}
+
+		if (loginData.imageUrl) { 
+      localStorage.setItem('imageUrl', loginData.imageUrl);
+   	}
 
 }
