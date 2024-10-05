@@ -24,30 +24,95 @@ const props = defineProps({
   }
 });
 
-// TODO: 10월 소비 내역이 없는 관계로 today를 9월로 고정, 추후 new Date()로 변경해야 함
-const today = new Date(2024, 8, 13);
-const currentMonth = today.getMonth();
+const today = new Date();
 const currentDate = today.getDate();
 
 const memberName = localStorage.getItem("memberName");
 
 const lastMonthCompareData = ref(0);
 const thisMonthCompareData = ref(0);
+const difference = ref(0);
 
 const generatePointRadius = () => {
   const result = new Array(currentDate).fill(0);
   result[currentDate - 1] = 5;
   return result;
-};
+}
 
 const getEndDay = (year, month) => {
   const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return daysInMonth[month - 1];
-};
+  return daysInMonth[month];
+}
 
-const calculateDailyTotal = (cardTransactions, accountTransactions) => {
-  
+const calculateLastMonthCumulative = (cardTransactions, accountTransactions) => {
+  const cumulativeTotals = calculateCumulative(cardTransactions, accountTransactions);
+
+  const dates = Object.keys(cumulativeTotals);
+  const lastValue = cumulativeTotals[dates[dates.length - 1]];
+
+  const startDate = new Date(dates[dates.length - 1]);
+  const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), getEndDay(startDate.getFullYear(), startDate.getMonth()));
+  const cur = new Date(startDate);
+
+  while (cur < endDate) {
+    cur.setDate(cur.getDate() + 1);
+    const formattedDate = cur.toISOString().split('T')[0];
+    cumulativeTotals[formattedDate] = lastValue;
+  }
+
+  let targetDate;
+  if (currentDate > endDate.getDate()) {
+    targetDate = new Date(startDate.getFullYear(), startDate.getMonth(), endDate.getDate());
+  } else {
+    targetDate = new Date(startDate.getFullYear(), startDate.getMonth(), currentDate);
+  }
+
+  const year = targetDate.getFullYear();
+  const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+  const day = String(targetDate.getDate()).padStart(2, '0');
+
+  lastMonthCompareData.value = cumulativeTotals[`${year}-${month}-${day}`];
+  Object.keys(cumulativeTotals).forEach(date => {
+    const formattedKey = parseInt(date.split('-')[2], 10);
+    cumulativeTotals[formattedKey] = cumulativeTotals[date];
+    delete cumulativeTotals[date];
+  });
+  return cumulativeTotals;
+}
+
+const calculateThisMonthCumulative = (cardTransactions, accountTransactions) => {
+  const cumulativeTotals = calculateCumulative(cardTransactions, accountTransactions);
+
+  const dates = Object.keys(cumulativeTotals);
+  const lastValue = cumulativeTotals[dates[dates.length - 1]];
+
+  const startDate = new Date(dates[dates.length - 1]);
+  const endDate = new Date();
+  const currentDate = new Date(startDate);
+
+  while (currentDate < endDate) {
+    currentDate.setDate(currentDate.getDate() + 1);
+    const formattedDate = currentDate.toISOString().split('T')[0];
+    cumulativeTotals[formattedDate] = lastValue;
+  }
+
+  const year = endDate.getFullYear();
+  const month = String(endDate.getMonth() + 1).padStart(2, '0');
+  const day = String(endDate.getDate()).padStart(2, '0');
+
+  thisMonthCompareData.value = cumulativeTotals[`${year}-${month}-${day}`];
+  difference.value = thisMonthCompareData.value - lastMonthCompareData.value;
+
+  Object.keys(cumulativeTotals).forEach(date => {
+    const formattedKey = parseInt(date.split('-')[2], 10);
+    cumulativeTotals[formattedKey] = cumulativeTotals[date];
+    delete cumulativeTotals[date];
+  });
+  return cumulativeTotals;
+}
+
+const calculateCumulative = (cardTransactions, accountTransactions) => {
   const dailyTotals = {};
 
   accountTransactions.forEach(transaction => {
@@ -95,50 +160,9 @@ const calculateDailyTotal = (cardTransactions, accountTransactions) => {
     lastProcessedDate = date;
   });
 
-  if (lastProcessedDate) {
-    let lastDate = new Date(lastProcessedDate);
-    if (lastDate.getMonth() == today.getMonth()) {
-      while (lastDate < today) {
-        lastDate.setDate(lastDate.getDate() + 1);
-        const formattedDate = lastDate.toISOString().split('T')[0];
-        cumulativeTotals[formattedDate] = cumulativeSum;
-      }
-
-      thisMonthCompareData.value = cumulativeTotals[today.toISOString().split('T')[0]];
-    } else {
-      const year = today.getFullYear();
-      const month = today.getMonth();
-
-      let lastMonthYear = year;
-      let lastMonth = month - 1;
-
-      if (lastMonth < 0) {
-        lastMonth = 11;
-        lastMonthYear--;
-      }
-
-      const lastMonthDay = new Date(lastMonthYear, lastMonth, getEndDay(lastMonthYear, lastMonth));
-      while (lastDate < lastMonthDay) {
-        lastDate.setDate(lastDate.getDate() + 1);
-        const formattedDate = lastDate.toISOString().split('T')[0];
-        cumulativeTotals[formattedDate] = cumulativeSum;
-      }
-      
-      const compareDate = new Date(lastMonthYear, lastMonth, today.getDate());
-      if (getEndDay(lastMonthYear, lastMonth) < today.getDate()) {
-        compareDate.setDate(getEndDay(lastMonthYear, lastMonth)); 
-      }
-      
-      lastMonthCompareData.value = cumulativeTotals[compareDate.toISOString().split('T')[0]];
-    }
-  }
-  
-  return Object.values(cumulativeTotals);
-};
-
-const getDifference = () => {
-  return thisMonthCompareData.value - lastMonthCompareData.value;
+  return cumulativeTotals;
 }
+
 
 const LineChart = Line;
 
@@ -153,15 +177,15 @@ const chartData = ref({
       label: "지난달 소비",
       borderColor: "#D6D7D9",
       pointRadius: 0,
-      data: calculateDailyTotal(props.cardTransactionLastMonthData, props.accountTransactionLastMonthData),
-      tension: 0.2
+      data: calculateLastMonthCumulative(props.cardTransactionLastMonthData, props.accountTransactionLastMonthData),
+      tension: 0.2,
     },
     {
       label: '이번달 소비',
       borderColor: '#2E7EED',
       pointBackgroundColor: '#2E7EED',
       pointRadius: generatePointRadius(),
-      data: calculateDailyTotal(props.cardTransactionThisMonthData, props.accountTransactionThisMonthData),
+      data: calculateThisMonthCumulative(props.cardTransactionThisMonthData, props.accountTransactionThisMonthData),
       tension: 0.2
     }
   ],
@@ -193,7 +217,12 @@ const chartOptions = ref({
     <div class="flex items-center justify-between">
       <div>
         <div>지난 달보다</div>
-        <div><span class="text-red font-bold">{{ Math.abs(getDifference()).toLocaleString() }}</span>원 {{ getDifference() > 0 ? "더" : "덜" }}</div>
+        <div>
+          <span :class="['font-bold', difference > 0 ? 'text-red' : difference < 0 ? 'text-blue' : '']">
+            {{ Math.abs(difference).toLocaleString() }}
+          </span>원 
+          {{ difference > 0 ? '더' : '덜' }}
+        </div>
         <div>사용하고 있어요</div>
       </div>
 
@@ -207,5 +236,9 @@ const chartOptions = ref({
 <style scoped>
 .text-red {
   color: #F55151;
+}
+.text-blue {
+  color: #0E9CFF;
+  background-color: rgba(244, 250, 255, 0.601);
 }
 </style>
