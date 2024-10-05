@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
-import { setLocalStorage, setTokens, clearTokens } from '@/util/token';
+import { setLocalStorage, clearTokens } from '@/util/token';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({

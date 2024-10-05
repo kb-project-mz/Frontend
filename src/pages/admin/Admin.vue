@@ -1,35 +1,21 @@
-<script>
-import CumulativeMetrics from '@/components/admin/CumulativeMetrics.vue';
-import TestResultsChart from '@/components/admin/TestResultsChart.vue';
-import CumulativeMetricsChart from '@/components/admin/CumulativeMetricsChart.vue'; // 변경해야 함
-
-export default {
-  components: {
-    CumulativeMetrics,  // 상단 지표 컴포넌트
-    TestResultsChart,  // 막대그래프 컴포넌트
-    CumulativeMetricsChart  // 곡선 그래프 컴포넌트 변경해야 함
-  }
-};
-</script>
-
 <template>
-  <div class="dashboard">
-    <!-- 상단 4개의 지표를 모아둔 컴포넌트 -->
-    <CumulativeMetrics />
-
-    <!-- 테스트 결과를 나타내는 막대 그래프 -->
-    <TestResultsChart />
-
-    <!-- 누적 지표를 나타내는 곡선 그래프 -->
-    <CumulativeMetricsChart />
+  <div class="p-6">
+    <CumulativeMetricsCard />
+    <TodayLineChart />
+    <TestBarChart />
   </div>
 </template>
 
-<style scoped>
-.dashboard {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  padding: 20px;
-}
-</style>
+<script>
+import CumulativeMetricsCard from '@/components/admin/CumulativeMetricsCard.vue';
+import TestBarChart from '@/components/admin/TestBarChart.vue';
+import TodayLineChart from '@/components/admin/TodayLineChart.vue';
+
+export default {
+  components: {
+    CumulativeMetricsCard,
+    TodayLineChart,
+    TestBarChart,
+  }
+};
+</script>
