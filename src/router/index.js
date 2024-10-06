@@ -95,7 +95,7 @@ const router = createRouter({
       component: TestQuestionPage,
     },
     {
-      path: "/test/result",
+      path: "/test/result/:resultId",
       name: "testResult",
       component: TestResultPage,
     },
