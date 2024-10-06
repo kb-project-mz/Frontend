@@ -26,6 +26,7 @@ onMounted(() => {
 
 watch(questionId, () => {
     fetchData(); 
+    console.log(testStore.score);
 });
 
 // 사용자가 선택한 답변을 저장할 배열
@@ -45,8 +46,9 @@ const calculateResult = () => {
 };
 
 // 다음 문제 라우팅 및 답변 저장
-const nextQuestion = (answerId) => {
+const nextQuestion = (answerId, answerScore) => {
     selectedAnswers.value.push(answerId); // 선택한 답변 저장
+    testStore.incrementScore(answerScore); // 선택된 답변의 점수 추가
 
     if (questionId.value < testStore.questions.length) {
         router.push({ name: "testQuestion", params: { number: questionId.value + 1 } });
@@ -69,7 +71,7 @@ const nextQuestion = (answerId) => {
                     v-if="answers.length > 0"
                     v-for="answer in answers"
                     :key="answer.optionIdx"
-                    @click="nextQuestion"
+                    @click="nextQuestion(answer.optionIdx, answer.score)"
                     class="bg-white text-red-500 font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
                 >
                     {{ answer.optionText }}

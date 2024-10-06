@@ -5,6 +5,8 @@ export const useTestStore = defineStore('testStore', {
   state: () => ({
       questions: [],
       options: new Map(),
+      score: 0,
+    
   }),
   actions: {
       async fetchQuestions() {
@@ -36,5 +38,11 @@ export const useTestStore = defineStore('testStore', {
       getOptionsByQuestionIdx(questionIdx) {
         return this.options.get(questionIdx) || [];
       },
+      incrementScore(value) {
+        this.score += value;
+      },
+      resetScore() {
+        this.score = 0;
+      }
   },
 });
