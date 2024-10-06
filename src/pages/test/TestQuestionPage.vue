@@ -15,6 +15,10 @@ const currentQuestion = computed(() => testStore.questions[questionId.value - 1]
 const currentOptions = computed(() => testStore.getOptionsByQuestionIdx(questionId.value));
 const answers = computed(() => currentOptions.value);
 
+const progress = computed(() => {
+    return ((questionId.value - 1) / testStore.questions.length) * 100; 
+});
+
 const fetchData = async () => {
     questions.value = await testStore.fetchQuestions(); 
     options.value = await testStore.fetchOptions(questionId.value); 
@@ -84,6 +88,10 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <!-- 진행률 바 -->
+        <div class="w-3/4 bg-gray-200 rounded-full h-2 mb-6">
+            <div class="bg-gray-500 h-2 rounded-full" :style="{ width: `${progress}%` }"></div>
+        </div>
         <div class="text-center">
             <h1 class="text-2xl font-bold mb-4">Q{{ questionId }}.</h1>
 
