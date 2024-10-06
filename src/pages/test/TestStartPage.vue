@@ -7,6 +7,7 @@ const startTest = () => {
     router.push({ name: "testQuestion", params: { number: 1 } });
 };
 </script>
+
 <template>
     <div class="relative">
         <div class="flex justify-center mt-0">

@@ -10,15 +10,14 @@ const testStore = useTestStore();
 const questions = ref([]);
 const options = ref([]);
 
-const questionId = computed(() => parseInt(route.params.number));
-const currentQuestion = computed(() => testStore.questions[questionId.value - 1]); // 현재 질문 가져오기
-const currentOptions = computed(() => testStore.getOptionsByQuestionIdx(questionId.value)); // 현재 질문에 대한 옵션 가져오기
+const questionId = computed(() => parseInt(route.params.number, 10));
+const currentQuestion = computed(() => testStore.questions[questionId.value - 1]); 
+const currentOptions = computed(() => testStore.getOptionsByQuestionIdx(questionId.value));
 const answers = computed(() => currentOptions.value);
 
 const fetchData = async () => {
     questions.value = await testStore.fetchQuestions(); 
     options.value = await testStore.fetchOptions(questionId.value); 
-    console.log('011111111111110', options.value);
 }
 
 onMounted(() => {
@@ -28,11 +27,6 @@ onMounted(() => {
 watch(questionId, () => {
     fetchData(); 
 });
-
-const nextQuestion = () => {
-    if (questionId.value < testStore.questions.length) {
-// 질문 ID를 숫자로 변환해서 사용
-const questionId = computed(() => parseInt(route.params.number, 10)); // 숫자로 변환
 
 // 사용자가 선택한 답변을 저장할 배열
 const selectedAnswers = ref([]);
@@ -54,15 +48,13 @@ const calculateResult = () => {
 const nextQuestion = (answerId) => {
     selectedAnswers.value.push(answerId); // 선택한 답변 저장
 
-    if (questionId.value < 12) {
+    if (questionId.value < testStore.questions.length) {
         router.push({ name: "testQuestion", params: { number: questionId.value + 1 } });
     } else {
         const resultId = calculateResult();
         router.push({ name: "testResult", params: { resultId } });
     }
 };
-
-// 서버에서 데이터를 받아와 버튼 내용 설정해야합니다 !!!
 </script>
 
 <template>
