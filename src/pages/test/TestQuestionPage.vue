@@ -26,7 +26,12 @@ onMounted(() => {
 
 watch(questionId, () => {
     fetchData(); 
-    console.log(testStore.score);
+    console.log("inpulse", testStore.impulseScore);
+    console.log("plannedScore", testStore.plannedScore);
+    console.log("costEffective", testStore.costEffective);
+    console.log("goodForSatisfaction", testStore.goodForSatisfaction);
+    console.log("material", testStore.material);
+    console.log("experiential", testStore.experiential);
 });
 
 // 사용자가 선택한 답변을 저장할 배열
@@ -46,10 +51,28 @@ const calculateResult = () => {
 };
 
 // 다음 문제 라우팅 및 답변 저장
-const nextQuestion = (answerId, answerScore) => {
+const nextQuestion = (answerId, answerScore, questionType) => {
     selectedAnswers.value.push(answerId); // 선택한 답변 저장
-    testStore.incrementScore(answerScore); // 선택된 답변의 점수 추가
 
+     // 질문 유형에 따라 점수 추가 로직 실행
+     if (questionType === 1) {
+        testStore.incrementImpulseScore(answerScore);
+    } else if (questionType === 2) {
+        testStore.incrementPlannedScore(answerScore);
+    } else if (questionType === 3) {
+        testStore.incrementCostEffective(answerScore);
+    } else if (questionType === 4) {
+        testStore.incrementGoodForSatisfaction(answerScore);
+    } else if (questionType === 5) {
+        testStore.incrementMaterialScore(answerScore);
+    } else if (questionType === 6) {
+        testStore.incrementExperientialScore(answerScore);
+    }
+
+    // 총 점수도 증가시킴
+    testStore.incrementScore(answerScore);
+
+    // 다음 질문으로 이동
     if (questionId.value < testStore.questions.length) {
         router.push({ name: "testQuestion", params: { number: questionId.value + 1 } });
     } else {
@@ -71,7 +94,7 @@ const nextQuestion = (answerId, answerScore) => {
                     v-if="answers.length > 0"
                     v-for="answer in answers"
                     :key="answer.optionIdx"
-                    @click="nextQuestion(answer.optionIdx, answer.score)"
+                    @click="nextQuestion(answer.optionIdx, answer.score, answer.typeIdx)"
                     class="bg-white text-red-500 font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
                 >
                     {{ answer.optionText }}

@@ -6,7 +6,12 @@ export const useTestStore = defineStore('testStore', {
       questions: [],
       options: new Map(),
       score: 0,
-    
+      impulseScore: 0,
+      plannedScore: 0,
+      costEffective: 0,
+      goodForSatisfaction: 0,
+      material: 0,
+      experiential: 0,
   }),
   actions: {
       async fetchQuestions() {
@@ -43,6 +48,24 @@ export const useTestStore = defineStore('testStore', {
       },
       resetScore() {
         this.score = 0;
-      }
+      },
+      incrementImpulseScore(value) {
+        this.impulseScore += value;
+      },
+      incrementPlannedScore(value) {
+        this.plannedScore += value;
+      },
+      incrementCostEffective(value) {
+        this.costEffective += value;
+      },
+      incrementGoodForSatisfaction(value) {
+        this.goodForSatisfaction += value;
+      },
+      incrementMaterialScore(value) {
+        this.material += value;
+      },
+      incrementExperientialScore(value) {
+        this.experiential += value;
+      },
   },
 });

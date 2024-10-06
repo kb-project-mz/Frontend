@@ -1,38 +1,52 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useTestStore } from "@/stores/test";
 
 const route = useRoute();
+const testStore = useTestStore();
 // 숫자로 변환
 const resultId = computed(() => parseInt(route.params.resultId, 10)); 
+onMounted(() => {
+    console.log('결과다~~~~~~~');
+    console.log("inpulse", testStore.impulseScore);
+    console.log("plannedScore", testStore.plannedScore);
+    console.log("costEffective", testStore.costEffective);
+    console.log("goodForSatisfaction", testStore.goodForSatisfaction);
+    console.log("material", testStore.material);
+    console.log("experiential", testStore.experiential);
+})
 
 const resultContent = computed(() => {
-    switch (resultId.value) {
-        case 1:
-            return '결과 1:';
-        case 2:
-            return '결과 2:';
-        case 3:
-            return '결과 3:';
-        case 4:
-            return '결과 4:';
-        case 5:
-            return '결과 5:';
-        case 6:
-            return '결과 6:';
-        case 7:
-            return '결과 7:';
-        case 8:
-            return '결과 8:';
-        default:
-            return '알 수 없는 결과';
+    let resultText = '';
+    // 각 점수 비교 및 텍스트 추가
+    if (testStore.impulseScore > testStore.plannedScore) {
+        resultText += "충동소비핑ㅋㅋ<BR>";
     }
+    if (testStore.plannedScore > testStore.impulseScore) {
+        resultText += "계획소비핑ㅋㅋ<BR>";
+    }
+    if (testStore.costEffective > testStore.goodForSatisfaction) {
+        resultText += "가성비가 내려온다핑<BR>";
+    }
+    if (testStore.goodForSatisfaction > testStore.costEffective) {
+        resultText += "마음의 소리를 따라가핑<BR>";
+    }
+    if (testStore.material > testStore.experiential) {
+        resultText += "황금만능주의핑<BR>";
+    }
+    if (testStore.experiential > testStore.material) {
+        resultText += "몸으로 부딪히는 핑<BR>";
+    }
+
+
+    return resultText;
 });
 </script>
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
-        <p class="text-lg">{{ resultContent }}</p>
+        <p class="text-lg" v-html="resultContent"></p>
     </div>
 </template>
