@@ -1,7 +1,17 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useChallengeStore } from '@/stores/challenge';
 
-onMounted(() => {
+const memeberIdx = localStorage.getItem("memberIdx");
+
+const challengeStore = useChallengeStore();
+const peerChallengeList = ref([]);
+
+onMounted(async () => {
+  await challengeStore.getPeerChallengeList(memeberIdx);
+  console.log(challengeStore.peerChallengeList);
+  peerChallengeList.value = challengeStore.peerChallengeList;
+
   let roller = document.querySelector('.rolling-list');
   if (roller) {
     roller.id = 'roller1';
@@ -25,40 +35,12 @@ onMounted(() => {
   <div class="wrap">
     <div class="rolling-list">
       <ul>
-        <li>
+        <li v-for="(challenge, index) in peerChallengeList">
           <div class="desc">
-            <strong>First Banner</strong>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/>
-                  Neque cumque ratione provident nulla veniam nihil quaerat, illum officiis hic.<br/> 
-                  Laborum in eos possimus, quo ullam nobis nam nemo fuga ipsam?
-            </span>
-          </div>
-        </li>
-        <li>
-          <div class="desc">
-            <strong>Second Banner</strong>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/>
-                  Neque cumque ratione provident nulla veniam nihil quaerat, illum officiis hic.<br/>
-                  Laborum in eos possimus, quo ullam nobis nam nemo fuga ipsam?
-            </span>
-          </div>
-        </li>
-        <li>
-          <div class="desc">
-            <strong>Third Banner</strong>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/>
-                  Neque cumque ratione provident nulla veniam nihil quaerat, illum officiis hic.<br/>
-                  Laborum in eos possimus, quo ullam nobis nam nemo fuga ipsam?
-            </span>
-          </div>
-        </li>
-        <li>
-          <div class="desc">
-            <strong>Fourth Banner</strong>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/>
-                  Neque cumque ratione provident nulla veniam nihil quaerat, illum officiis hic.<br/>
-                  Laborum in eos possimus, quo ullam nobis nam nemo fuga ipsam?
-            </span>
+            <strong>{{ challenge.detailedCategory }}</strong>
+            <span>종류: {{ challenge.challengeType }}</span>
+            <span>제한: {{ challenge.challengeLimit }}</span>
+            <span>기간: {{ challenge.challengeDuration }}</span>
           </div>
         </li>
       </ul>
@@ -99,11 +81,12 @@ onMounted(() => {
 	width: 100%;
 }
 .wrap .rolling-list ul li .desc strong { 
-	display: block; 
+  display: block;
     font-size: 24px; 
     margin-bottom: 24px;
 }
-.wrap .rolling-list ul li .desc span { 
+.wrap .rolling-list ul li .desc span {
+  display: block; 
 	font-size: 18px;
     line-height: 1.2;
 }
@@ -113,6 +96,9 @@ onMounted(() => {
 .rolling-list.clone {
 	animation: rollingup2 33s linear infinite;
 }
+/** 내부 데이터의 개수가 달라지면 이 부분을 수정해야하는 것 같음 ..
+* 원본은 4개여서 4개인 듯 ?? 데이터 개수가 5개가 되니까 중간에 끊김 ;; 
+애초에 받아올 때 개수를 딱 정해서 받아와야함 .. 애초에 백엔드 부분도 쿼리문 수정해야 됨 ㅎ;;;*/
 @keyframes rollingup1 {
 	0% { transform: translateY(0); }
 	50% { transform: translateY(-100%); }
