@@ -5,40 +5,45 @@ import { useTestStore } from "@/stores/test";
 
 const route = useRoute();
 const testStore = useTestStore();
-// 숫자로 변환
-const resultId = computed(() => parseInt(route.params.resultId, 10)); 
+
+const resultId = computed(() => parseInt(route.params.resultId, 10));
 onMounted(() => {
-    console.log('결과다~~~~~~~');
+    console.log("결과다~~~~~~~");
     console.log("inpulse", testStore.impulseScore);
     console.log("plannedScore", testStore.plannedScore);
     console.log("costEffective", testStore.costEffective);
     console.log("goodForSatisfaction", testStore.goodForSatisfaction);
     console.log("material", testStore.material);
     console.log("experiential", testStore.experiential);
-})
+});
 
 const resultContent = computed(() => {
-    let resultText = '';
+    let resultText = "";
     // 각 점수 비교 및 텍스트 추가
-    if (testStore.impulseScore > testStore.plannedScore) {
-        resultText += "충동소비핑ㅋㅋ<BR>";
+    if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
+        resultText += "충동_가성비_물질<BR>";
     }
-    if (testStore.plannedScore > testStore.impulseScore) {
-        resultText += "계획소비핑ㅋㅋ<BR>";
+    if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
+        resultText += "충동_가성비_경험<BR>";
     }
-    if (testStore.costEffective > testStore.goodForSatisfaction) {
-        resultText += "가성비가 내려온다핑<BR>";
+    if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
+        resultText += "계획_가성비_물질<BR>";
     }
-    if (testStore.goodForSatisfaction > testStore.costEffective) {
-        resultText += "마음의 소리를 따라가핑<BR>";
+    if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
+        resultText += "계획_가성비_경험<BR>";
     }
-    if (testStore.material > testStore.experiential) {
-        resultText += "황금만능주의핑<BR>";
+    if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
+        resultText += "충동_가심비_물질<BR>";
     }
-    if (testStore.experiential > testStore.material) {
-        resultText += "몸으로 부딪히는 핑<BR>";
+    if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
+        resultText += "충동_가심비_경험<BR>";
     }
-
+    if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
+        resultText += "계획_가심비_물질<BR>";
+    }
+    if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
+        resultText += "계획_가심비_경험<BR>";
+    }
 
     return resultText;
 });
