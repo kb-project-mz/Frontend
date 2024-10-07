@@ -11,7 +11,8 @@ import AnalysisSelectedPeriod from "@/components/analysis/AnalysisSelectedPeriod
 import ConsumptionList from "@/components/analysis/ConsumptionList.vue";
 import BarChart from "@/components/analysis/BarChart.vue";
 
-const memberIdx = localStorage.getItem("memberIdx");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 const cardTransactionStore = useCardTransactionStore();
 const accountTransactionStore = useAccountTransactionStore();
 
@@ -36,13 +37,17 @@ const isDataLoaded = ref(false);
 const fetchTransactionData = async (memberIdx) => {
   await cardTransactionStore.getCardTransactionList(memberIdx);
   cardTransactionData.value = cardTransactionStore.cardTransaction;
-  cardTransactionThisMonthData.value = cardTransactionStore.cardTransactionThisMonth;
-  cardTransactionLastMonthData.value = cardTransactionStore.cardTransactionLastMonth;
+  cardTransactionThisMonthData.value =
+    cardTransactionStore.cardTransactionThisMonth;
+  cardTransactionLastMonthData.value =
+    cardTransactionStore.cardTransactionLastMonth;
 
   await accountTransactionStore.getAccountTransactionList(memberIdx);
   accountTransactionData.value = accountTransactionStore.accountTransaction;
-  accountTransactionThisMonthData.value = accountTransactionStore.accountTransactionThisMonth;
-  accountTransactionLastMonthData.value = accountTransactionStore.accountTransactionLastMonth;
+  accountTransactionThisMonthData.value =
+    accountTransactionStore.accountTransactionThisMonth;
+  accountTransactionLastMonthData.value =
+    accountTransactionStore.accountTransactionLastMonth;
 
   isDataLoaded.value = true;
 };
@@ -54,12 +59,19 @@ onMounted(async () => {
 
 <template>
   <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1 gap-10">
-    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">과거 소비와 비교하기</button>
+    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">
+      과거 소비와 비교하기
+    </button>
     <div class="flip w-full inline-block relative">
-      <div class="card w-full inline-block relative flex" :class="{ '[transform:rotateY(180deg)]': isFlipped }">
+      <div
+        class="card w-full inline-block relative flex"
+        :class="{ '[transform:rotateY(180deg)]': isFlipped }"
+      >
         <div class="front w-full absolute">
-          <AnalysisThisMonth :card-transaction-data="cardTransactionThisMonthData"
-            :account-transaction-data="accountTransactionThisMonthData" />
+          <AnalysisThisMonth
+            :card-transaction-data="cardTransactionThisMonthData"
+            :account-transaction-data="accountTransactionThisMonthData"
+          />
         </div>
         <div class="back w-full [transform:rotateY(180deg)]">
           <AnalysisSelectedPeriod />
@@ -69,20 +81,27 @@ onMounted(async () => {
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-span-2">
-        <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
-                    :card-transaction-last-month-data="cardTransactionLastMonthData"
-                    :account-transaction-this-month-data="accountTransactionThisMonthData" 
-                    :account-transaction-last-month-data="accountTransactionLastMonthData"/>
+        <LineChart
+          :card-transaction-this-month-data="cardTransactionThisMonthData"
+          :card-transaction-last-month-data="cardTransactionLastMonthData"
+          :account-transaction-this-month-data="accountTransactionThisMonthData"
+          :account-transaction-last-month-data="accountTransactionLastMonthData"
+        />
       </div>
       <div class="lg:col-span-3">
-        <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
+        <BarChart
+          :account-transaction-data="accountTransactionData"
+          :card-transaction-data="cardTransactionData"
+        />
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-span-3">
-        <ConsumptionCalendar :account-transaction-data="accountTransactionData"
-          :card-transaction-data="cardTransactionData" />
+        <ConsumptionCalendar
+          :account-transaction-data="accountTransactionData"
+          :card-transaction-data="cardTransactionData"
+        />
       </div>
       <div class="lg:col-span-2">
         <ConsumptionList :card-transaction-data="cardTransactionData" />
@@ -109,7 +128,8 @@ onMounted(async () => {
   transform-style: preserve-3d;
 }
 
-.front, .back {
+.front,
+.back {
   backface-visibility: hidden;
 }
 </style>

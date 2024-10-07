@@ -1,17 +1,11 @@
 <script setup>
-import Button from '@/components/home/Button.vue';
-import testImage from '@/assets/테스트.png';
-import chartImage from '@/assets/차트.png';
-import challengeImage from '@/assets/챌린지.png';
+import Button from "@/components/home/Button.vue";
+import testImage from "@/assets/테스트.png";
+import chartImage from "@/assets/차트.png";
+import challengeImage from "@/assets/챌린지.png";
 
-import Account from '@/components/home/Account.vue';
-import Challenge from '@/components/home/Challenge.vue';
-
-import { useAuthStore } from '@/stores/auth';
-
-const authStore = useAuthStore();
-// const memberIdx = computed(() => authStore.member.memberIdx);
-const memberIdx = localStorage.getItem('memberIdx');
+import Account from "@/components/home/Account.vue";
+import Challenge from "@/components/home/Challenge.vue";
 </script>
 
 <template>

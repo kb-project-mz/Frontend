@@ -6,7 +6,8 @@ import { ref, onMounted } from "vue";
 const challengeTop3Store = useChallengeTop3Store();
 const challengeTop3ByMember = ref([]);
 const peerChallenge = ref([]);
-const memberIdx = localStorage.getItem("memberIdx");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 
 const fetchChallengeTop3 = async (memberIdx) => {
   await challengeTop3Store.getChallengeTop3(memberIdx);

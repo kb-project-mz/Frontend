@@ -13,10 +13,11 @@ const props = defineProps({
   accountTransactionData: {
     type: Object,
     required: true,
-  }
+  },
 });
 
-const memberName = localStorage.getItem("memberName");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberName = authData.memberName;
 
 const isLoaded = ref(false);
 const today = new Date();
@@ -27,10 +28,24 @@ const startDate = ref(null);
 const endDate = ref(null);
 
 const getEndDay = (year, month) => {
-  const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const isLeapYear = (year) =>
+    (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const daysInMonth = [
+    31,
+    isLeapYear(year) ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
   return daysInMonth[month];
-}
+};
 
 onMounted(() => {
   startDate.value = new Date(year, month, 1);
@@ -42,15 +57,29 @@ onMounted(() => {
 <template>
   <div v-if="isLoaded">
     <div>
-      <div class="text-lg">이번 달 {{ memberName }}님의 소비 패턴을 분석해보았어요.</div>
-      <div class="text-xl font-semibold mb-5">{{ year }}년 {{ month + 1 }}월</div>
+      <div class="text-lg">
+        이번 달 {{ memberName }}님의 소비 패턴을 분석해보았어요.
+      </div>
+      <div class="text-xl font-semibold mb-5">
+        {{ year }}년 {{ month + 1 }}월
+      </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <MostAndMaximumUsed period="이번 달" :start-date="startDate" :end-date="endDate"/>
+      <MostAndMaximumUsed
+        period="이번 달"
+        :start-date="startDate"
+        :end-date="endDate"
+      />
       <div class="lg:col-span-1 flex flex-col justify-between gap-10">
-        <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
-        <AverageConsumption chart-id="thisMonth" :card-transaction-data="cardTransactionData"
-          :account-transaction-data="accountTransactionData" />
+        <TotalAmount
+          :card-transaction-data="cardTransactionData"
+          :account-transaction-data="accountTransactionData"
+        />
+        <AverageConsumption
+          chart-id="thisMonth"
+          :card-transaction-data="cardTransactionData"
+          :account-transaction-data="accountTransactionData"
+        />
       </div>
       <CategoryChart class="lg:col-span-1" />
     </div>

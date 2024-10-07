@@ -1,26 +1,28 @@
 <script setup>
-import MyChallengeList from '@/components/challenge/MyChallengeList.vue';
+import MyChallengeList from "@/components/challenge/MyChallengeList.vue";
 
-import { onMounted } from 'vue';
-import { useChallengeStore } from '@/stores/challenge';
-import NoMoneyChallenge from '@/components/challenge/NoMoneyChallenge.vue';
+import { onMounted } from "vue";
+import { useChallengeStore } from "@/stores/challenge";
+import NoMoneyChallenge from "@/components/challenge/NoMoneyChallenge.vue";
 
-const memberIdx = localStorage.getItem("memberIdx");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 
 const challengeStore = useChallengeStore();
 
-onMounted(() => { 
+onMounted(() => {
   challengeStore.getChallengeList(memberIdx);
 });
 </script>
 
-<template>  
+<template>
   <div class="mx-[10%] grid grid-cols-1 lg:grid-cols-5 gap-20">
     <NoMoneyChallenge class="lg:col-span-2" />
-    <MyChallengeList class="lg:col-span-3" :items="challengeStore.challengeList" />
+    <MyChallengeList
+      class="lg:col-span-3"
+      :items="challengeStore.challengeList"
+    />
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

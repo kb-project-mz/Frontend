@@ -1,14 +1,22 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
 
-export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
+export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
   state: () => ({
     mostAndMaximum: "",
-    recommendation: ""
+    recommendation: "",
   }),
 
   actions: {
-    async getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
+    async getMostAndMaximumUse(
+      memberIdx,
+      startYear,
+      startMonth,
+      startDay,
+      endYear,
+      endMonth,
+      endDay
+    ) {
       try {
         const res = await apiInstance.get(`/transaction/top-usage`, {
           params: {
@@ -18,11 +26,14 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
             startDay: startDay,
             endYear: endYear,
             endMonth: endMonth + 1,
-            endDay: endDay
+            endDay: endDay,
           },
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: () => {
+              const authData = JSON.parse(localStorage.getItem("auth"));
+              return authData.accessToken;
+            },
+          },
         });
 
         this.mostAndMaximum = res.data.data;
@@ -32,7 +43,7 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
       }
     },
 
-    async fetchAiRecommendation (memberIdx, startYear, startMonth, endDay) {
+    async fetchAiRecommendation(memberIdx, startYear, startMonth, endDay) {
       try {
         const res = await apiInstance.get(`/transaction/recommendation`, {
           params: {
@@ -42,18 +53,21 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
             startDay: 1,
             endYear: startYear,
             endMonth: startMonth,
-            endDay: endDay
+            endDay: endDay,
           },
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: () => {
+              const authData = JSON.parse(localStorage.getItem("auth"));
+              return authData.accessToken;
+            },
+          },
         });
-        
+
         this.recommendation = res.data.data;
         return this.recommendation;
       } catch (err) {
         console.error(err);
       }
-    }
+    },
   },
 });
