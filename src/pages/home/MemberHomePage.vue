@@ -15,11 +15,25 @@ const memberIdx = localStorage.getItem('memberIdx');
 </script>
 
 <template>
-  <div>
-    <div class="max-w-6xl mx-auto space-x-12 flex justify-center">
-      <Challenge />
-      <Account />
+  <div class="max-w-6xl mx-auto space-x-12">
+    <div class="flex justify-between">
+      <div>
+        <h1>[소비 테스트 결과지]</h1>
+      </div>
+      <div class="flex space-x-16">
+        <div>
+          <h1>[challenge top3]</h1>
+          <Challenge />
+        </div>
+        <div class="flex space-x-16">
+          <div>
+            <h1>[Account]</h1>
+            <Account />
+          </div>
+        </div>
+      </div>
     </div>
+
     <div class="max-w-6xl mx-auto space-x-12 flex justify-center">
       <Button
         :img-src="testImage"
