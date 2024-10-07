@@ -22,9 +22,12 @@ const isPasswordStrong = ref(false);
 const isPasswordVerified = ref(false);
 const isPasswordMatch = ref(false); 
 
+const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
 const selectedDomain = ref('');
-const directEmail = ref('');
-const isDirectInput = ref(false);
+const inputDomain = ref('');
+
+const isDirectInputEmail = ref(false); // 직접입력 여부
+
 const isVerificationCodeSent = ref(false);
 const inputCode = ref('');
 const verificationFail = ref('');
@@ -44,15 +47,15 @@ const fetchProfile = async () => {
     profile.memberId = profileData.memberId;
     profile.memberName = profileData.memberName;
     profile.birthday = profileData.birthday;
-    profile.email = profileData.email;
+    profile.email = profileData.email.split('@')[0];
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
-    console.log('이미지ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ',profile.imageUrl);
+    console.log('이메일ㄹㄹㄹ',profile.email);
   } catch (error) {
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
-
+// 생일
  const formattedBirthDay = computed(() => {
       if (!profile.birthday) return ''; 
       const date = new Date(profile.birthday);
@@ -62,6 +65,7 @@ const fetchProfile = async () => {
       return `${year}-${month}-${day}`;
     });
 
+// 비밀번호
 const enhancedSecurityPassword = (password) => {
   const minLength = 8;
   const specialChars = /[~!@#$%^&*]/;
@@ -126,77 +130,78 @@ const changePassword = async () => {
   }
 };
 
-const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
+// 이메일
 const handleDomainChange = () => {
-  isDirectInput.value = selectedDomain.value === '직접입력';
-  if (!isDirectInput.value) {
-    profile.email = `${profile.email.split('@')[0]}@${selectedDomain.value}`;
-    directEmail.value = '';
-  } else{
-    directEmail.value = '';
-  }
+  if (selectedDomain.value === '직접입력') {
+      isDirectInputEmail.value == true;
+      profile.email += profile.email.split('@')[0];
+      console.log("직접입력 도메인 선택됨, 현재 이메일 ID: ", profile.email);
+  } else { 
+      isDirectInputEmail.value = false;
+      profile.email = `${profile.email.split('@')[0]}@${selectedDomain.value}`; 
+      console.log("도메인 선택됨, 전체 이메일: ", profile.email);
+  } 
 };
-const updateDirectEmail = () => {
-  if (isDirectInput.value && !profile.email.includes('@')) {
-    profile.email += '@';
-  }
-  if (directEmail.value.includes('@')) {
-    directEmail.value = directEmail.value.replace('@', '');
-  }
-  if (isDirectInput.value) {
-    profile.email = `${profile.email.split('@')[0]}@${directEmail.value}`;
-  }
+
+// 직접 입력
+const updateInputDomain = () => {
+ if (isDirectInputEmail.value && inputDomain.value) {
+  profile.email = `${profile.email.split('@')[0]}@${inputDomain.value}`;
+  console.log("직접 입력 도메인 사용 중, 전체 이메일: ", profile.email);
+ }
 };
+
+// 이메일 중복 확인 및 인증 코드 발송
 const sendVerificationCode = async () => {
   if (!profile.email) {
     return alert('이메일을 입력해 주세요.');
   }
+
   try {
     isLoading.value = true;
     const isEmailExists = await auth.checkEmailDuplicate(profile.email);
     console.log('이메일 중복 확인 결과:', isEmailExists);
 
     if (isEmailExists) {
-      console.log('이미 존재하는 이메일입니다.');
       alert('이미 존재하는 이메일입니다.');
       isLoading.value = false;
       return; 
     }
+
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
     const result = await auth.sendEmailVerification(profile.email);
     console.log('인증 코드 발송 성공:', result);
-    
+
     isVerificationCodeSent.value = true;
     alert('인증 코드가 발송되었습니다. 이메일을 확인하고 인증 코드를 입력해 주세요.');
   } catch (error) {
     console.log('인증 코드 전송 중 오류 발생:', error);
     alert('인증 코드 전송 중 오류가 발생했습니다.');
   } finally {
-    console.log('인증 코드 발송 프로세스 종료.');
     isLoading.value = false;
   }
 };
-// 인증코드 
+
+// 인증 코드 검증
 const verifyCode = async () => {
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
+
   try {
     isLoading.value = true;
     const result = await auth.verifyEmailCode(profile.email, inputCode.value);
-    
+
     if (result) {
       verificationSuccess.value = '이메일 인증이 완료되었습니다.';
       verificationFail.value = '';
       isVerifiedEmail.value = true;
-      
     } else {
       verificationFail.value = '인증 코드가 올바르지 않습니다.';
       verificationSuccess.value = '';
       isVerifiedEmail.value = false;
     }
   } catch (error) {
-    alert('인증 코드 확인 중 오류가 발생했습니다.');
     console.error('인증 코드 확인 오류:', error);
     verificationFail.value = '인증 코드 확인 중 오류가 발생했습니다.';
     isVerifiedEmail.value = false;
@@ -204,8 +209,7 @@ const verifyCode = async () => {
     isLoading.value = false;
   }
 };
-
-// 이미지 관련
+// 이미지 
 const uploadImage = async (event) => {
   const file = event.target.files[0];
   console.log('Selected Image:', file);
@@ -286,11 +290,10 @@ const deleteImage = async (profileImage) => {
               삭제
             </button>
           </div>
-
           <input type="file" @change="uploadImage" class="hidden" ref="profileImageInput" />
         </div>
 
-        <!-- 이름 -->
+        <!-- 이름 (읽기 전용) -->
         <div class="relative mb-6">
           <input
             v-model="profile.memberName"
@@ -369,33 +372,38 @@ const deleteImage = async (profileImage) => {
             readonly />
         </div>
 
-        <!-- 이메일 및 인증 코드 발송 -->
+        <!-- 이메일 입력 -->
         <div class="mb-6 flex flex-col">
-          <div class="flex items-center">
+          <div class="flex items-center space-x-2">
             <input
               v-model="profile.email"
-              type="email"
-              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+              type="text"
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
               placeholder="이메일"
               required
             />
+
+            <span>@</span>
+
             <select v-model="selectedDomain" @change="handleDomainChange"
-              class="border border-gray-300 rounded-r-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block p-3">
+              class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block">
               <option value="">도메인 선택</option>
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
               <option value="직접입력">직접 입력</option>
             </select>
+
             <button @click="sendVerificationCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
               인증 코드 전송
             </button>
           </div>
+
           <input 
-            v-if="isDirectInput" 
+            v-if="isDirectInputEmail" 
             type="text" 
             class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
             placeholder="직접 도메인을 입력해 주세요" 
-            v-model="directEmail" 
-            @input="updateDirectEmail" 
+            v-model="inputDomain" 
+            @input="updateInputDomain" 
           />
         </div>
 
