@@ -24,9 +24,13 @@ const isPasswordMatch = ref(false);
 
 const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
 const selectedDomain = ref('');
+const isDirectInputEmail = ref(false); // 직접입력 여부
+const isEditingEmail = ref(false);
 const inputDomain = ref('');
 
-const isDirectInputEmail = ref(false); // 직접입력 여부
+const emailId = ref('');
+const currDomain = ref('');
+const currEmail = ref('');
 
 const isVerificationCodeSent = ref(false);
 const inputCode = ref('');
@@ -47,7 +51,11 @@ const fetchProfile = async () => {
     profile.memberId = profileData.memberId;
     profile.memberName = profileData.memberName;
     profile.birthday = profileData.birthday;
-    profile.email = profileData.email.split('@')[0];
+    profile.email = profileData.email;
+    currEmail.value = profileData.email;
+    console.log('현재 이메읾ㅁㅁㅁ', currEmail.value);
+    emailId.value = profileData.email.split('@')[0];
+    currDomain.value = profileData.email.split('@')[1];
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
     console.log('이메일ㄹㄹㄹ',profile.email);
@@ -94,6 +102,9 @@ const checkPasswordConfirmation = () => {
   }
 };
 const verifyPassword = async () => {
+  if (!password.value) {
+    return alert('비밀번호를 입력해주세요.');
+  }
   try {
     const response = await apiInstance.post('/member/verification/password', {
       inputPassword: password.value,
@@ -131,6 +142,9 @@ const changePassword = async () => {
 };
 
 // 이메일
+const editEmail = () => {
+  isEditingEmail.value = !isEditingEmail.value;
+}
 const handleDomainChange = () => {
   if (selectedDomain.value === '직접입력') {
       isDirectInputEmail.value == true;
@@ -138,7 +152,7 @@ const handleDomainChange = () => {
       console.log("직접입력 도메인 선택됨, 현재 이메일 ID: ", profile.email);
   } else { 
       isDirectInputEmail.value = false;
-      profile.email = `${profile.email.split('@')[0]}@${selectedDomain.value}`; 
+      profile.email = `${emailId.value('@')[0]}@${selectedDomain.value}`; 
       console.log("도메인 선택됨, 전체 이메일: ", profile.email);
   } 
 };
@@ -146,7 +160,7 @@ const handleDomainChange = () => {
 // 직접 입력
 const updateInputDomain = () => {
  if (isDirectInputEmail.value && inputDomain.value) {
-  profile.email = `${profile.email.split('@')[0]}@${inputDomain.value}`;
+  profile.email = `${emailId.value('@')[0]}@${inputDomain.value}`;
   console.log("직접 입력 도메인 사용 중, 전체 이메일: ", profile.email);
  }
 };
@@ -156,18 +170,15 @@ const sendVerificationCode = async () => {
   if (!profile.email) {
     return alert('이메일을 입력해 주세요.');
   }
-
   try {
     isLoading.value = true;
     const isEmailExists = await auth.checkEmailDuplicate(profile.email);
     console.log('이메일 중복 확인 결과:', isEmailExists);
-
     if (isEmailExists) {
       alert('이미 존재하는 이메일입니다.');
       isLoading.value = false;
       return; 
     }
-
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
     const result = await auth.sendEmailVerification(profile.email);
     console.log('인증 코드 발송 성공:', result);
@@ -368,15 +379,25 @@ const deleteImage = async (profileImage) => {
           <input 
             :value="formattedBirthDay" 
             type="date" 
-            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-4"
+            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
             readonly />
         </div>
 
         <!-- 이메일 입력 -->
-        <div class="mb-6 flex flex-col">
-          <div class="flex items-center space-x-2">
+        <div class="mb-4 flex flex-col">
+          <div class="relative mb-6">
             <input
-              v-model="profile.email"
+              v-model="currEmail"
+              type="text"
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+              placeholder="이메일"
+              readonly />
+              <button @click.prevent="editEmail" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">수정</button>
+          </div>
+          
+          <div v-if="isEditingEmail" class="flex items-center space-x-2">
+            <input
+              v-model="emailId"
               type="text"
               class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
               placeholder="이메일"
