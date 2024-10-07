@@ -1,47 +1,46 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
-import { clearTokens } from '@/util/token';
+import { setLocalStorage, clearTokens } from '@/util/token';
 
 export const useAuthStore = defineStore('auth', {
-    state: () => ({
-        member: {
-          memberIdx: null,
-          memberName: null,
-          memberId: null,
-        },
-      }),
+  state: () => ({
+    member: {
+      memberIdx: localStorage.getItem('id') || null,
+      memberName: localStorage.getItem('memberName') || null,
+      memberId: localStorage.getItem('memberId') || null
+    }
+  }),
 
-      actions: {
-        async login(memberId, password) {
-          try {
-            const response = await apiInstance.post('/member/login', { memberId, password });
-            const loginData = response.data.data;
-    
-            if (!loginData || !loginData.accessToken) {
-              return null;
+  actions: {
+    async login(memberId, password) {
+      try {
+        const response = await apiInstance.post('/member/login', { memberId, password });
+        console.log("response: ", response)
+        const loginData = response.data.data;
+
+				console.log("loginData:", loginData);
+
+                if (!loginData || !loginData.accessToken) {
+                    return null;
+                }
+
+                const authData = {
+                    memberIdx: loginData.memberIdx,
+                    memberName: loginData.memberName,
+                    memberId: loginData.memberId,
+                    role: loginData.role,
+                    accessToken: loginData.accessToken,
+                    refreshToken: loginData.refreshToken,
+                  };
+              
+                  localStorage.setItem("auth", JSON.stringify(authData));
+              
+                  this.loadAuthState();
+
+                return loginData;
+            } catch (error) {
+                throw error;
             }
-    
-            const authData = {
-              memberIdx: loginData.memberIdx,
-              memberName: loginData.memberName,
-              memberId: loginData.memberId,
-              accessToken: loginData.accessToken,
-              refreshToken: loginData.refreshToken,
-            };
-
-            this.member.memberIdx = loginData.memberIdx;
-            this.member.memberName = loginData.memberName;
-            this.member.memberId = loginData.memberId;
-    
-            localStorage.setItem("auth", JSON.stringify(authData));
-    
-            this.loadAuthState();
-    
-            return loginData;
-          } catch (error) {
-            console.error("로그인 오류:", error);
-            throw error;
-          }
         },
 
         async create(member) {
@@ -115,28 +114,27 @@ export const useAuthStore = defineStore('auth', {
             this.member.memberIdx = null;
             this.member.memberName = null;
             this.member.memberId = null;
-
+            localStorage.removeItem("memberIdx");
+            localStorage.removeItem("memberName");
+            localStorage.removeItem("memberId");
             localStorage.removeItem("auth");
             localStorage.clear();
         },
 
-        loadAuthState() {
-        const authData = JSON.parse(localStorage.getItem('auth'));
-        if (authData && authData.memberId) {
-            this.member.memberId = authData.memberId;
-            this.member.memberName = authData.memberName;
-            this.member.memberIdx = authData.memberIdx;
-            }
-        },
+    loadAuthState() {
+      const authData = JSON.parse(localStorage.getItem('auth'));
+      if (authData && authData.memberId) {
+        this.member.memberId = authData.memberId;
+        this.member.memberName = authData.memberName;
+        this.member.memberIdx = authData.memberIdx;
+        this.member.role = authData.role; 
+      }
+    },
 
         isLogin() {
             const authData = localStorage.getItem("auth");
-            return !!authData && JSON.parse(authData).memberId;
+            const isLoggedIn = !!authData;
+            return isLoggedIn;
         },
-    },
-
-    persist: {
-        key: 'auth',
-        storage: localStorage,
     },
 });

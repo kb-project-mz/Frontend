@@ -107,14 +107,15 @@ const router = createRouter({
       component: () => import('@/pages/admin/Admin.vue'),
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
-        const userRole = authStore.userRole;
+        const userRole = authStore.member.role;
+  
         if (userRole === 'ROLE_ADMIN') {
           next();
         } else {
           alert('관리자 권한이 없습니다.');
           next('/login');
         }
-      }
+      },
     },
   ],
   scrollBehavior(to, from, savedPosition) {
