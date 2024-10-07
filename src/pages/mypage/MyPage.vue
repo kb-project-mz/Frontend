@@ -147,9 +147,9 @@ const editEmail = () => {
 }
 const handleDomainChange = () => {
   if (selectedDomain.value === '직접입력') {
-      isDirectInputEmail.value == true;
-      profile.email += profile.email.split('@')[0];
-      console.log("직접입력 도메인 선택됨, 현재 이메일 ID: ", profile.email);
+      isDirectInputEmail.value = true;
+      // profile.email += profile.email.split('@')[0];
+      // console.log("직접입력 도메인 선택됨, 현재 이메일 ID: ", profile.email);
   } else { 
       isDirectInputEmail.value = false;
       profile.email = `${emailId.value('@')[0]}@${selectedDomain.value}`; 
@@ -283,7 +283,7 @@ const deleteImage = async (profileImage) => {
   <div class="flex justify-center">
     <div class="w-1/3 px-16 py-10 bg-white border rounded-lg shadow">
       <div class="mb-5 font-bold text-2xl text-blue ">
-        <div>나만의 프로필을 완성해보세요</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;나만의 프로필을 완성해보세요</div>
       </div>
     
       <form @submit.prevent="saveProfile">
@@ -306,6 +306,7 @@ const deleteImage = async (profileImage) => {
 
         <!-- 이름 (읽기 전용) -->
         <div class="relative mb-6">
+          <label for="memberName" class="block mb-2 text-sm font-medium text-gray-900">이름</label>
           <input
             v-model="profile.memberName"
             type="text"
@@ -316,6 +317,7 @@ const deleteImage = async (profileImage) => {
 
         <!-- 아이디 (읽기 전용) -->
         <div class="relative mb-6">
+          <label for="memberId" class="block mb-2 text-sm font-medium text-gray-900">아이디</label>
           <input
             v-model="profile.memberId"
             type="text"
@@ -325,15 +327,15 @@ const deleteImage = async (profileImage) => {
         </div>
 
         <!-- 현재 비밀번호 검증 -->
-        <div class="relative mb-6">
-          <label for="password" class="block mb-2 text-sm font-medium text-gray-900">현재 비밀번호</label>
+        <label for="password" class="block mb-2 text-sm font-medium text-gray-900">현재 비밀번호</label>
+        <div class="relative mb-6 flex items-center space-x-3">
           <input
             v-model="password"
             type="password"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
             placeholder="현재 비밀번호"
           />
-          <button @click.prevent="verifyPassword" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">확인</button>
+          <button @click.prevent="verifyPassword" class="mt-7 px-4 py-1 bg-navy text-white rounded-xl text-sm">확인</button>
         </div>
 
         <!-- 새 비밀번호 -->
@@ -385,14 +387,15 @@ const deleteImage = async (profileImage) => {
 
         <!-- 이메일 입력 -->
         <div class="mb-4 flex flex-col">
-          <div class="relative mb-6">
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900">이메일</label>
+          <div class="relative mb-6 flex items-center space-x-3">
             <input
               v-model="currEmail"
               type="text"
               class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
               placeholder="이메일"
               readonly />
-              <button @click.prevent="editEmail" class="mt-2 px-4 py-2 bg-navy text-white rounded-lg">수정</button>
+              <button @click.prevent="editEmail" class="mt-7 px-4 py-1 bg-navy text-white rounded-lg text-sm">수정</button>
           </div>
           
           <div v-if="isEditingEmail" class="flex items-center space-x-2">
@@ -443,17 +446,18 @@ const deleteImage = async (profileImage) => {
           <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
         </div>
 
-        <button @click="saveProfile" class="cursor-pointer w-full bg-navy text-white py-1 rounded-xl flex justify-center items-center">
+        <button @click="saveProfile" class="cursor-pointer w-1/2 bg-navy text-white py-1 rounded-xl flex justify-center items-center">
           <span class="ml-2">프로필 저장하기</span>
         </button>
       </form>
-    </div>
- 
-    <div class="text-center mt-4">
-      <div class="inline-block p-3 bg-navy text-white rounded-lg">
-        <router-link to="/mypage/asset">연결된 자산 보기</router-link>
+
+      <div class="text-center mt-4">
+        <div class="inline-block p-3 bg-navy text-white rounded-lg">
+          <router-link to="/mypage/asset">연결된 자산 보기</router-link>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -463,6 +467,9 @@ const deleteImage = async (profileImage) => {
 }
 
 .btn-edit-image {
+  @apply bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300;
+}
+.btn-delete-image {
   @apply bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300;
 }
 
