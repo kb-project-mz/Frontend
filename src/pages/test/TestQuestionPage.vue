@@ -81,14 +81,14 @@ const nextQuestion = (answerId, answerScore, questionType) => {
         router.push({ name: "testQuestion", params: { number: questionId.value + 1 } });
     } else {
         const resultId = calculateResult();
-        router.push({ name: "testResult", params: { resultId } });
+        router.push({ name: "testLoading" });
     }
 };
 </script>
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
-        <!-- 진행률 바 -->
+
         <div class="w-3/4 bg-gray-200 rounded-full h-2 mb-6">
             <div class="bg-gray-500 h-2 rounded-full" :style="{ width: `${progress}%` }"></div>
         </div>

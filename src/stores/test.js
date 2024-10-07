@@ -60,7 +60,7 @@ export const useTestStore = defineStore("testStore", {
         async sendType(result) {
             const authStore = useAuthStore(); 
             const memberIdx = authStore.member.memberIdx || null; 
-            const typeIdx = result + 1;
+            const typeIdx = result;
 
         
             try {
