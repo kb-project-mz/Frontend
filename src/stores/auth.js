@@ -1,39 +1,47 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
-import { setLocalStorage, clearTokens } from '@/util/token';
+import { clearTokens } from '@/util/token';
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    member: {
-      memberIdx: localStorage.getItem('id') || null,
-      memberName: localStorage.getItem('memberName') || null,
-      memberId: localStorage.getItem('memberId') || null
-    }
-  }),
+    state: () => ({
+        member: {
+          memberIdx: null,
+          memberName: null,
+          memberId: null,
+        },
+      }),
 
-  actions: {
-    async login(memberId, password) {
-      try {
-        const response = await apiInstance.post('/member/login', { memberId, password });
-        const loginData = response.data.data;
-				console.log("loginData:", loginData);
-                if (!loginData || !loginData.accessToken) {
-                    return null;
-                }
-
-                // 로그인 성공 시 memberIdx, memberName, memberId 모두 저장
-                localStorage.setItem("memberIdx", loginData.memberIdx); // memberIdx 저장
-                localStorage.setItem("memberName", loginData.memberName);
-                localStorage.setItem("memberId", loginData.memberId);
-
-                // localStorage 설정 및 Pinia 상태 업데이트
-                setLocalStorage(loginData);
-                this.loadAuthState();
-
-                return loginData;
-            } catch (error) {
-                throw error;
+      actions: {
+        async login(memberId, password) {
+          try {
+            const response = await apiInstance.post('/member/login', { memberId, password });
+            const loginData = response.data.data;
+    
+            if (!loginData || !loginData.accessToken) {
+              return null;
             }
+    
+            const authData = {
+              memberIdx: loginData.memberIdx,
+              memberName: loginData.memberName,
+              memberId: loginData.memberId,
+              accessToken: loginData.accessToken,
+              refreshToken: loginData.refreshToken,
+            };
+
+            this.member.memberIdx = loginData.memberIdx;
+            this.member.memberName = loginData.memberName;
+            this.member.memberId = loginData.memberId;
+    
+            localStorage.setItem("auth", JSON.stringify(authData));
+    
+            this.loadAuthState();
+    
+            return loginData;
+          } catch (error) {
+            console.error("로그인 오류:", error);
+            throw error;
+          }
         },
 
         async create(member) {
@@ -107,21 +115,28 @@ export const useAuthStore = defineStore('auth', {
             this.member.memberIdx = null;
             this.member.memberName = null;
             this.member.memberId = null;
+
+            localStorage.removeItem("auth");
             localStorage.clear();
         },
 
-    loadAuthState() {
-      const authData = JSON.parse(localStorage.getItem('auth'));
-      if (authData && authData.memberId) {
-        this.member.memberId = authData.memberId;
-        this.member.memberName = authData.memberName;
-      }
-    },
+        loadAuthState() {
+        const authData = JSON.parse(localStorage.getItem('auth'));
+        if (authData && authData.memberId) {
+            this.member.memberId = authData.memberId;
+            this.member.memberName = authData.memberName;
+            this.member.memberIdx = authData.memberIdx;
+            }
+        },
 
         isLogin() {
             const authData = localStorage.getItem("auth");
-            const isLoggedIn = !!authData;
-            return isLoggedIn;
+            return !!authData && JSON.parse(authData).memberId;
         },
+    },
+
+    persist: {
+        key: 'auth',
+        storage: localStorage,
     },
 });

@@ -17,21 +17,18 @@ const error = ref("");
 const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
-    console.log("login 호출:", member);
-
-    if (!member.memberId || !member.password) {
-        error.value = "아이디와 비밀번호를 모두 입력해주세요.";
-        console.error("입력 오류:", error.value);
-        return;
-    }
-
     try {
         const response = await auth.login(member.memberId, member.password);
         console.log("로그인 응답:", response);
 
-        if (response.memberId) {
+        if (response && response.memberId) {
             console.log("로그인 성공:", response);
-            router.push("/memberHomePage");
+
+            if (response.role === 'ROLE_ADMIN') {
+                router.push("/admin"); 
+            } else {
+                router.push("/memberHomePage"); 
+            }
         } else {
             error.value = response;
             console.error("로그인 실패:", response);
