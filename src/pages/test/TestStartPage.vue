@@ -1,11 +1,13 @@
 <script setup>
 import { useRouter } from "vue-router";
-import { useTestStore } from "/final_project/Frontend/src/stores/test";
+import { useTestStore } from "@/stores/test";
 
 const router = useRouter();
 const testStore = useTestStore();
 
 const startTest = () => {
+    console.log(testStore.score);
+    testStore.resetScore();
     console.log(testStore.score);
     router.push({ name: "testQuestion", params: { number: 1 } });
 };
