@@ -1,16 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { io } from 'socket.io-client';
+import socket from '@/util/socket';
 import { useBalanceStore } from '@/stores/balance';
 
 // 서버에서 데이터를 수신할 배열
 const balanceByMember = ref([]);
+const authInfo = ref([]);
 
 const balanceStore = useBalanceStore();
 const memberIdx = localStorage.getItem('memberIdx');
-
-// Socket.IO 클라이언트 연결
-const socket = io('http://localhost:3000');
 
 const fetchBalance = async (memberIdx) => {
   await balanceStore.getTotalBalance(memberIdx);
@@ -18,28 +16,32 @@ const fetchBalance = async (memberIdx) => {
 
 onMounted(async () => {
   await fetchBalance(memberIdx);
-  balanceByMember.value = balanceStore.TotalBalanceList; // 업데이트된 데이터 반영
+  balanceByMember.value = balanceStore.TotalBalanceList;
 
-  // 연결 성공 시 출력
+  // socket 연결 성공
   socket.on('connect', () => {
     console.log('Socket.IO connected!');
   });
 
-  // 연결 오류 시 출력
-  socket.on('connect_error', (err) => {
-    console.error('Connection error:', err);
+  // 업데이트 된 balance 데이터 가져오기
+  socket.on('balanceUpdate', (data) => {
+    balanceByMember.value = data;
   });
 
-  // 서버에서 balance 업데이트 이벤트 수신
-  socket.on('balanceUpdate', (data) => {
-    console.log('Balance updated: ', data);
-    balanceByMember.value = data; // 업데이트된 데이터 반영
+  // socket 연결 실패
+  socket.on('connect_error', (err) => {
+    console.error('Connection error:', err);
   });
 });
 </script>
 
 <template>
-  <div v-for="(item, index) in balanceByMember" :key="index">
-    {{ item.accountName }} - {{ item.balance }}
+  <div v-if="balanceByMember.length === 0">
+    <RouterLink to="/mypage/asset">계좌연동하러가기 </RouterLink>
+  </div>
+  <div v-else>
+    <div v-for="(item, index) in balanceByMember" :key="index">
+      {{ item.accountName }} - {{ item.balance }}
+    </div>
   </div>
 </template>
