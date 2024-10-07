@@ -28,12 +28,10 @@ const user = authStore.member;
 const isFlipped = ref(false);
 
 const toggleCardFlip = () => {
-    isFlipped.value = !isFlipped.value;
+  isFlipped.value = !isFlipped.value;
 };
 
 const isDataLoaded = ref(false);
-
-// 월의 마지막 날짜 가져오기 함수
 
 const fetchTransactionData = async (memberIdx) => {
   await cardTransactionStore.getCardTransactionList(memberIdx);
@@ -49,69 +47,25 @@ const fetchTransactionData = async (memberIdx) => {
   isDataLoaded.value = true;
 };
 
-// 소비 내역 불러오기 함수
-const fetchTransactionData = async (memberIdx) => {
-    await cardTransactionStore.getCardTransactionList(memberIdx);
-    cardTransactionData.value = cardTransactionStore.cardTransaction;
-    cardTransactionThisMonthData.value = cardTransactionStore.cardTransactionThisMonth;
-
-    await accountTransactionStore.getAccountTransactionList(memberIdx);
-    accountTransactionData.value = accountTransactionStore.accountTransaction;
-    accountTransactionThisMonthData.value = accountTransactionStore.accountTransactionThisMonth;
-
-    isDataLoaded.value = true;
-};
-
-// // 선택한 기간 동안의 소비 내역 필터링
-// const fetchSelectedPeriodConsumptionTransaction = () => {
-//   const startDate = new Date(startYear.value, startMonth.value - 1, startDay.value);
-//   const endDate = new Date(endYear.value, endMonth.value - 1, endDay.value, 23, 59, 59);
-
-//   const filteredTransactionData = transactionData.value.filter((item) => {
-//     const consumptionDate = new Date(item.consumptionDate);
-//     return consumptionDate >= startDate && consumptionDate <= endDate;
-//   });
-
-//   const filteredAccountTransactionData = accountTransactionData.value.filter((item) => {
-//     const accountDate = new Date(item.accountDate);
-//     return accountDate >= startDate && accountDate <= endDate;
-//   });
-
-//   transactionSelectedPeriodData.value = filteredTransactionData;
-//   accountTransactionSelectedPeriodData.value = filteredAccountTransactionData;
-// };
-
 onMounted(async () => {
-    // 데이터 불러오기
-    await fetchTransactionData(memberIdx);
-
-    // 만약 상태가 계속 변경되면 무한 렌더링이 발생할 수 있음
-    // fetchSelectedPeriodConsumptionTransaction();
+  await fetchTransactionData(memberIdx);
 });
 </script>
 
 <template>
-    <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1">
-        <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">뒤집기</button>
-        <div class="flip w-full h-[600px] inline-block perspective-[1100px]">
-            <div class="card w-full inline-block relative transition duration-400 transform-style-[preserve-3d]" :class="{ 'rotate-y-180': isFlipped }">
-                <div class="front absolute w-full backface-visibility-hidden">
-                    <AnalysisThisMonth :card-transaction-data="cardTransactionThisMonthData" :account-transaction-data="accountTransactionThisMonthData" />
-                </div>
-                <div class="back absolute w-full backface-visibility-hidden rotate-y-180">
-                    <AnalysisSelectedPeriod />
-                </div>
-            </div>
+  <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1 gap-10">
+    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">과거 소비와 비교하기</button>
+    <div class="flip w-full inline-block relative">
+      <div class="card w-full inline-block relative flex" :class="{ '[transform:rotateY(180deg)]': isFlipped }">
+        <div class="front w-full absolute">
+          <AnalysisThisMonth :card-transaction-data="cardTransactionThisMonthData"
+            :account-transaction-data="accountTransactionThisMonthData" />
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-5">
-            <div class="lg:col-span-2">
-                <LineChart />
-            </div>
-            <div class="lg:col-span-3">
-                <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
-            </div>
+        <div class="back w-full [transform:rotateY(180deg)]">
+          <AnalysisSelectedPeriod />
         </div>
+      </div>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-span-2">
@@ -125,36 +79,37 @@ onMounted(async () => {
       </div>
     </div>
 
-        <div>
-            <AIRecommendation />
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-5">
+      <div class="lg:col-span-3">
+        <ConsumptionCalendar :account-transaction-data="accountTransactionData"
+          :card-transaction-data="cardTransactionData" />
+      </div>
+      <div class="lg:col-span-2">
+        <ConsumptionList :card-transaction-data="cardTransactionData" />
+      </div>
     </div>
+
+    <div>
+      <AIRecommendation />
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .bg-navy {
-    background-color: #0b1573;
+  background-color: #0b1573;
 }
 
 .flip {
-    perspective: 1100px;
+  perspective: 5000px;
 }
 
 .card {
-    transition: 0.4s;
-    transform-style: preserve-3d;
+  transition: 0.4s;
+  transform-style: preserve-3d;
 }
 
-.front,
-.back {
-    backface-visibility: hidden;
-}
-
-.back {
-    transform: rotateY(180deg);
-}
-
-.card.rotate-y-180 {
-    transform: rotateY(180deg);
+.front, .back {
+  backface-visibility: hidden;
 }
 </style>

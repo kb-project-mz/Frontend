@@ -4,7 +4,6 @@ import { useChallengeTop3Store } from "@/stores/challengeTop3";
 import { ref, onMounted } from "vue";
 
 const challengeTop3Store = useChallengeTop3Store();
-
 const challengeTop3ByMember = ref([]);
 const peerChallenge = ref([]);
 const memberIdx = localStorage.getItem("memberIdx");
@@ -26,17 +25,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    -----------------------------------------------
-    <h1><챌린지 탑3></h1>
-  </div>
-  <div>
-    <ul>
-      <!-- 배열을 순회하면서 challengeName 출력 -->
-      <li v-for="(challenge, index) in challengeTop3ByMember" :key="index">
-        {{ challenge.challengeName }}
-      </li>
-    </ul>
   <RouterLink to="/challenge"> 챌린지 보러 가기! </RouterLink>
   <div v-if="challengeTop3ByMember.length === 0">
     또래 챌린지 보여줘야함.
