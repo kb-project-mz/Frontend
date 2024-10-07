@@ -6,6 +6,8 @@ import { useTestStore } from "@/stores/test";
 const route = useRoute();
 const testStore = useTestStore();
 
+const result = ref(null);
+
 const resultId = computed(() => parseInt(route.params.resultId, 10));
 onMounted(() => {
     console.log("결과다~~~~~~~");
@@ -20,32 +22,41 @@ onMounted(() => {
 
 const resultContent = computed(() => {
     let resultText = "";
-    // 각 점수 비교 및 텍스트 추가
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[0].typeName;
+        result.value = 0;
+        console.log(result.value);
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[1].typeName;
+        result.value = 1;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[2].typeName;
+        result.value = 2;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[3].typeName;
+        result.value = 3;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[4].typeName;
+        result.value = 4;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[5].typeName;
+        result.value = 5;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[6].typeName;
+        result.value = 6;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[7].typeName;
+        result.value = 7;
     }
 
+    testStore.sendType(result.value);
     return resultText;
 });
 </script>

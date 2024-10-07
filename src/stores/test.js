@@ -56,24 +56,18 @@ export const useTestStore = defineStore("testStore", {
                 console.error("질문을 가져오는 중 오류가 발생했습니다:", error.message);
             }
         },
-        selectType(type) {
-            this.selectedType = type; // 선택된 타입을 상태로 저장
-        },
-
-        async sendSelectedType() {
-            if (this.selectedType) {
+        async sendType(result) {
+            if (this.types[result]) {
+                console.log("결과 갔니???" + result);
+                this.selectedTypeIdx = this.types[result].typeIdx;
                 try {
-                    const response = await apiInstance.post("/test/saveResult", { type: this.selectedType });
-                    if (response.data.success) {
-                        console.log("백엔드에 결과 저장 성공:", response.data);
-                    } else {
-                        console.error("백엔드에 결과 저장 실패:", response.data.error);
-                    }
+                    const response = await apiInstance.post("/test/saveResult", { typeIdx: this.selectedTypeIdx });
+                    console.log("데이터 전송 성공:", response.data);
                 } catch (error) {
-                    console.error("백엔드에 결과 저장 중 오류 발생:", error.message);
+                    console.error("데이터 전송 실패:", error);
                 }
             } else {
-                console.log("선택된 타입이 없습니다.");
+                console.error("잘못된 result 값입니다:", result);
             }
         },
         getOptionsByQuestionIdx(questionIdx) {
