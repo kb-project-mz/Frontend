@@ -18,131 +18,118 @@ const error = ref("");
 const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
-  console.log("login 호출:", member);
+    console.log("login 호출:", member);
 
-  if (!member.memberId || !member.password) {
-    error.value = "아이디와 비밀번호를 모두 입력해주세요.";
-    console.error("입력 오류:", error.value);
-    return;
-  }
-
-  try {
-    const response = await auth.login(member.memberId, member.password);
-    console.log("로그인 응답:", response);
-
-    if (response.memberId) {
-      console.log("로그인 성공:", response);
-      router.push("/memberHomePage");
-    } else {
-      error.value = response;
-      console.error("로그인 실패:", response);
+    if (!member.memberId || !member.password) {
+        error.value = "아이디와 비밀번호를 모두 입력해주세요.";
+        console.error("입력 오류:", error.value);
+        return;
     }
-  } catch (err) {
-    console.error("로그인 중 예외 발생:", err);
-    error.value = "로그인 중 오류가 발생했습니다.";
-  }
+
+    try {
+        const response = await auth.login(member.memberId, member.password);
+        console.log("로그인 응답:", response);
+
+        if (response.memberId) {
+            console.log("로그인 성공:", response);
+            router.push("/memberHomePage");
+        } else {
+            error.value = response;
+            console.error("로그인 실패:", response);
+        }
+    } catch (err) {
+        console.error("로그인 중 예외 발생:", err);
+        error.value = "로그인 중 오류가 발생했습니다.";
+    }
 };
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center">
-    <div class="mb-10">
-      <img src="@/assets/logo.png" alt="로고" />
-    </div>
-
-    <form class="w-1/4" @submit.prevent="login">
-      <div class="relative mb-6">
-        <div
-          class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none"
-        >
-          <font-awesome-icon :icon="['fas', 'user']" />
+    <div class="flex flex-col items-center justify-center">
+        <div class="mb-10">
+            <img src="@/assets/logo.png" alt="로고" />
         </div>
 
-        <input
-          type="text"
-          v-model="member.memberId"
-          id="memberId"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-5"
-          placeholder="아이디를 입력해주세요."
-        />
-      </div>
+        <form class="w-1/4" @submit.prevent="login">
+            <div class="relative mb-6">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+                    <font-awesome-icon :icon="['fas', 'user']" />
+                </div>
 
-      <div class="mb-6">
-        <div class="relative">
-          <div
-            class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none"
-          >
-            <font-awesome-icon :icon="['fas', 'lock']" />
-          </div>
-          <div class="flex items-center">
-            <input
-              type="password"
-              v-model="member.password"
-              id="password"
-              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-5"
-              placeholder="비밀번호를 입력해주세요."
-            />
-
-            <div class="tooltip-icon relative inline-block">
-              <font-awesome-icon
-                :icon="['fas', 'circle-question']"
-                class="text-2xl text-navy ml-2.5"
-              />
-              <div
-                class="tooltip hidden absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max bg-gray-800 text-white text-sm rounded py-1 px-2 whitespace-no-wrap"
-              >
-                비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합해 작성해주세요
-              </div>
+                <input
+                    type="text"
+                    v-model="member.memberId"
+                    id="memberId"
+                    class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-5"
+                    placeholder="아이디를 입력해주세요."
+                />
             </div>
-          </div>
+
+            <div class="mb-6">
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
+                        <font-awesome-icon :icon="['fas', 'lock']" />
+                    </div>
+                    <div class="flex items-center">
+                        <input
+                            type="password"
+                            v-model="member.password"
+                            id="password"
+                            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-5"
+                            placeholder="비밀번호를 입력해주세요."
+                        />
+
+                        <div class="tooltip-icon relative inline-block">
+                            <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-navy ml-2.5" />
+                            <div
+                                class="tooltip hidden absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max bg-gray-800 text-white text-sm rounded py-1 px-2 whitespace-no-wrap"
+                            >
+                                비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합해 작성해주세요
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="error" class="text-red-500 font-semibold text-lg text-center">
+                    {{ error }}
+                </div>
+            </div>
+
+            <button type="submit" class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5">
+                <router-link to="memberHomePage">로그인</router-link>
+            </button>
+        </form>
+
+        <div class="my-4 flex space-x-4 text-gray-500">
+            <router-link to="findMemberId">아이디 찾기</router-link>
+            <span>|</span>
+            <router-link to="findPassword">비밀번호 찾기</router-link>
+            <span>|</span>
+            <router-link to="join">회원가입</router-link>
         </div>
-        <div
-          v-if="error"
-          class="text-red-500 font-semibold text-lg text-center"
-        >
-          {{ error }}
+
+        <div class="mt-3 w-14">
+            <GoogleLoginComponent />
         </div>
-      </div>
-
-      <button
-        type="submit"
-        class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5"
-      >
-        <router-link to="memberHomePage">로그인</router-link>
-      </button>
-    </form>
-
-    <div class="my-4 flex space-x-4 text-gray-500">
-      <router-link to="findMemberId">아이디 찾기</router-link>
-      <span>|</span>
-      <router-link to="findPassword">비밀번호 찾기</router-link>
-      <span>|</span>
-      <router-link to="join">회원가입</router-link>
     </div>
-
-    <div class="mt-3 w-14">
-      <GoogleLoginComponent />
-    </div>
-  </div>
 </template>
 
 <style scoped>
 img {
-  width: 12rem;
+    width: 12rem;
 }
 .text-navy {
-  color: #0b1573;
+    color: #0b1573;
 }
 .bg-navy {
-  background-color: #0b1573;
+    background-color: #0b1573;
 }
 .tooltip {
-  transition: opacity 0.2s;
-  opacity: 0;
+    transition: opacity 0.2s;
+    opacity: 0;
 }
 .tooltip-icon:hover .tooltip {
-  opacity: 1;
-  visibility: visible;
-  display: block;
+    opacity: 1;
+    visibility: visible;
+    display: block;
 }
 </style>
