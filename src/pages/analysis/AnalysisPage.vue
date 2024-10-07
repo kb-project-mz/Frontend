@@ -17,8 +17,10 @@ const accountTransactionStore = useAccountTransactionStore();
 
 const cardTransactionData = ref([]);
 const cardTransactionThisMonthData = ref([]);
+const cardTransactionLastMonthData = ref([]);
 const accountTransactionData = ref([]);
 const accountTransactionThisMonthData = ref([]);
+const accountTransactionLastMonthData = ref([]);
 
 const authStore = useAuthStore();
 const user = authStore.member;
@@ -35,10 +37,12 @@ const fetchTransactionData = async (memberIdx) => {
   await cardTransactionStore.getCardTransactionList(memberIdx);
   cardTransactionData.value = cardTransactionStore.cardTransaction;
   cardTransactionThisMonthData.value = cardTransactionStore.cardTransactionThisMonth;
+  cardTransactionLastMonthData.value = cardTransactionStore.cardTransactionLastMonth;
 
   await accountTransactionStore.getAccountTransactionList(memberIdx);
   accountTransactionData.value = accountTransactionStore.accountTransaction;
   accountTransactionThisMonthData.value = accountTransactionStore.accountTransactionThisMonth;
+  accountTransactionLastMonthData.value = accountTransactionStore.accountTransactionLastMonth;
 
   isDataLoaded.value = true;
 };
@@ -65,7 +69,10 @@ onMounted(async () => {
 
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-span-2">
-        <LineChart />
+        <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
+                    :card-transaction-last-month-data="cardTransactionLastMonthData"
+                    :account-transaction-this-month-data="accountTransactionThisMonthData" 
+                    :account-transaction-last-month-data="accountTransactionLastMonthData"/>
       </div>
       <div class="lg:col-span-3">
         <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
