@@ -45,7 +45,9 @@ const fetchProfile = async () => {
     profile.memberName = profileData.memberName;
     profile.birthday = profileData.birthday;
     profile.email = profileData.email;
-    profile.imageUrl = profileData.imageUrl;
+    const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
+    profile.imageUrl = imageUrl;
+    console.log('이미지ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ',profile.imageUrl);
   } catch (error) {
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
@@ -206,17 +208,17 @@ const verifyCode = async () => {
 // 이미지 관련
 const uploadImage = async (event) => {
   const file = event.target.files[0];
-  selectedImage.value = file;
   console.log('Selected Image:', file);
   if(!file) {
     alert('이미지를 선택해주세요.');
     return;
   }
+  selectedImage.value = file;
   const previewUrl = URL.createObjectURL(file);
   profile.imageUrl = previewUrl; 
   const formData = new FormData();
-  formData.append('profileImage', selectedImage.value);
-  console.log("222222222222222222222222222222222", selectedImage.value);
+  formData.append('file', selectedImage.value);
+  alert('업로드 하시겠습니까?');
   try {
     const response = await apiInstance.post(`/member/image`, formData, {
       headers: {
@@ -224,37 +226,35 @@ const uploadImage = async (event) => {
         'Authorization': localStorage.getItem("accessToken")
       },
     });
+
     if (response.data.success) {
       alert('이미지 업로드에 성공했습니다.');
-      const imageUrl = `http://localhost:8080/upload/${response.data.data.storeFileName}`;
+      const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${response.data.data.storeFileName}`;
       profile.imageUrl = imageUrl; 
-      const previewUrl = URL.createObjectURL(file);
-      profile.imageUrl = previewUrl; 
-      console.log("1111111111111111" + imageUrl);
+      Object.assign(profile, { imageUrl: imageUrl });
+      await fetchProfile(); 
     }
   } catch (error) {
+    console.error('이미지 업로드 실패:', error);
     alert('이미지 업로드에 실패하셨습니다.');
   }
 };
-const deleteImage = async (imageFile) => {
-  const formData = new FormData();
-  formData.append('profileImage', imageFile);
-
-  console.log('Deleting Image:', formData);
-  console.log('1111111111111111111111111111');
+const deleteImage = async (profileImage) => {
+  alert('삭제 하시겠습니까? 삭제하시면 기본 이미지로 변경됩니다.');
+  console.log('지울 이미지ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ', profileImage);
   try {
-    const response = await apiInstance.post(`/member/image/default`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const response = await apiInstance.delete(`/member/image`, {
+      params: {
+        fileUrl: profileImage
       },
+      headers: {
+        'Authorization': localStorage.getItem("accessToken")
+      }
     });
-
     console.log('Response Data:', response.data); // 서버 응답 로그 추가
-    console.log(response.data.storeFileName);
     if(response.data.success){
-      alert('이미지를 삭제하였습니다.');
-      const imageUrl = `http://localhost:8080/upload/${response.data.data.storeFileName}`;
-      profile.imageUrl = imageUrl; 
+      profile.imageUrl = "basic.jpg";
+      await fetchProfile(); 
     }
   } catch (error) {
     console.error('파일 삭제 실패');
@@ -276,10 +276,15 @@ const deleteImage = async (imageFile) => {
         <div class="profile-image-section relative flex justify-center">
           <img :src="profile.imageUrl" alt="Profile Image" class="profile-image" />
           
-          <!-- 수정/삭제 버튼 -->
           <div class="absolute bottom-0 right-0 flex space-x-2">
             <button @click="() => $refs.profileImageInput.click()" class="btn-edit-image">수정</button>
-            <button @click="deleteImage" class="btn-delete-image">삭제</button>
+            
+            <button 
+              @click="deleteImage(profile.imageUrl)" 
+              class="btn-delete-image" 
+              :disabled="profile.imageUrl === 'https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/basic.jpg'">
+              삭제
+            </button>
           </div>
 
           <input type="file" @change="uploadImage" class="hidden" ref="profileImageInput" />
