@@ -8,6 +8,8 @@ const testStore = useTestStore();
 const startTest = () => {
     console.log(testStore.score);
     testStore.resetScore();
+    testStore.fetchTypes();
+    console.log(testStore.fetchTypes);
     console.log(testStore.score);
     router.push({ name: "testQuestion", params: { number: 1 } });
 };
