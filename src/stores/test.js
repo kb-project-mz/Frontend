@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import apiInstance from "@/util/axios-instance";
+import { useAuthStore } from "@/stores/auth";
 
 export const useTestStore = defineStore("testStore", {
     state: () => ({
@@ -57,19 +58,23 @@ export const useTestStore = defineStore("testStore", {
             }
         },
         async sendType(result) {
-            if (this.types[result]) {
-                console.log("결과 갔니???" + result);
-                this.selectedTypeIdx = this.types[result].typeIdx;
-                try {
-                    const response = await apiInstance.post("/test/saveResult", { typeIdx: this.selectedTypeIdx });
-                    console.log("데이터 전송 성공:", response.data);
-                } catch (error) {
-                    console.error("데이터 전송 실패:", error);
-                }
-            } else {
-                console.error("잘못된 result 값입니다:", result);
+            const authStore = useAuthStore(); 
+            const memberIdx = authStore.member.memberIdx || null; 
+            const typeIdx = result + 1;
+
+        
+            try {
+                const response = await apiInstance.post("/test/saveResult", {
+                    typeIdx: typeIdx,
+
+                    memberIdx: memberIdx
+                });
+                console.log("데이터 전송 성공:", response.data);
+            } catch (error) {
+                console.error("데이터 전송 실패:", error);
             }
         },
+        
         getOptionsByQuestionIdx(questionIdx) {
             return this.options.get(questionIdx) || [];
         },
