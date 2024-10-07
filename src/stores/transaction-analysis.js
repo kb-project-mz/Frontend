@@ -18,6 +18,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
       endDay
     ) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/transaction/top-usage`, {
           params: {
             memberIdx: memberIdx,
@@ -29,10 +30,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
             endDay: endDay,
           },
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
 
@@ -45,6 +43,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
 
     async fetchAiRecommendation(memberIdx, startYear, startMonth, endDay) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/transaction/recommendation`, {
           params: {
             memberIdx: memberIdx,
@@ -56,10 +55,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
             endDay: endDay,
           },
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
 

@@ -12,12 +12,10 @@ export const useAssetStore = defineStore("asset", {
   actions: {
     async getAssetList(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const response = await apiInstance.get(`/asset/${memberIdx}`, {
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
         this.allAssetList = response.data.data;
@@ -42,15 +40,13 @@ export const useAssetStore = defineStore("asset", {
     async updateAccountStatus(selectedAccount) {
       try {
         const accountIdx = selectedAccount.prdtId;
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const response = await apiInstance.post(
           `/asset/account/${accountIdx}`,
           {},
           {
             headers: {
-              Authorization: () => {
-                const authData = JSON.parse(localStorage.getItem("auth"));
-                return authData.accessToken;
-              },
+              Authorization: `Bearer ${authData.accessToken}`,
             },
           }
         );
@@ -65,15 +61,13 @@ export const useAssetStore = defineStore("asset", {
     async updateCardStatus(selectedCard) {
       try {
         const cardIdx = selectedCard.prdtId;
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const response = await apiInstance.post(
           `/asset/card/${cardIdx}`,
           {},
           {
             headers: {
-              Authorization: () => {
-                const authData = JSON.parse(localStorage.getItem("auth"));
-                return authData.accessToken;
-              },
+              Authorization: `Bearer ${authData.accessToken}`,
             },
           }
         );

@@ -12,12 +12,10 @@ export const useCardTransactionStore = defineStore("cardTransaction", {
   actions: {
     async getCardTransactionList(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/transaction/card/${memberIdx}`, {
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
         this.cardTransaction = res.data.data;
@@ -95,7 +93,7 @@ export const useCardTransactionStore = defineStore("cardTransaction", {
           !this.cardTransactionThisMonth ||
           this.cardTransactionThisMonth.length === 0
         ) {
-          const authData = localStorage.getItem("auth");
+          const authData = JSON.parse(localStorage.getItem("auth"));
           const memberIdx = authData.memberIdx;
           await this.getCardTransactionList(memberIdx);
         }

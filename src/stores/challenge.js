@@ -11,12 +11,10 @@ export const useChallengeStore = defineStore("challenge", {
   actions: {
     async getChallengeList(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/challenge/${memberIdx}`, {
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
         this.challengeList = res.data.data;
@@ -28,12 +26,10 @@ export const useChallengeStore = defineStore("challenge", {
 
     async insertChallenge(challengeData) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.post(`/challenge`, challengeData, {
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
 
@@ -46,15 +42,13 @@ export const useChallengeStore = defineStore("challenge", {
 
     async deleteChallenge(challengeId) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.post(
           `/challenge/${challengeId}`,
           {},
           {
             headers: {
-              Authorization: () => {
-                const authData = JSON.parse(localStorage.getItem("auth"));
-                return authData.accessToken;
-              },
+              Authorization: `Bearer ${authData.accessToken}`,
             },
           }
         );
@@ -73,14 +67,12 @@ export const useChallengeStore = defineStore("challenge", {
 
     async getDetailedCategory(memberIdx, categoryId) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(
           `/challenge/detailed-category/${memberIdx}/${categoryId}`,
           {
             headers: {
-              Authorization: () => {
-                const authData = JSON.parse(localStorage.getItem("auth"));
-                return authData.accessToken;
-              },
+              Authorization: `Bearer ${authData.accessToken}`,
             },
           }
         );
@@ -92,12 +84,10 @@ export const useChallengeStore = defineStore("challenge", {
 
     async getChallengeStatus(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/challenge/status/${memberIdx}`, {
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
         this.chartData = res.data.data;

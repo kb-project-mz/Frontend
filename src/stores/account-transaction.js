@@ -11,12 +11,10 @@ export const useAccountTransactionStore = defineStore("accountTransaction", {
   actions: {
     async getAccountTransactionList(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/transaction/account/${memberIdx}`, {
           headers: {
-            Authorization: () => {
-              const authData = JSON.parse(localStorage.getItem("auth"));
-              return authData.accessToken;
-            },
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
         this.accountTransaction = res.data.data;

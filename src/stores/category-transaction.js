@@ -11,14 +11,12 @@ export const useCategoryTransactionStore = defineStore("categoryTransaction", {
     // 백엔드에서 일별로 합산된 카테고리 데이터를 가져오는 함수
     async fetchCategoryTransactionCount(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(
           `/transaction/category-count/${memberIdx}`,
           {
             headers: {
-              Authorization: () => {
-                const authData = JSON.parse(localStorage.getItem("auth"));
-                return authData.accessToken;
-              },
+              Authorization: `Bearer ${authData.accessToken}`,
             },
           }
         );
@@ -35,14 +33,12 @@ export const useCategoryTransactionStore = defineStore("categoryTransaction", {
     // Pinia store에서 데이터를 가져오는 부분에 로그 추가
     async fetchMostSpentCategory(memberIdx) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(
           `/transaction/most-spent-category/${memberIdx}`,
           {
             headers: {
-              Authorization: () => {
-                const authData = JSON.parse(localStorage.getItem("auth"));
-                return authData.accessToken;
-              },
+                Authorization: `Bearer ${authData.accessToken}`,
             },
           }
         );
