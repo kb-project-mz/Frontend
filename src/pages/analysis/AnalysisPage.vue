@@ -17,8 +17,10 @@ const accountTransactionStore = useAccountTransactionStore();
 
 const cardTransactionData = ref([]);
 const cardTransactionThisMonthData = ref([]);
+const cardTransactionLastMonthData = ref([]);
 const accountTransactionData = ref([]);
 const accountTransactionThisMonthData = ref([]);
+const accountTransactionLastMonthData = ref([]);
 
 const authStore = useAuthStore();
 const user = authStore.member;
@@ -32,10 +34,19 @@ const toggleCardFlip = () => {
 const isDataLoaded = ref(false);
 
 // 월의 마지막 날짜 가져오기 함수
-const getEndDay = (year, month) => {
-    const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    return daysInMonth[month - 1];
+
+const fetchTransactionData = async (memberIdx) => {
+  await cardTransactionStore.getCardTransactionList(memberIdx);
+  cardTransactionData.value = cardTransactionStore.cardTransaction;
+  cardTransactionThisMonthData.value = cardTransactionStore.cardTransactionThisMonth;
+  cardTransactionLastMonthData.value = cardTransactionStore.cardTransactionLastMonth;
+
+  await accountTransactionStore.getAccountTransactionList(memberIdx);
+  accountTransactionData.value = accountTransactionStore.accountTransaction;
+  accountTransactionThisMonthData.value = accountTransactionStore.accountTransactionThisMonth;
+  accountTransactionLastMonthData.value = accountTransactionStore.accountTransactionLastMonth;
+
+  isDataLoaded.value = true;
 };
 
 // 소비 내역 불러오기 함수
@@ -102,14 +113,17 @@ onMounted(async () => {
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-5">
-            <div class="lg:col-span-3">
-                <ConsumptionCalendar :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
-            </div>
-            <div class="lg:col-span-2">
-                <ConsumptionList :card-transaction-data="cardTransactionData" />
-            </div>
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-5">
+      <div class="lg:col-span-2">
+        <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
+                    :card-transaction-last-month-data="cardTransactionLastMonthData"
+                    :account-transaction-this-month-data="accountTransactionThisMonthData" 
+                    :account-transaction-last-month-data="accountTransactionLastMonthData"/>
+      </div>
+      <div class="lg:col-span-3">
+        <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
+      </div>
+    </div>
 
         <div>
             <AIRecommendation />

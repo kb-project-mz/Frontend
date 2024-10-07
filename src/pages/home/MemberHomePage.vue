@@ -3,11 +3,7 @@ import Button from "@/components/home/Button.vue";
 import testImage from "@/assets/테스트.png";
 import chartImage from "@/assets/차트.png";
 import challengeImage from "@/assets/챌린지.png";
-
-import AccountBook from "@/components/home/AccountBook.vue";
 import Challenge from "@/components/home/Challenge.vue";
-
-import { ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
@@ -16,9 +12,25 @@ const memberIdx = localStorage.getItem("memberIdx");
 </script>
 
 <template>
-  <div>
-    <AccountBook />
-    <Challenge />
+  <div class="max-w-6xl mx-auto space-x-12">
+    <div class="flex justify-between">
+      <div>
+        <h1>[소비 테스트 결과지]</h1>
+      </div>
+      <div class="flex space-x-16">
+        <div>
+          <h1>[challenge top3]</h1>
+          <Challenge />
+        </div>
+        <div class="flex space-x-16">
+          <div>
+            <h1>[Account]</h1>
+            <Account />
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-6xl mx-auto space-x-12 flex justify-center">
       <Button
         :img-src="testImage"
