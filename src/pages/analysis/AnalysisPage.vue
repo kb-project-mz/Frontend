@@ -11,6 +11,7 @@ import AnalysisSelectedPeriod from "@/components/analysis/AnalysisSelectedPeriod
 import ConsumptionList from "@/components/analysis/ConsumptionList.vue";
 import BarChart from "@/components/analysis/BarChart.vue";
 import NoConnectedAsset from "@/components/analysis/NoConnectedAsset.vue";
+import FixedExpenses from "@/components/analysis/FixedExpenses.vue";
 
 const memberIdx = localStorage.getItem("memberIdx");
 const cardTransactionStore = useCardTransactionStore();
@@ -73,11 +74,12 @@ onMounted(async () => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-5">
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-2 space-y-10">
           <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
                       :card-transaction-last-month-data="cardTransactionLastMonthData"
                       :account-transaction-this-month-data="accountTransactionThisMonthData" 
                       :account-transaction-last-month-data="accountTransactionLastMonthData"/>
+          <FixedExpenses />
         </div>
         <div class="lg:col-span-3">
           <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
