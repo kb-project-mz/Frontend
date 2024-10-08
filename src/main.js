@@ -68,7 +68,6 @@ window.addEventListener('storage', (event) => {
       oldAuthData &&
       oldAuthData.memberIdx !== newAuthData.memberIdx
     ) {
-      // 로그아웃 처리
       localStorage.removeItem('auth');
       authStore.clearAuthState();
       router.push('/');
