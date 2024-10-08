@@ -2,7 +2,8 @@
 import { ref, onMounted, nextTick } from 'vue';
 import { useChallengeStore } from '@/stores/challenge';
 
-const memberIdx = localStorage.getItem("memberIdx");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 
 const challengeStore = useChallengeStore();
 const peerChallengeList = ref([]);

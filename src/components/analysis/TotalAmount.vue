@@ -12,7 +12,8 @@ const props = defineProps({
     },
 });
 
-const memberName = localStorage.getItem("memberName");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberName = authData.memberName;
 
 const totalIncome = ref(0);
 const totalOutcome = ref(0);
@@ -48,10 +49,13 @@ onMounted(() => {
     totalOutcome.value = getTotalOutcome();
 });
 
-watch([() => props.cardTransactionData, () => props.accountTransactionData], () => {
+watch(
+  [() => props.cardTransactionData, () => props.accountTransactionData],
+  () => {
     totalIncome.value = getTotalIncome();
     totalOutcome.value = getTotalOutcome();
-});
+  }
+);
 </script>
 
 <template>
@@ -64,7 +68,13 @@ watch([() => props.cardTransactionData, () => props.accountTransactionData], () 
             <div class="w-1/2 font-medium">이번 달 총 지출</div>
             <div div class="font-bold text-lg text-red">{{ totalOutcome.toLocaleString() }}원</div>
         </div>
+    <div class="flex items-center justify-between">
+      <div class="font-medium">총 지출</div>
+      <div div class="font-bold text-lg text-red">
+        {{ totalOutcome.toLocaleString() }}원
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>

@@ -2,139 +2,143 @@ import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
 import { setLocalStorage, clearTokens } from '@/util/token';
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
     member: {
-      memberIdx: localStorage.getItem('id') || null,
-      memberName: localStorage.getItem('memberName') || null,
-      memberId: localStorage.getItem('memberId') || null
-    }
+      memberIdx: null,
+      memberName: null,
+      memberId: null,
+      imageUrl: null,
+    },
   }),
 
   actions: {
     async login(memberId, password) {
       try {
-        const response = await apiInstance.post('/member/login', { memberId, password });
-        console.log("response: ", response)
+        const response = await apiInstance.post("/member/login", {
+          memberId,
+          password,
+        });
         const loginData = response.data.data;
 
-				console.log("loginData:", loginData);
+        if (!loginData || !loginData.accessToken) {
+          return null;
+        }
 
-                if (!loginData || !loginData.accessToken) {
-                    return null;
-                }
+        // localStorage 설정 및 Pinia 상태 업데이트
+        setLocalStorage(loginData);
+        this.loadAuthState();
 
-                const authData = {
-                    memberIdx: loginData.memberIdx,
-                    memberName: loginData.memberName,
-                    memberId: loginData.memberId,
-                    role: loginData.role,
-                    accessToken: loginData.accessToken,
-                    refreshToken: loginData.refreshToken,
-                  };
-              
-                  localStorage.setItem("auth", JSON.stringify(authData));
-              
-                  this.loadAuthState();
+        return loginData;
+      } catch (error) {
+        throw error;
+      }
+    },
 
-                return loginData;
-            } catch (error) {
-                throw error;
-            }
-        },
+    async create(member) {
+      try {
+        const response = await apiInstance.post("/member/join", member);
+        return response.data.data;
+      } catch (error) {
+        throw error;
+      }
+    },
 
-        async create(member) {
-            try {
-                const response = await apiInstance.post("/member/join", member);
-                return response.data.data;
-            } catch (error) {
-                throw error;
-            }
-        },
+    async checkMemberId(memberId) {
+      try {
+        const response = await apiInstance.get(
+          `/member/check-memberId/${memberId}`
+        );
+        return response.data.data;
+      } catch (error) {
+        throw error;
+      }
+    },
 
-        async checkMemberId(memberId) {
-            try {
-                const response = await apiInstance.get(`/member/check-memberId/${memberId}`);
-                return response.data.data;
-            } catch (error) {
-                throw error;
-            }
-        },
+    async checkEmailDuplicate(email) {
+      try {
+        const response = await apiInstance.get(`/member/email/duplicate`, {
+          params: { email: email },
+        });
 
-        async checkEmailDuplicate(email) {
-            try {
-                const response = await apiInstance.get(`/member/email/duplicate`, {
-                    params: { email: email },
-                });
+        if (response && response.data) {
+          console.log("이메일 중복 확인 응답 데이터:", response.data);
+          return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
+        } else {
+          console.log("응답 데이터가 존재하지 않습니다.");
+          return false; // 오류 처리
+        }
+      } catch (error) {
+        console.error("이메일 중복 확인 오류:", error);
+        throw error;
+      }
+    },
 
-                if (response && response.data) {
-                    console.log("이메일 중복 확인 응답 데이터:", response.data);
-                    return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
-                } else {
-                    console.log("응답 데이터가 존재하지 않습니다.");
-                    return false; // 오류 처리
-                }
-            } catch (error) {
-                console.error("이메일 중복 확인 오류:", error);
-                throw error;
-            }
-        },
+    async sendEmailVerification(email) {
+      try {
+        const response = await apiInstance.post("/member/email/code", {
+          email,
+        });
+        return response.data;
+      } catch (error) {
+        console.error(
+          "인증코드 전송 오류:",
+          error.response ? error.response.data : error.message
+        );
+        throw new Error("인증코드 전송 실패");
+      }
+    },
 
-        async sendEmailVerification(email) {
-            try {
-                const response = await apiInstance.post("/member/email/code", { email });
-                return response.data;
-            } catch (error) {
-                console.error("인증코드 전송 오류:", error.response ? error.response.data : error.message);
-                throw new Error("인증코드 전송 실패");
-            }
-        },
+    async verifyEmailCode(email, code) {
+      try {
+        const response = await apiInstance.post("/member/email/verification", {
+          email,
+          inputCode: code,
+        });
+        return response.data.success;
+      } catch (error) {
+        console.error(
+          "인증코드 확인 오류:",
+          error.response ? error.response.data : error.message
+        );
+        throw new Error("인증코드 확인 실패");
+      }
+    },
 
-        async verifyEmailCode(email, code) {
-            try {
-                const response = await apiInstance.post("/member/email/verification", { email, inputCode: code });
-                return response.data.success;
-            } catch (error) {
-                console.error("인증코드 확인 오류:", error.response ? error.response.data : error.message);
-                throw new Error("인증코드 확인 실패");
-            }
-        },
+    async logout() {
+      try {
+        await apiInstance.post("/member/logout");
+        clearTokens();
+        this.clearAuthState();
+      } catch (error) {
+        console.error(
+          "로그아웃 중 오류:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
 
-        async logout() {
-            try {
-                await apiInstance.post("/member/logout");
-                clearTokens();
-                this.clearAuthState();
-            } catch (error) {
-                console.error("로그아웃 중 오류:", error.response ? error.response.data : error.message);
-            }
-        },
-
-        clearAuthState() {
-            this.member.memberIdx = null;
-            this.member.memberName = null;
-            this.member.memberId = null;
-            localStorage.removeItem("memberIdx");
-            localStorage.removeItem("memberName");
-            localStorage.removeItem("memberId");
-            localStorage.removeItem("auth");
-            localStorage.clear();
-        },
+    clearAuthState() {
+      this.member.memberIdx = null;
+      this.member.memberName = null;
+      this.member.memberId = null;
+      localStorage.clear();
+    },
 
     loadAuthState() {
-      const authData = JSON.parse(localStorage.getItem('auth'));
+      const authData = JSON.parse(localStorage.getItem("auth"));
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
         this.member.memberIdx = authData.memberIdx;
-        this.member.role = authData.role; 
+        this.member.imageUrl = authData.imageUrl || "";
       }
     },
 
-        isLogin() {
-            const authData = localStorage.getItem("auth");
-            const isLoggedIn = !!authData;
-            return isLoggedIn;
-        },
+    isLogin() {
+      const authData = localStorage.getItem("auth");
+      const isLoggedIn = !!authData;
+      return isLoggedIn;
     },
+  },
 });
