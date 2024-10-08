@@ -12,7 +12,9 @@ import AssetPage from "@/pages/connection/AssetPage.vue";
 import TestStartPage from "@/pages/test/TestStartPage.vue";
 import TestQuestionPage from "@/pages/test/TestQuestionPage.vue";
 import TestResultPage from "@/pages/test/TestResultPage.vue";
+import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
+
 
 import MemberHomePage from "@/pages/home/MemberHomePage.vue";
 
@@ -95,7 +97,12 @@ const router = createRouter({
       component: TestQuestionPage,
     },
     {
-      path: "/test/result",
+      path: "/test/loading",
+      name: "testLoading",
+      component: TestLoadingPage,
+    },
+    {
+      path: "/test/result/:resultId",
       name: "testResult",
       component: TestResultPage,
     },
