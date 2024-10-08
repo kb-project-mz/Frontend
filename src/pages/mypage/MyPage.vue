@@ -40,6 +40,7 @@ onMounted(async () => {
 
 // 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
+  isLoading.value = true; // 로딩 시작
   try {
     const profileData = await memberStore.getProfile();
     profile.memberId = profileData.memberId;

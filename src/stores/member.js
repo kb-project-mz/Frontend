@@ -4,7 +4,14 @@ import { useAuthStore } from "@/stores/auth.js";
 
 export const useMemberStore = defineStore("memberStore", {
   state: () => ({
-    member: {}
+    member: {
+      memberId:'',
+      memberName:'',
+      birthday:'',
+      gender:'',
+      email:'',
+      imageUrl:'',
+    }
   }),
 
   actions: {
@@ -16,8 +23,8 @@ export const useMemberStore = defineStore("memberStore", {
             Authorization: authStore.member.accessToken
           },
         });
-        
         this.member = response.data.data;
+        console.log('111111111111', this.member);
         return response.data.data;
       } catch (error) {
         console.error('Failed to profile data', error);
