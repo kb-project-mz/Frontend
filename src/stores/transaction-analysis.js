@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
 
-export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
+export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
   state: () => ({
     mostAndMaximum: "",
     recommendation: "",
@@ -9,8 +9,17 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   }),
 
   actions: {
-    async getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
+    async getMostAndMaximumUse(
+      memberIdx,
+      startYear,
+      startMonth,
+      startDay,
+      endYear,
+      endMonth,
+      endDay
+    ) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/transaction/top-usage`, {
           params: {
             memberIdx: memberIdx,
@@ -19,11 +28,11 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
             startDay: startDay,
             endYear: endYear,
             endMonth: endMonth + 1,
-            endDay: endDay
+            endDay: endDay,
           },
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: `Bearer ${authData.accessToken}`,
+          },
         });
 
         this.mostAndMaximum = res.data.data;
@@ -33,8 +42,9 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
       }
     },
 
-    async fetchAiRecommendation (memberIdx, startYear, startMonth, endDay) {
+    async fetchAiRecommendation(memberIdx, startYear, startMonth, endDay) {
       try {
+        const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/transaction/recommendation`, {
           params: {
             memberIdx: memberIdx,
@@ -43,13 +53,13 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
             startDay: 1,
             endYear: startYear,
             endMonth: startMonth,
-            endDay: endDay
+            endDay: endDay,
           },
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: `Bearer ${authData.accessToken}`,
+          },
         });
-        
+
         this.recommendation = res.data.data;
         return this.recommendation;
       } catch (err) {

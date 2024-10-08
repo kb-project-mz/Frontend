@@ -1,14 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import socket from '@/util/socket';
-import { useBalanceStore } from '@/stores/balance';
+import { ref, onMounted } from "vue";
+import socket from "@/util/socket";
+import { useBalanceStore } from "@/stores/balance";
 
 // 서버에서 데이터를 수신할 배열
 const balanceByMember = ref([]);
 const authInfo = ref([]);
 
 const balanceStore = useBalanceStore();
-const memberIdx = localStorage.getItem('memberIdx');
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 
 const fetchBalance = async (memberIdx) => {
   await balanceStore.getTotalBalance(memberIdx);
@@ -19,18 +20,18 @@ onMounted(async () => {
   balanceByMember.value = balanceStore.TotalBalanceList;
 
   // socket 연결 성공
-  socket.on('connect', () => {
-    console.log('Socket.IO connected!');
+  socket.on("connect", () => {
+    console.log("Socket.IO connected!");
   });
 
   // 업데이트 된 balance 데이터 가져오기
-  socket.on('balanceUpdate', (data) => {
+  socket.on("balanceUpdate", (data) => {
     balanceByMember.value = data;
   });
 
   // socket 연결 실패
-  socket.on('connect_error', (err) => {
-    console.error('Connection error:', err);
+  socket.on("connect_error", (err) => {
+    console.error("Connection error:", err);
   });
 });
 </script>

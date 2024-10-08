@@ -1,7 +1,18 @@
 <script setup>
-import MyChallengeList from '@/components/challenge/MyChallengeList.vue';
-import PeerChallenge from '@/components/challenge/PeerChallenge.vue';
+import MyChallengeList from "@/components/challenge/MyChallengeList.vue";
+import PeerChallenge from "@/components/challenge/PeerChallenge.vue";
 
+import { onMounted } from "vue";
+import { useChallengeStore } from "@/stores/challenge";
+
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
+
+const challengeStore = useChallengeStore();
+
+onMounted(() => {
+  challengeStore.getChallengeList(memberIdx);
+});
 </script>
 
 <template>
