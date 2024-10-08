@@ -2,12 +2,19 @@
 import ProgressBar from "@/components/challenge/ProgressBar.vue";
 import { useChallengeTop3Store } from "@/stores/challengeTop3";
 import { ref, onMounted } from "vue";
-
+import { useRouter } from "vue-router";
+const router = useRouter();
 const challengeTop3Store = useChallengeTop3Store();
 const challengeTop3ByMember = ref([]);
 const peerChallenge = ref([]);
+console.log(localStorage.getItem("auth"));
 const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+console.log(authData);
+if(!authData?.memberIdx) {
+	router.push('/');
+}
+	const memberIdx = authData.memberIdx;
+
 
 const fetchChallengeTop3 = async (memberIdx) => {
   await challengeTop3Store.getChallengeTop3(memberIdx);

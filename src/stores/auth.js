@@ -9,6 +9,7 @@ export const useAuthStore = defineStore("auth", {
       memberName: null,
       memberId: null,
       imageUrl: null,
+			// role: null,
     },
   }),
 
@@ -21,6 +22,7 @@ export const useAuthStore = defineStore("auth", {
         });
         const loginData = response.data.data;
 
+				console.log("loginData: ", loginData);
         if (!loginData || !loginData.accessToken) {
           return null;
         }
@@ -28,7 +30,8 @@ export const useAuthStore = defineStore("auth", {
         // localStorage 설정 및 Pinia 상태 업데이트
         setLocalStorage(loginData);
         this.loadAuthState();
-
+				
+				console.log(this.member.memberIdx);
         return loginData;
       } catch (error) {
         throw error;
@@ -132,6 +135,7 @@ export const useAuthStore = defineStore("auth", {
         this.member.memberName = authData.memberName;
         this.member.memberIdx = authData.memberIdx;
         this.member.imageUrl = authData.imageUrl || "";
+				// this.member.role = authData.role;
       }
     },
 

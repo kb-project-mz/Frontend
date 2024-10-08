@@ -14,10 +14,8 @@ import TestResultPage from "@/pages/test/TestResultPage.vue";
 import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
 import { useAuthStore } from '@/stores/auth';
-
-
 import MemberHomePage from "@/pages/home/MemberHomePage.vue";
-import Admin from "@/pages/admin/Admin.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

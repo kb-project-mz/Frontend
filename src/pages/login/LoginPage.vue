@@ -3,6 +3,7 @@ import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
+import { setLocalStorage } from '@/util/token'; 
 
 const cr = useRoute();
 const router = useRouter();
@@ -23,11 +24,12 @@ const login = async () => {
 
         if (response && response.memberId) {
             console.log("로그인 성공:", response);
-
+						
+						setLocalStorage(response)
             if (response.role === 'ROLE_ADMIN') {
                 router.push("/admin"); 
             } else {
-                router.push("/memberHomePage"); 
+            		router.push("/memberHomePage"); 
             }
         } else {
             error.value = response;
@@ -90,8 +92,8 @@ const login = async () => {
                 </div>
             </div>
 
-            <button type="submit" class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5">
-                <router-link to="memberHomePage">로그인</router-link>
+            <button type="submit" class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5" :click="login">
+							로그인
             </button>
         </form>
 

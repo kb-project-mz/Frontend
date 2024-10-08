@@ -3,7 +3,7 @@ import MostAndMaximumUsed from "@/components/analysis/MostAndMaximumUsed.vue";
 import CategoryChart from "@/components/analysis/CategoryChart.vue";
 import TotalAmount from "@/components/analysis/TotalAmount.vue";
 import AverageConsumption from "@/components/analysis/AverageConsumption.vue";
-
+import { ref, onMounted } from "vue";
 const props = defineProps({
   cardTransactionData: {
     type: Object,
@@ -14,18 +14,14 @@ const props = defineProps({
     required: true,
   },
 });
-
 const authData = JSON.parse(localStorage.getItem("auth"));
 const memberName = authData.memberName;
-
 const isLoaded = ref(false);
 const today = new Date();
 const year = today.getFullYear();
 const month = today.getMonth();
-
 const startDate = ref(null);
 const endDate = ref(null);
-
 const getEndDay = (year, month) => {
   const isLeapYear = (year) =>
     (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -45,14 +41,12 @@ const getEndDay = (year, month) => {
   ];
   return daysInMonth[month];
 };
-
 onMounted(() => {
   startDate.value = new Date(year, month, 1);
   endDate.value = new Date(year, month, getEndDay(year, month));
   isLoaded.value = true;
 });
 </script>
-
 <template>
   <div v-if="isLoaded">
     <div>
@@ -84,8 +78,4 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>
-
+<style scoped></style>
