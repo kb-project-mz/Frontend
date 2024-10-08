@@ -52,7 +52,7 @@ onMounted(() => {
         <AverageConsumption chart-id="thisMonth" :card-transaction-data="cardTransactionData"
           :account-transaction-data="accountTransactionData" />
       </div>
-      <CategoryChart class="lg:col-span-1" />
+      <CategoryChart class="lg:col-span-1" chart-id="thisMonthCategory" />
     </div>
   </div>
 </template>
