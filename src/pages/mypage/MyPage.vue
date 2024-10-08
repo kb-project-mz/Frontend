@@ -16,6 +16,7 @@ const profile = reactive({
   imageUrl: '',
 });
 
+const isSocialLogin = ref(false);
 const selectedImage = ref(null);
 
 const password = ref('');
@@ -51,7 +52,10 @@ const fetchProfile = async () => {
     profile.email = profileData.email;
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
-    console.log('소셜ㄹㄹㄹ', profile.socialType);
+    
+    if(profile.socialType==='GOOGLE'){
+      isSocialLogin.value = true;
+    }
   } catch (error) {
     console.log(error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
@@ -398,10 +402,12 @@ const deleteImage = async (profileImage) => {
           autocomplete="current-password"
           class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
           placeholder="현재 비밀번호"
+          :disabled="isSocialLogin"
         />
         <button
           @click.prevent="verifyPassword"
           class="mt-7 px-4 py-1 bg-navy text-white rounded-xl text-sm"
+          :disabled="isSocialLogin"
         >
           확인
         </button>
@@ -510,6 +516,7 @@ const deleteImage = async (profileImage) => {
           <button
             @click.prevent="editEmail"
             class="mt-7 px-4 py-1 bg-navy text-white rounded-lg text-sm"
+            :disabled="isSocialLogin"
           >
             수정
           </button>
