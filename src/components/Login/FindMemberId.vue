@@ -95,10 +95,9 @@ const resetMessages = () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center px-4">
-    <div class="w-full max-w-md">
+  <div class="flex flex-col items-center w-full max-w-md">
       <h2 class="text-center text-2xl font-bold mb-6 text-navy">아이디 찾기</h2>
-      <form @submit.prevent="findMemberId" class="bg-white p-8 shadow-md rounded-lg">
+      <form @submit.prevent="findMemberId" class="bg-white p-8 shadow-md rounded-lg w-full">
         <div class="mb-6">
           <input
             type="text"
@@ -131,7 +130,6 @@ const resetMessages = () => {
         </div>
       </form>
     </div>
-  </div>
 </template>
 
 <style scoped>

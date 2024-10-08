@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import FindMemberId from "@/pages/login/FindMemberId.vue";
-import FindPassword from "@/pages/login/FindPassword.vue";
+import FindMember from "@/pages/login/FindMember.vue"
 import GuestHomePage from "@/pages/home/GuestHomePage.vue";
 import LoginPage from "@/pages/login/LoginPage.vue";
 import JoinPage from "@/pages/join/JoinPage.vue";
@@ -12,7 +11,9 @@ import AssetPage from "@/pages/connection/AssetPage.vue";
 import TestStartPage from "@/pages/test/TestStartPage.vue";
 import TestQuestionPage from "@/pages/test/TestQuestionPage.vue";
 import TestResultPage from "@/pages/test/TestResultPage.vue";
+import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
+
 
 import MemberHomePage from "@/pages/home/MemberHomePage.vue";
 
@@ -75,14 +76,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/findMemberId",
-      name: "findMemberId",
-      component: FindMemberId,
-    },
-    {
-      path: "/findPassword",
-      name: "findPassword",
-      component: FindPassword,
+      path: "/FindMember",
+      name: "FindMember",
+      component: FindMember,
     },
     {
       path: "/test/start",
@@ -95,7 +91,12 @@ const router = createRouter({
       component: TestQuestionPage,
     },
     {
-      path: "/test/result",
+      path: "/test/loading",
+      name: "testLoading",
+      component: TestLoadingPage,
+    },
+    {
+      path: "/test/result/:resultId",
       name: "testResult",
       component: TestResultPage,
     },

@@ -17,7 +17,8 @@ const props = defineProps({
   },
 });
 
-const memberName = localStorage.getItem("memberName");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberName = authData.memberName;
 
 const chartInstance = ref(null);
 
@@ -34,7 +35,8 @@ const filteredAccountExpenses = computed(() => {
       itemDate >= thirtyDaysAgo &&
       itemDate <= today &&
       item.amount < 0 && // 지출 (음수)
-      (!item.accountTransactionDescription || !item.accountTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
+      (!item.accountTransactionDescription ||
+        !item.accountTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
     );
   });
 });
@@ -47,7 +49,8 @@ const filteredCardExpenses = computed(() => {
       itemDate >= thirtyDaysAgo &&
       itemDate <= today &&
       item.amount > 0 && // 카드 지출 (양수)
-      (!item.cardTransactionDescription || !item.cardTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
+      (!item.cardTransactionDescription ||
+        !item.cardTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
     );
   });
 });
@@ -72,7 +75,7 @@ const getTotalExpensesFor30Days = () => {
 // 30일간의 일평균 지출액 계산
 const dailyAverageExpense = computed(() => {
   const totalExpenses = getTotalExpensesFor30Days();
-  return Math.round((totalExpenses / 30)).toLocaleString();
+  return Math.round(totalExpenses / 30).toLocaleString();
 });
 
 // 일별 지출 총합 계산 함수 (차트에 사용할 데이터)
@@ -81,7 +84,9 @@ const getDailyExpenses = () => {
 
   // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
-    const date = Math.floor((today - new Date(e.accountTransactionDate)) / (1000 * 60 * 60 * 24)); // 일 수 계산
+    const date = Math.floor(
+      (today - new Date(e.accountTransactionDate)) / (1000 * 60 * 60 * 24)
+    ); // 일 수 계산
     if (date < 30) {
       dailyExpenses[29 - date] += Math.abs(e.amount); // 날짜별로 금액 합산
     }
@@ -89,7 +94,9 @@ const getDailyExpenses = () => {
 
   // 카드 지출 데이터
   filteredCardExpenses.value.forEach((e) => {
-    const date = Math.floor((today - new Date(e.cardTransactionDate)) / (1000 * 60 * 60 * 24)); // 일 수 계산
+    const date = Math.floor(
+      (today - new Date(e.cardTransactionDate)) / (1000 * 60 * 60 * 24)
+    ); // 일 수 계산
     if (date < 30) {
       dailyExpenses[29 - date] += e.amount; // 날짜별로 금액 합산
     }
@@ -160,21 +167,29 @@ const renderChart = () => {
 };
 
 onMounted(() => {
-  if (props.accountTransactionData?.length && props.cardTransactionData?.length) {
+  if (
+    props.accountTransactionData?.length &&
+    props.cardTransactionData?.length
+  ) {
     renderChart();
   }
 });
 
 // 데이터가 변경될 때 차트를 다시 렌더링
-watch([props.accountTransactionData, props.cardTransactionData], ([newAccountData, newCardData]) => {
-  if (newAccountData?.length && newCardData?.length) {
-    renderChart();
+watch(
+  [props.accountTransactionData, props.cardTransactionData],
+  ([newAccountData, newCardData]) => {
+    if (newAccountData?.length && newCardData?.length) {
+      renderChart();
+    }
   }
-});
+);
 </script>
 
 <template>
-  <div class="py-6 px-8 bg-navy text-white border border-gray-200 rounded-2xl shadow">
+  <div
+    class="py-6 px-8 bg-navy text-white border border-gray-200 rounded-2xl shadow"
+  >
     <div class="flex justify-between items-center mb-3">
       <div class="font-medium">하루 평균 소비 금액</div>
       <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>
