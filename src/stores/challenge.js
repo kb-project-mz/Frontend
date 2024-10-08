@@ -5,7 +5,8 @@ export const useChallengeStore = defineStore('challenge', {
   state: () => ({
     challengeList: [],
     detailedCategories: [],
-    chartData: []
+    chartData: [],
+    peerChallengeList: []
   }),
 
   actions: {
@@ -81,5 +82,18 @@ export const useChallengeStore = defineStore('challenge', {
         console.error("Error fetching chart data:", error);
       }
     },
+
+    async getPeerChallengeList(memberIdx) {
+      try {
+        const res = await apiInstance.get(`/challenge/peer/${memberIdx}`, {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          }
+        });
+        this.peerChallengeList = res.data.data;
+      } catch (error) {
+        console.error("Error fetching peer challenge data:", error);
+      }
+    }
   },
 });
