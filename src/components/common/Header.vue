@@ -9,9 +9,11 @@ const router = useRouter();
 const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
 
-const logout = () => {
-  authStore.logout();
-  router.push("/");
+const logout = async () => {
+  await authStore.logout();
+  authStore.clearAuthState();
+  localStorage.clear(); 
+  router.push('/login');
 };
 </script>
 

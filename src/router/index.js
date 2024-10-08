@@ -123,10 +123,21 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem("auth");
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    next("/login");
-  } else {
+  const authStore = useAuthStore();
+  const isLoggedIn = authStore.isLogin();
+  const userRole = authStore.member.role;
+
+  if (to.path.startsWith('/admin') && (!isLoggedIn || userRole !== 'ROLE_ADMIN')) {
+    alert("관리자 권한이 필요합니다.");
+    authStore.clearAuthState();
+    localStorage.clear();
+    next('/login');
+  } 
+  else if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login');
+  } 
+
+  else {
     next();
   }
 });

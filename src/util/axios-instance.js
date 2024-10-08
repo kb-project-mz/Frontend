@@ -15,12 +15,16 @@ apiInstance.interceptors.response.use(
     if (error.response) {
       if (error.response.status === 403) {
         alert('권한이 없습니다. 관리자 계정으로 로그인하세요.');
+        authStore.clearAuthState();
+        localStorage.clear();
         router.push('/login');
       }
 
       if (error.response.status === 401) {
         alert('세션이 만료되었습니다. 다시 로그인하세요.');
         authStore.logout();
+        authStore.clearAuthState();
+        localStorage.clear();
         router.push('/login');
       }
     }
