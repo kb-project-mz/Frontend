@@ -66,7 +66,8 @@ const renderChart = () => {
 
 onMounted(async () => {
   console.log(props.chartId);
-  const memberIdx = localStorage.getItem("memberIdx");
+  const authData = JSON.parse(localStorage.getItem("auth"));
+  const memberIdx = authData.memberIdx;
 
   if (memberIdx) {
     await categoryTransactionStore.fetchCategoryTransactionCount(memberIdx);

@@ -1,5 +1,6 @@
-import { defineStore } from "pinia";
-import apiInstance from "@/util/axios-instance";
+import { defineStore } from 'pinia';
+import apiInstance from '@/util/axios-instance';
+import { useAuthStore } from '@/stores/auth.js';
 
 export const useCategoryTransactionStore = defineStore("categoryTransaction", {
   state: () => ({

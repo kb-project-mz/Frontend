@@ -1,21 +1,24 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
 
+import { useAuthStore } from '@/stores/auth.js';
+
 export const useChallengeStore = defineStore('challenge', {
   state: () => ({
     challengeList: [],
     detailedCategories: [],
     chartData: [],
-    peerChallengeList: []
+    peerChallengeList: [],
   }),
 
   actions: {
     async getChallengeList(memberIdx) {
       try {
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/challenge/${memberIdx}`, {
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         this.challengeList = res.data.data;
       } catch (error) {
@@ -26,10 +29,11 @@ export const useChallengeStore = defineStore('challenge', {
 
     async insertChallenge(challengeData) {
       try {
+        const authStore = useAuthStore();
         const res = await apiInstance.post(`/challenge`, challengeData, {
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
 
         this.challengeList.push(challengeData);
@@ -41,13 +45,20 @@ export const useChallengeStore = defineStore('challenge', {
 
     async deleteChallenge(challengeId) {
       try {
-        const res = await apiInstance.post(`/challenge/${challengeId}`, {}, {
-          headers: {
-            Authorization: localStorage.getItem("accessToken")
+        const authStore = useAuthStore();
+        const res = await apiInstance.post(
+          `/challenge/${challengeId}`,
+          {},
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
 
-        const index = this.challengeList.findIndex((item) => item.id === challengeId);
+        const index = this.challengeList.findIndex(
+          (item) => item.id === challengeId
+        );
         if (index !== -1) {
           this.challengeList.splice(index, 1);
         }
@@ -59,41 +70,47 @@ export const useChallengeStore = defineStore('challenge', {
 
     async getDetailedCategory(memberIdx, categoryId) {
       try {
-        const res = await apiInstance.get(`/challenge/detailed-category/${memberIdx}/${categoryId}`, {
-          headers: {
-            Authorization: localStorage.getItem("accessToken")
+        const authStore = useAuthStore();
+        const res = await apiInstance.get(
+          `/challenge/detailed-category/${memberIdx}/${categoryId}`,
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
         this.detailedCategories = res.data.data;
       } catch (errpt) {
-        console.error("Error fetching detailed categories:", errpt);
+        console.error('Error fetching detailed categories:', errpt);
       }
     },
 
     async getChallengeStatus(memberIdx) {
       try {
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/challenge/status/${memberIdx}`, {
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         this.chartData = res.data.data;
       } catch (error) {
-        console.error("Error fetching chart data:", error);
+        console.error('Error fetching chart data:', error);
       }
     },
 
     async getPeerChallengeList(memberIdx) {
       try {
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/challenge/peer/${memberIdx}`, {
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         this.peerChallengeList = res.data.data;
       } catch (error) {
-        console.error("Error fetching peer challenge data:", error);
+        console.error('Error fetching peer challenge data:', error);
       }
-    }
+    },
   },
 });

@@ -54,7 +54,8 @@ const mostSpentCategory = computed(() => {
 });
 
 onMounted(async () => {
-  const memberIdx = localStorage.getItem("memberIdx");
+  const authData = JSON.parse(localStorage.getItem("auth"));
+  const memberIdx = authData.memberIdx;
   if (!memberIdx) {
     console.error("memberIdx가 정의되지 않았습니다.");
     return;

@@ -13,7 +13,8 @@ import BarChart from "@/components/analysis/BarChart.vue";
 import NoConnectedAsset from "@/components/analysis/NoConnectedAsset.vue";
 import FixedExpenses from "@/components/analysis/FixedExpenses.vue";
 
-const memberIdx = localStorage.getItem("memberIdx");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 const cardTransactionStore = useCardTransactionStore();
 const accountTransactionStore = useAccountTransactionStore();
 
@@ -38,13 +39,17 @@ const isDataLoaded = ref(false);
 const fetchTransactionData = async (memberIdx) => {
   await cardTransactionStore.getCardTransactionList(memberIdx);
   cardTransactionData.value = cardTransactionStore.cardTransaction;
-  cardTransactionThisMonthData.value = cardTransactionStore.cardTransactionThisMonth;
-  cardTransactionLastMonthData.value = cardTransactionStore.cardTransactionLastMonth;
+  cardTransactionThisMonthData.value =
+    cardTransactionStore.cardTransactionThisMonth;
+  cardTransactionLastMonthData.value =
+    cardTransactionStore.cardTransactionLastMonth;
 
   await accountTransactionStore.getAccountTransactionList(memberIdx);
   accountTransactionData.value = accountTransactionStore.accountTransaction;
-  accountTransactionThisMonthData.value = accountTransactionStore.accountTransactionThisMonth;
-  accountTransactionLastMonthData.value = accountTransactionStore.accountTransactionLastMonth;
+  accountTransactionThisMonthData.value =
+    accountTransactionStore.accountTransactionThisMonth;
+  accountTransactionLastMonthData.value =
+    accountTransactionStore.accountTransactionLastMonth;
 
   isDataLoaded.value = true;
 };
@@ -72,7 +77,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-
+      
       <div class="grid grid-cols-1 lg:grid-cols-5">
         <div class="lg:col-span-2 space-y-10">
           <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
@@ -121,7 +126,8 @@ onMounted(async () => {
   transform-style: preserve-3d;
 }
 
-.front, .back {
+.front,
+.back {
   backface-visibility: hidden;
 }
 </style>

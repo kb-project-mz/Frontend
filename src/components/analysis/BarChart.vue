@@ -13,7 +13,8 @@ const props = defineProps({
   },
 });
 
-const memberName = localStorage.getItem("memberName");
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberName = authData.memberName;
 
 // 현재 연도와 달을 초기화
 const initialYear = new Date().getFullYear();
@@ -39,19 +40,29 @@ const chartData = ref({
 const filterExpensesForMonth = (year, month) => {
   const accountExpenses = props.accountTransactionData.filter((item) => {
     const itemDate = new Date(item.accountTransactionDate);
-    return itemDate.getFullYear() === year &&
+    return (
+      itemDate.getFullYear() === year &&
       itemDate.getMonth() === month &&
       item.amount < 0 &&
-      (!item.accountTransactionDescription || !item.accountTransactionDescription.includes(memberName));
+      (!item.accountTransactionDescription ||
+        !item.accountTransactionDescription.includes(memberName))
+    );
   });
 
   const cardExpenses = props.cardTransactionData.filter((item) => {
     const itemDate = new Date(item.cardTransactionDate);
-    return itemDate.getFullYear() === year && itemDate.getMonth() === month && item.amount > 0;
+    return (
+      itemDate.getFullYear() === year &&
+      itemDate.getMonth() === month &&
+      item.amount > 0
+    );
   });
 
   // 계좌 지출과 카드 지출을 합산
-  const totalAccountExpenses = accountExpenses.reduce((sum, e) => sum + Math.abs(e.amount), 0);
+  const totalAccountExpenses = accountExpenses.reduce(
+    (sum, e) => sum + Math.abs(e.amount),
+    0
+  );
   const totalCardExpenses = cardExpenses.reduce((sum, e) => sum + e.amount, 0);
 
   return totalAccountExpenses + totalCardExpenses;
@@ -79,7 +90,10 @@ const getLast12MonthsExpenses = () => {
     }
   }
 
-  return { expensesPerMonth: expensesPerMonth.reverse(), labels: labels.reverse() };
+  return {
+    expensesPerMonth: expensesPerMonth.reverse(),
+    labels: labels.reverse(),
+  };
 };
 
 const canvasRef = ref(null);
