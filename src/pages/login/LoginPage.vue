@@ -100,9 +100,7 @@ const login = async () => {
         </form>
 
         <div class="my-4 flex space-x-4 text-gray-500">
-            <router-link to="findMemberId">아이디 찾기</router-link>
-            <span>|</span>
-            <router-link to="findPassword">비밀번호 찾기</router-link>
+            <router-link to="FindMember">아이디 / 비밀번호 찾기</router-link>
             <span>|</span>
             <router-link to="join">회원가입</router-link>
         </div>

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import FindMemberId from "@/pages/login/FindMemberId.vue";
-import FindPassword from "@/pages/login/FindPassword.vue";
+import FindMember from "@/pages/login/FindMember.vue"
 import GuestHomePage from "@/pages/home/GuestHomePage.vue";
 import LoginPage from "@/pages/login/LoginPage.vue";
 import JoinPage from "@/pages/join/JoinPage.vue";
@@ -77,14 +76,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/findMemberId",
-      name: "findMemberId",
-      component: FindMemberId,
-    },
-    {
-      path: "/findPassword",
-      name: "findPassword",
-      component: FindPassword,
+      path: "/FindMember",
+      name: "FindMember",
+      component: FindMember,
     },
     {
       path: "/test/start",
