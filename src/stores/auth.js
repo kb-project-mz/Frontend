@@ -9,6 +9,7 @@ export const useAuthStore = defineStore("auth", {
       memberName: null,
       memberId: null,
       imageUrl: null,
+      accessToken: null,
     },
   }),
 
@@ -122,6 +123,7 @@ export const useAuthStore = defineStore("auth", {
       this.member.memberIdx = null;
       this.member.memberName = null;
       this.member.memberId = null;
+      this.member.accessToken = null;
       localStorage.clear();
     },
 
@@ -132,6 +134,7 @@ export const useAuthStore = defineStore("auth", {
         this.member.memberName = authData.memberName;
 				this.member.memberIdx = authData.memberIdx;
 				this.member.imageUrl = authData.imageUrl || '';
+        this.member.accessToken = authData.accessToken;
       }
     },
 
@@ -139,21 +142,6 @@ export const useAuthStore = defineStore("auth", {
       const authData = localStorage.getItem('auth');
       const isLoggedIn = !!authData;
       return isLoggedIn;
-    },
-
-    async getProfile() {
-      try {
-        const response = await apiInstance.get(`/member/info`, {
-          headers: {
-            Authorization: localStorage.getItem("accessToken")
-          },
-        });
-        this.member = response.data.data;
-        return response.data.data;
-      } catch (error) {
-        console.error('Failed to profile data', error);
-        throw error;
-      }
     },
 
     async verifyPassword(password) {
