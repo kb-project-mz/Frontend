@@ -10,6 +10,7 @@ const memberStore = useMemberStore();
 const profile = reactive({
   memberId: '',
   memberName: '',
+  socialType:'',
   email: '',
   birthday: '',
   imageUrl: '',
@@ -46,9 +47,11 @@ const fetchProfile = async () => {
     profile.memberId = profileData.memberId;
     profile.memberName = profileData.memberName;
     profile.birthday = profileData.birthday;
+    profile.socialType = profileData.socialType;
     profile.email = profileData.email;
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
+    console.log('소셜ㄹㄹㄹ', profile.socialType);
   } catch (error) {
     console.log(error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');

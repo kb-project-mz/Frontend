@@ -7,6 +7,7 @@ export const useMemberStore = defineStore("memberStore", {
     member: {
       memberId:'',
       memberName:'',
+      socialType:'',
       birthday:'',
       gender:'',
       email:'',
@@ -24,7 +25,6 @@ export const useMemberStore = defineStore("memberStore", {
           },
         });
         this.member = response.data.data;
-        console.log('111111111111', this.member);
         return response.data.data;
       } catch (error) {
         console.error('Failed to profile data', error);
