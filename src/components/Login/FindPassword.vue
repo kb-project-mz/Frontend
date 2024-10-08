@@ -87,9 +87,7 @@ const findPassword = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full max-w-md">
-      <h2 class="text-center text-2xl font-bold mb-6 text-navy">비밀번호 찾기</h2>
-
+  <div class="flex flex-col items-center w-1/2 my-32">
       <form @submit.prevent="findPassword" v-if="!isVerificationSent" class="bg-white p-8 shadow-md rounded-lg w-full">
         <div class="mb-6">
           <input
