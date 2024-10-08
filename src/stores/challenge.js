@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import apiInstance from "@/util/axios-instance";
 
+
+
+
 export const useChallengeStore = defineStore("challenge", {
   state: () => ({
     challengeList: [],
@@ -99,9 +102,10 @@ export const useChallengeStore = defineStore("challenge", {
 
     async getPeerChallengeList(memberIdx) {
       try {
+				const authData = JSON.parse(localStorage.getItem("auth"));
         const res = await apiInstance.get(`/challenge/peer/${memberIdx}`, {
           headers: {
-            Authorization: localStorage.getItem("accessToken"),
+            Authorization: `Bearer ${authData.accessToken}`,
           },
         });
         this.peerChallengeList = res.data.data;
