@@ -1,10 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useTransactionAnalysisStore } from '@/stores/transaction-analysis';
+
+const memberIdx = JSON.parse(localStorage.getItem('auth')).memberIdx;
+
+const transactionAnalysisStore = useTransactionAnalysisStore();
 
 const fixedExpenses = ref([]);
 
-onMounted(() => {
-  fixedExpenses.value = ["스타벅스", "공차", "이마트", "KT통신요금", "한국도시철도공사", "에이블리"];
+onMounted(async () => {
+  await transactionAnalysisStore.fetchFixedExpenses(memberIdx);
+  fixedExpenses.value = transactionAnalysisStore.fixedExpenses;
 })
 </script>
 
