@@ -103,6 +103,9 @@ const calculateThisMonthCumulative = (cardTransactions, accountTransactions) => 
 
   thisMonthCompareData.value = cumulativeTotals[`${year}-${month}-${day}`];
   difference.value = thisMonthCompareData.value - lastMonthCompareData.value;
+  if (isNaN(difference.value)) {
+    difference.value = 0;
+  }
 
   Object.keys(cumulativeTotals).forEach(date => {
     const formattedKey = parseInt(date.split('-')[2], 10);

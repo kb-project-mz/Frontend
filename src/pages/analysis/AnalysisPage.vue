@@ -10,6 +10,8 @@ import AnalysisThisMonth from "@/components/analysis/AnalysisThisMonth.vue";
 import AnalysisSelectedPeriod from "@/components/analysis/AnalysisSelectedPeriod.vue";
 import ConsumptionList from "@/components/analysis/ConsumptionList.vue";
 import BarChart from "@/components/analysis/BarChart.vue";
+import NoConnectedAsset from "@/components/analysis/NoConnectedAsset.vue";
+import FixedExpenses from "@/components/analysis/FixedExpenses.vue";
 
 const memberIdx = localStorage.getItem("memberIdx");
 const cardTransactionStore = useCardTransactionStore();
@@ -53,44 +55,53 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="isDataLoaded" class="mx-[20%] grid grid-cols-1 gap-10">
-    <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">과거 소비와 비교하기</button>
-    <div class="flip w-full inline-block relative">
-      <div class="card w-full inline-block relative flex" :class="{ '[transform:rotateY(180deg)]': isFlipped }">
-        <div class="front w-full absolute">
-          <AnalysisThisMonth :card-transaction-data="cardTransactionThisMonthData"
-            :account-transaction-data="accountTransactionThisMonthData" />
+  <div v-if="isDataLoaded">
+    <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
+      <div class="p-3 bg-navy text-white text-center rounded-lg">
+        <router-link to="/mypage/asset">자산 연결하러 가기</router-link>
+      </div>
+      <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">과거 소비와 비교하기</button>
+      <div class="flip w-full inline-block relative">
+        <div class="card w-full inline-block relative flex" :class="{ '[transform:rotateY(180deg)]': isFlipped }">
+          <div class="front w-full absolute">
+            <AnalysisThisMonth :card-transaction-data="cardTransactionThisMonthData"
+              :account-transaction-data="accountTransactionThisMonthData" />
+          </div>
+          <div class="back w-full [transform:rotateY(180deg)]">
+            <AnalysisSelectedPeriod />
+          </div>
         </div>
-        <div class="back w-full [transform:rotateY(180deg)]">
-          <AnalysisSelectedPeriod />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-5">
+        <div class="lg:col-span-2 space-y-10">
+          <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
+                      :card-transaction-last-month-data="cardTransactionLastMonthData"
+                      :account-transaction-this-month-data="accountTransactionThisMonthData" 
+                      :account-transaction-last-month-data="accountTransactionLastMonthData"/>
+          <FixedExpenses />
+        </div>
+        <div class="lg:col-span-3">
+          <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
         </div>
       </div>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-5">
-      <div class="lg:col-span-2">
-        <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
-                    :card-transaction-last-month-data="cardTransactionLastMonthData"
-                    :account-transaction-this-month-data="accountTransactionThisMonthData" 
-                    :account-transaction-last-month-data="accountTransactionLastMonthData"/>
+      <div class="grid grid-cols-1 lg:grid-cols-5">
+        <div class="lg:col-span-3">
+          <ConsumptionCalendar :account-transaction-data="accountTransactionData"
+            :card-transaction-data="cardTransactionData" />
+        </div>
+        <div class="lg:col-span-2">
+          <ConsumptionList :card-transaction-data="cardTransactionData" />
+        </div>
       </div>
-      <div class="lg:col-span-3">
-        <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
-      </div>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-5">
-      <div class="lg:col-span-3">
-        <ConsumptionCalendar :account-transaction-data="accountTransactionData"
-          :card-transaction-data="cardTransactionData" />
-      </div>
-      <div class="lg:col-span-2">
-        <ConsumptionList :card-transaction-data="cardTransactionData" />
+      <div>
+        <AIRecommendation />
       </div>
     </div>
-
-    <div>
-      <AIRecommendation />
+    <div v-else>
+      <NoConnectedAsset />
     </div>
   </div>
 </template>

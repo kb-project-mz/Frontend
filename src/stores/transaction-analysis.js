@@ -4,7 +4,8 @@ import apiInstance from '@/util/axios-instance';
 export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   state: () => ({
     mostAndMaximum: "",
-    recommendation: ""
+    recommendation: "",
+    fixedExpenses: "",
   }),
 
   actions: {
@@ -51,6 +52,20 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
         
         this.recommendation = res.data.data;
         return this.recommendation;
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async fetchFixedExpenses(memberIdx) {
+      try {
+        const res = await apiInstance.get(`/transaction/fixed/${memberIdx}`, {
+          headers: {
+            Authorization: localStorage.getItem("accessToken")
+          }
+        });
+        
+        this.fixedExpenses = res.data.data;
       } catch (err) {
         console.error(err);
       }
