@@ -188,7 +188,7 @@ watch(
 
 <template>
   <div
-    class="py-6 px-8 bg-navy text-white border border-gray-200 rounded-2xl shadow"
+    class="py-6 px-8 bg-gray-100 border border-gray-200 rounded-2xl shadow"
   >
     <div class="flex justify-between items-center mb-3">
       <div class="font-medium">하루 평균 소비 금액</div>
@@ -201,7 +201,5 @@ watch(
 </template>
 
 <style scoped>
-.bg-navy {
-  background-color: #0b1573;
-}
+
 </style>
