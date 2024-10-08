@@ -24,36 +24,36 @@ const resultContent = computed(() => {
 
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[0].typeName;
-        resultValue = 0;
+        resultValue = 1;
         console.log(resultValue);
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[1].typeName;
-        resultValue = 1;
+        resultValue = 2;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[2].typeName;
-        resultValue = 2;
+        resultValue = 3;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[3].typeName;
-        resultValue = 3;
+        resultValue = 4;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[4].typeName;
-        resultValue = 4;
+        resultValue = 5;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[5].typeName;
-        resultValue = 5;
+        resultValue = 6;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[6].typeName;
-        resultValue = 6;
+        resultValue = 7;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[7].typeName;
-        resultValue = 7;
+        resultValue = 8;
     }
 
     if (resultValue !== null) {
@@ -71,5 +71,7 @@ const resultContent = computed(() => {
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
         <p class="text-lg" v-text="resultContent"></p>
+        <button> 테스트 다시 하기 </button>
+        <button> 회원가입 하러 가기 </button>
     </div>
 </template>
