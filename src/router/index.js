@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import HomePage from "@/pages/home/HomePage.vue";
 import FindMember from "@/pages/login/FindMember.vue"
-import GuestHomePage from "@/pages/home/GuestHomePage.vue";
 import LoginPage from "@/pages/login/LoginPage.vue";
 import JoinPage from "@/pages/join/JoinPage.vue";
 import ConnectPage from "@/pages/mypage/ConnectPage.vue";
@@ -14,21 +14,13 @@ import TestResultPage from "@/pages/test/TestResultPage.vue";
 import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
 
-
-import MemberHomePage from "@/pages/home/MemberHomePage.vue";
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "guestHomePage",
-      component: GuestHomePage,
-    },
-    {
-      path: "/memberHomePage",
-      name: "memberHomePage",
-      component: MemberHomePage,
+      name: "home",
+      component: HomePage,
     },
     {
       path: "/login",
@@ -76,9 +68,10 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/FindMember",
-      name: "FindMember",
+      path: "/find",
+      name: "find",
       component: FindMember,
+      props: true,
     },
     {
       path: "/test/start",
