@@ -1,75 +1,55 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useTestStore } from "@/stores/test";
 
 const route = useRoute();
 const testStore = useTestStore();
-
-const resultId = computed(() => parseInt(route.params.resultId, 10));
+// 숫자로 변환
+const resultId = computed(() => parseInt(route.params.resultId, 10)); 
 onMounted(() => {
-    console.log("결과다~~~~~~~");
+    console.log('결과다~~~~~~~');
     console.log("inpulse", testStore.impulseScore);
     console.log("plannedScore", testStore.plannedScore);
+    
     console.log("costEffective", testStore.costEffective);
     console.log("goodForSatisfaction", testStore.goodForSatisfaction);
+
     console.log("material", testStore.material);
     console.log("experiential", testStore.experiential);
-    console.log("컴포넌트에서 확인하는 types:", testStore.types);
-});
+})
 
 const resultContent = computed(() => {
-    let resultText = "";
-    let resultValue = 0;
-
-    if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
-        resultText = testStore.types[0].typeName;
-        resultValue = 0;
-        console.log(resultValue);
+    let resultText = '';
+    // 각 점수 비교 및 텍스트 추가
+    if (testStore.impulseScore > testStore.plannedScore) {
+        resultText += "충동소비핑ㅋㅋ<BR>";
     }
-    if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
-        resultText = testStore.types[1].typeName;
-        resultValue = 1;
+    if (testStore.plannedScore > testStore.impulseScore) {
+        resultText += "계획소비핑ㅋㅋ<BR>";
     }
-    if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
-        resultText = testStore.types[2].typeName;
-        resultValue = 2;
+    if (testStore.costEffective > testStore.goodForSatisfaction) {
+        resultText += "가성비가 내려온다핑<BR>";
     }
-    if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
-        resultText = testStore.types[3].typeName;
-        resultValue = 3;
+    if (testStore.goodForSatisfaction > testStore.costEffective) {
+        resultText += "마음의 소리를 따라가핑<BR>";
     }
-    if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
-        resultText = testStore.types[4].typeName;
-        resultValue = 4;
+    if (testStore.material > testStore.experiential) {
+        resultText += "황금만능주의핑<BR>";
     }
-    if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
-        resultText = testStore.types[5].typeName;
-        resultValue = 5;
-    }
-    if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
-        resultText = testStore.types[6].typeName;
-        resultValue = 6;
-    }
-    if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
-        resultText = testStore.types[7].typeName;
-        resultValue = 7;
+    if (testStore.experiential > testStore.material) {
+        resultText += "몸으로 부딪히는 핑<BR>";
     }
 
-    if (resultValue !== null) {
-        testStore.sendType(resultValue);
-    }
-
-    
 
     return resultText;
 });
-
 </script>
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
-        <p class="text-lg" v-text="resultContent"></p>
+        <img src="https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/%EC%B6%A9%EB%8F%99_%EA%B0%80%EC%84%B1%EB%B9%84_%EB%AC%BC%EC%A7%88.png">
+        <p class="text-lg" v-html="resultContent"></p>
     </div>
 </template>
