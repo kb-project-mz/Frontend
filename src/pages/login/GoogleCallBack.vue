@@ -1,8 +1,8 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useAuthStore } from '@/stores/auth'; 
-import { setLocalStorage } from '@/util/token'; 
+import { useAuthStore } from '@/stores/auth';
+import { setLocalStorage } from '@/util/token';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -21,8 +21,8 @@ onMounted(() => {
         member: {
           memberId: memberId.value,
           memberName: memberName.value,
-					memberIdx: memberIdx.value
-        }
+          memberIdx: memberIdx.value,
+        },
       });
 
       setLocalStorage({
@@ -30,11 +30,11 @@ onMounted(() => {
         accessToken: googleAccessToken.value,
         refreshToken: googleRefreshToken.value,
         memberName: memberName.value,
-				memberIdx: memberIdx.value
+        memberIdx: memberIdx.value,
       });
 
       authStore.loadAuthState();
-      router.push('/memberHomePage'); 
+      router.push('/');
     } catch (error) {
       console.error('토큰 저장 또는 리다이렉트 중 오류 발생:', error);
     }
