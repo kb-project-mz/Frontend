@@ -28,6 +28,11 @@ const authStore = useAuthStore();
 // 새로고침 후에도 localStorage의 정보를 불러오기
 authStore.loadAuthState();
 
+
+if (window.Kakao && !window.Kakao.isInitialized()) {
+  window.Kakao.init(import.meta.env.VITE_KAKAO_KEY);
+}
+
 app.mount('#app');
 
 function initializeSocket() {
