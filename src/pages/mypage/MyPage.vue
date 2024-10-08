@@ -22,21 +22,13 @@ const isPasswordStrong = ref(false);
 const isPasswordVerified = ref(false);
 const isPasswordMatch = ref(false); 
 
-const allowedDomains = ['gmail.com', 'naver.com', 'daum.net'];
-const selectedDomain = ref('');
-const isDirectInputEmail = ref(false); // 직접입력 여부
 const isEditingEmail = ref(false);
-const inputDomain = ref('');
-
-const emailId = ref('');
-const currDomain = ref('');
-const currEmail = ref('');
-
 const isVerificationCodeSent = ref(false);
 const inputCode = ref('');
 const verificationFail = ref('');
 const verificationSuccess = ref('');
 const isVerifiedEmail = ref(false);
+const isEmailChanged = ref('');
 
 const isLoading = ref(false);
 
@@ -52,19 +44,17 @@ const fetchProfile = async () => {
     profile.memberName = profileData.memberName;
     profile.birthday = profileData.birthday;
     profile.email = profileData.email;
-    currEmail.value = profileData.email;
-    console.log('현재 이메읾ㅁㅁㅁ', currEmail.value);
-    emailId.value = profileData.email.split('@')[0];
-    currDomain.value = profileData.email.split('@')[1];
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
     console.log('이메일ㄹㄹㄹ',profile.email);
   } catch (error) {
+    console.log(error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
+
 // 생일
- const formattedBirthDay = computed(() => {
+const formattedBirthDay = computed(() => {
       if (!profile.birthday) return ''; 
       const date = new Date(profile.birthday);
       const year = date.getFullYear();
@@ -145,46 +135,36 @@ const changePassword = async () => {
 const editEmail = () => {
   isEditingEmail.value = !isEditingEmail.value;
 }
-const handleDomainChange = () => {
-  if (selectedDomain.value === '직접입력') {
-      isDirectInputEmail.value = true;
-      // profile.email += profile.email.split('@')[0];
-      // console.log("직접입력 도메인 선택됨, 현재 이메일 ID: ", profile.email);
-  } else { 
-      isDirectInputEmail.value = false;
-      profile.email = `${emailId.value('@')[0]}@${selectedDomain.value}`; 
-      console.log("도메인 선택됨, 전체 이메일: ", profile.email);
-  } 
-};
-
-// 직접 입력
-const updateInputDomain = () => {
- if (isDirectInputEmail.value && inputDomain.value) {
-  profile.email = `${emailId.value('@')[0]}@${inputDomain.value}`;
-  console.log("직접 입력 도메인 사용 중, 전체 이메일: ", profile.email);
- }
-};
-
-// 이메일 중복 확인 및 인증 코드 발송
 const sendVerificationCode = async () => {
   if (!profile.email) {
     return alert('이메일을 입력해 주세요.');
   }
+
+  // 이메일 유효성 검사 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(profile.email)) {
+    return alert('유효하지 않은 이메일 형식입니다. 올바른 이메일을 입력해 주세요.');
+  }
+
   try {
     isLoading.value = true;
+
     const isEmailExists = await auth.checkEmailDuplicate(profile.email);
     console.log('이메일 중복 확인 결과:', isEmailExists);
+
     if (isEmailExists) {
       alert('이미 존재하는 이메일입니다.');
       isLoading.value = false;
       return; 
     }
+
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
+
     const result = await auth.sendEmailVerification(profile.email);
     console.log('인증 코드 발송 성공:', result);
 
     isVerificationCodeSent.value = true;
-    alert('인증 코드가 발송되었습니다. 이메일을 확인하고 인증 코드를 입력해 주세요.');
+    alert('인증 코드가 해당 이메일로 발송되었습니다. 인증 코드를 입력해 이메일 변경을 완료해주세요.');
   } catch (error) {
     console.log('인증 코드 전송 중 오류 발생:', error);
     alert('인증 코드 전송 중 오류가 발생했습니다.');
@@ -192,9 +172,8 @@ const sendVerificationCode = async () => {
     isLoading.value = false;
   }
 };
-
-// 인증 코드 검증
 const verifyCode = async () => {
+  console.log('11111111111111111111111111', inputCode.value);
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
@@ -214,12 +193,38 @@ const verifyCode = async () => {
     }
   } catch (error) {
     console.error('인증 코드 확인 오류:', error);
-    verificationFail.value = '인증 코드 확인 중 오류가 발생했습니다.';
+    verificationFail.value = '인증 코드가 일치하지 않습니다.';
     isVerifiedEmail.value = false;
   } finally {
     isLoading.value = false;
   }
 };
+const saveEmail = async () => {
+  if (!isVerifiedEmail.value){
+    return alert('이메일 인증을 완료해 주세요.');
+  }
+  try {
+    const response = await apiInstance.post('/member/email', {
+      memberId: profile.memberId,
+      newEmail: profile.email,
+    }, {
+      headers: {
+            Authorization: localStorage.getItem("accessToken")
+          },
+    });
+    if(response.data.success) {
+      console.log(profile.email);
+      alert('이메일이 성공적으로 변경되었습니다.');
+      isEmailChanged = true;
+    } else {
+      alert('이메일 변경에 실패하였습니다.');
+    }
+  } catch (error) {
+    console.error('이메일 변경 중 오류 발생:', error);
+    alert('이메일 변경 중 오류가 발생했습니다.');
+  }
+};
+
 // 이미지 
 const uploadImage = async (event) => {
   const file = event.target.files[0];
@@ -286,10 +291,9 @@ const deleteImage = async (profileImage) => {
         <div>&nbsp;&nbsp;&nbsp;&nbsp;나만의 프로필을 완성해보세요</div>
       </div>
     
-      <form @submit.prevent="saveProfile">
         <!-- 프로필 이미지 섹션 -->
         <div class="profile-image-section relative flex justify-center">
-          <img :src="profile.imageUrl" alt="Profile Image" class="profile-image" />
+          <img :src="profile.imageUrl" alt="P" class="profile-image" />
           
           <div class="absolute bottom-0 right-0 flex space-x-2">
             <button @click="() => $refs.profileImageInput.click()" class="btn-edit-image">수정</button>
@@ -323,7 +327,8 @@ const deleteImage = async (profileImage) => {
             type="text"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
             placeholder="아이디"
-            readonly />
+            readonly 
+            autocomplete="username"/>
         </div>
 
         <!-- 현재 비밀번호 검증 -->
@@ -332,6 +337,7 @@ const deleteImage = async (profileImage) => {
           <input
             v-model="password"
             type="password"
+            autocomplete="current-password"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
             placeholder="현재 비밀번호"
           />
@@ -344,6 +350,7 @@ const deleteImage = async (profileImage) => {
             <input
               v-model="newPassword"
               type="password"
+              autocomplete="new-password"
               id="newPassword"
               class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
               placeholder="새 비밀번호"
@@ -360,6 +367,7 @@ const deleteImage = async (profileImage) => {
             <input
               v-model="confirmNewPassword"
               type="password"
+              autocomplete="new-password"
               id="confirmNewPassword"
               class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
               placeholder="새 비밀번호 확인"
@@ -388,48 +396,20 @@ const deleteImage = async (profileImage) => {
         <!-- 이메일 입력 -->
         <div class="mb-4 flex flex-col">
           <label for="email" class="block mb-2 text-sm font-medium text-gray-900">이메일</label>
-          <div class="relative mb-6 flex items-center space-x-3">
-            <input
-              v-model="currEmail"
-              type="text"
-              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-              placeholder="이메일"
-              readonly />
-              <button @click.prevent="editEmail" class="mt-7 px-4 py-1 bg-navy text-white rounded-lg text-sm">수정</button>
-          </div>
-          
-          <div v-if="isEditingEmail" class="flex items-center space-x-2">
-            <input
-              v-model="emailId"
-              type="text"
-              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-              placeholder="이메일"
-              required
-            />
-
-            <span>@</span>
-
-            <select v-model="selectedDomain" @change="handleDomainChange"
-              class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block">
-              <option value="">도메인 선택</option>
-              <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
-              <option value="직접입력">직접 입력</option>
-            </select>
-
-            <button @click="sendVerificationCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
+            <div class="relative mb-6 flex items-center space-x-3">
+              <input
+                v-model="profile.email"
+                type="text"
+                class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+                placeholder="이메일"
+                :readonly="!isEditingEmail"/>
+                <button @click.prevent="editEmail" class="mt-7 px-4 py-1 bg-navy text-white rounded-lg text-sm">수정</button>
+                <button v-if="isEditingEmail" @click="sendVerificationCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
               인증 코드 전송
             </button>
-          </div>
-
-          <input 
-            v-if="isDirectInputEmail" 
-            type="text" 
-            class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            placeholder="직접 도메인을 입력해 주세요" 
-            v-model="inputDomain" 
-            @input="updateInputDomain" 
-          />
+            </div>
         </div>
+
 
         <!-- 인증 코드 입력 -->
         <div v-if="isVerificationCodeSent" class="mt-2">
@@ -439,17 +419,20 @@ const deleteImage = async (profileImage) => {
             placeholder="인증 코드를 입력해 주세요"
             class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button @click="verifyCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
+          <button @click="verifyCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm"
+          :disabled="isVerifiedEmail">
             인증 코드 확인
           </button>
           <div v-if="verificationFail" class="text-red-500">{{ verificationFail }}</div>
           <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
+
+          <button @click="saveEmail" class="cursor-pointer w-1/2 bg-navy text-white py-1 rounded-xl flex justify-center items-center"
+          :disabled="isEmailChanged">
+            <span class="ml-2">이메일 변경 완료하기</span>
+          </button>
         </div>
 
-        <button @click="saveProfile" class="cursor-pointer w-1/2 bg-navy text-white py-1 rounded-xl flex justify-center items-center">
-          <span class="ml-2">프로필 저장하기</span>
-        </button>
-      </form>
+        
 
       <div class="text-center mt-4">
         <div class="inline-block p-3 bg-navy text-white rounded-lg">

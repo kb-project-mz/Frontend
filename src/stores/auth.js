@@ -47,103 +47,87 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async checkEmailDuplicate(email) {
-      try {
-        const response = await apiInstance.get(`/member/email/duplicate`, {
-          params: { email: email }
-        });
-    
-        if (response && response.data) {
-          return response.data.exists;
-        } else {
-          return false;
+    async create(member) {
+        try {
+            const response = await apiInstance.post("/member/join", member);
+            return response.data.data;
+        } catch (error) {
+            throw error;
         }
+    },
+
+    async checkMemberId(memberId) {
+        try {
+            const response = await apiInstance.get(`/member/check-memberId/${memberId}`);
+            return response.data.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async checkEmailDuplicate(email) {
+        try {
+            const response = await apiInstance.get(`/member/email/duplicate`, {
+                params: { email: email },
+            });
+            if (response && response.data) {
+              console.log("이메일 중복 확인 응답 데이터:", response.data);
+              return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
+          } else {
+              console.log("응답 데이터가 존재하지 않습니다.");
+              return false; // 오류 처리
+          }
       } catch (error) {
-        console.error('이메일 중복 확인 오류:', error);
-        throw error;
+          console.error("이메일 중복 확인 오류:", error);
+          throw error;
+      }
+  },
+    async logout() {
+      try {
+        await apiInstance.post('/member/logout');
+        clearTokens();
+        this.clearAuthState();
+      } catch (error) {
+        console.error('로그아웃 중 오류:', error.response ? error.response.data : error.message);
       }
     },
-        async create(member) {
-            try {
-                const response = await apiInstance.post("/member/join", member);
-                return response.data.data;
-            } catch (error) {
-                throw error;
-            }
-        },
+          
+    async sendEmailVerification(email) {
+        try {
+            const response = await apiInstance.post("/member/email/code", { email });
+            return response.data;
+        } catch (error) {
+            console.error("인증코드 전송 오류:", error.response ? error.response.data : error.message);
+            throw new Error("인증코드 전송 실패");
+        }
+    },
 
-        async checkMemberId(memberId) {
-            try {
-                const response = await apiInstance.get(`/member/check-memberId/${memberId}`);
-                return response.data.data;
-            } catch (error) {
-                throw error;
-            }
-        },
+    async verifyEmailCode(email, code) {
+        try {
+            const response = await apiInstance.post("/member/email/verification", { email, inputCode: code });
+            return response.data.success;
+        } catch (error) {
+            console.error("인증코드 확인 오류:", error.response ? error.response.data : error.message);
+            throw new Error("인증코드 확인 실패");
+        }
+    },
 
-        async checkEmailDuplicate(email) {
-            try {
-                const response = await apiInstance.get(`/member/email/duplicate`, {
-                    params: { email: email },
-                });
-                if (response && response.data) {
-                  console.log("이메일 중복 확인 응답 데이터:", response.data);
-                  return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
-              } else {
-                  console.log("응답 데이터가 존재하지 않습니다.");
-                  return false; // 오류 처리
-              }
-          } catch (error) {
-              console.error("이메일 중복 확인 오류:", error);
-              throw error;
-          }
-      },
-        async logout() {
-          try {
-            await apiInstance.post('/member/logout');
+    async logout() {
+        try {
+            await apiInstance.post("/member/logout");
             clearTokens();
             this.clearAuthState();
-          } catch (error) {
-            console.error('로그아웃 중 오류:', error.response ? error.response.data : error.message);
-          }
-        },
-              
-        async sendEmailVerification(email) {
-            try {
-                const response = await apiInstance.post("/member/email/code", { email });
-                return response.data;
-            } catch (error) {
-                console.error("인증코드 전송 오류:", error.response ? error.response.data : error.message);
-                throw new Error("인증코드 전송 실패");
-            }
-        },
+        } catch (error) {
+            console.error("로그아웃 중 오류:", error.response ? error.response.data : error.message);
+        }
+    },
 
-        async verifyEmailCode(email, code) {
-            try {
-                const response = await apiInstance.post("/member/email/verification", { email, inputCode: code });
-                return response.data.success;
-            } catch (error) {
-                console.error("인증코드 확인 오류:", error.response ? error.response.data : error.message);
-                throw new Error("인증코드 확인 실패");
-            }
-        },
-
-        async logout() {
-            try {
-                await apiInstance.post("/member/logout");
-                clearTokens();
-                this.clearAuthState();
-            } catch (error) {
-                console.error("로그아웃 중 오류:", error.response ? error.response.data : error.message);
-            }
-        },
-
-        clearAuthState() {
-            this.member.memberIdx = null;
-            this.member.memberName = null;
-            this.member.memberId = null;
-            localStorage.clear();
-        },
+    clearAuthState() {
+        this.member.memberIdx = null;
+        this.member.memberName = null;
+        this.member.memberId = null;
+        localStorage.clear();
+    },
 
     loadAuthState() {
       const authData = JSON.parse(localStorage.getItem('auth'));
