@@ -2,6 +2,7 @@
 import { useRouter, useRoute } from "vue-router";
 import { computed, ref, onMounted, watch } from "vue";
 import { useTestStore } from "@/stores/test";
+import starImage from '@/assets/star.png';
 
 const router = useRouter();
 const route = useRoute();
@@ -91,6 +92,12 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 
         <div class="w-3/4 bg-gray-200 rounded-full h-2 mb-6">
             <div class="bg-gray-500 h-2 rounded-full" :style="{ width: `${progress}%` }"></div>
+            <img 
+                :src="starImage" 
+                alt="Progress Image" 
+                class="absolute h-6 transform -translate-x-1/2"
+                :style="{ left: `${progress}%`, top: '-2px' }"  
+            />
         </div>
         <div class="text-center">
             <h1 class="text-2xl font-bold mb-4">Q{{ questionId }}.</h1>

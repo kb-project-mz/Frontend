@@ -64,7 +64,7 @@ export const useTestStore = defineStore("testStore", {
 
         
             try {
-                const response = await apiInstance.post("/test/saveResult", {
+                const response = await apiInstance.post("/test/result", {
                     typeIdx: typeIdx,
 
                     memberIdx: memberIdx
