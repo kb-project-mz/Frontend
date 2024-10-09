@@ -3,7 +3,6 @@ import FindMember from "@/pages/login/FindMember.vue"
 import GuestHomePage from "@/pages/home/GuestHomePage.vue";
 import LoginPage from "@/pages/login/LoginPage.vue";
 import JoinPage from "@/pages/join/JoinPage.vue";
-import ConnectPage from "@/pages/mypage/ConnectPage.vue";
 import MyPage from "@/pages/mypage/MyPage.vue";
 import ChallengePage from "@/pages/challenge/ChallengePage.vue";
 import AnalysisPage from "@/pages/analysis/AnalysisPage.vue";
@@ -44,12 +43,6 @@ const router = createRouter({
       path: "/google-callback",
       name: "googleCallback",
       component: GoogleCallBack,
-    },
-    {
-      path: "/connect",
-      name: "connect",
-      component: ConnectPage,
-      meta: { requiresAuth: true },
     },
     {
       path: "/mypage",
