@@ -11,7 +11,8 @@ const startTest = () => {
     testStore.fetchTypes();
     console.log(testStore.fetchTypes);
     console.log(testStore.score);
-    router.push({ name: "testQuestion", params: { number: 1 } });
+    router.push({ name: 'testSurvey' });
+    
 };
 </script>
 
