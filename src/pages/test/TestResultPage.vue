@@ -14,7 +14,10 @@ const authStore = useAuthStore();
 const resultId = computed(() => parseInt(route.params.resultId, 10));
 onMounted(() => {
     console.log("컴포넌트에서 확인하는 types:", testStore.types);
+    console.log("1111111111111111111111111111111111",testStore.selectedGender);
 });
+
+let resultImage = ref('');
 
 const resultContent = computed(() => {
     let resultText = "";
@@ -23,41 +26,51 @@ const resultContent = computed(() => {
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[0].typeName;
         resultValue = 1;
-        console.log(resultValue);
+        resultImage.value = testStore.types[0].typeImage;
+        console.log(resultImage.value);
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[1].typeName;
         resultValue = 2;
+        resultImage.value = testStore.types[1].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[2].typeName;
         resultValue = 3;
+        resultImage.value = testStore.types[2].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[3].typeName;
         resultValue = 4;
+        resultImage.value = testStore.types[3].typeImage;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[4].typeName;
         resultValue = 5;
+        resultImage.value = testStore.types[4].typeImage;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[5].typeName;
         resultValue = 6;
+        resultImage.value = testStore.types[5].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[6].typeName;
         resultValue = 7;
+        resultImage.value = testStore.types[6].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[7].typeName;
         resultValue = 8;
+        resultImage.value = testStore.types[7].typeImage;
     }
 
     if (resultValue !== null) {
         testStore.sendType(resultValue);
     }
 
+    resultImage.value = "https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/impulse_effect_material.png";
+    console.log('1111111111', resultImage.value);
     return resultText;
 });
 
@@ -77,6 +90,7 @@ const goToSignup = () => {
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
+        <img :src="resultImage.value" alt="Result Image" />
         <p class="text-lg" v-text="resultContent"></p>
         <ShareButton class="mt-4" /> 
         <!-- 카카오톡 공유하기 버튼 추가 -->

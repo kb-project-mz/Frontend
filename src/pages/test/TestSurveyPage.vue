@@ -1,12 +1,14 @@
 <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
+  import { useTestStore } from "@/stores/test";
 
-const router = useRouter();
+  const router = useRouter();
 
-  
+  const testStore = useTestStore();
   const birthYear = ref(null);
   const selectedGender = ref(null);
+
   const years = Array.from({ length: 100 }, (v, i) => new Date().getFullYear() - i);
   const genderOptions = ["남성", "여성", "기타"];
   
@@ -22,6 +24,15 @@ const router = useRouter();
     }
   };
   const goToQuestions = () => {
+    testStore.setBirthYear(birthYear.value);
+    if(selectedGender.value==='여성'){
+      selectedGender.value ='F';
+    }else {
+      selectedGender.value ='M';
+    }
+    testStore.setSelectedGender(selectedGender.value);
+    console.log(testStore.birthYear); 
+    console.log(testStore.selectedGender); 
     router.push({ name: "testQuestion", params: { number: 1 } });
 };
   

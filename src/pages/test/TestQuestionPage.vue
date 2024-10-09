@@ -39,27 +39,11 @@ watch(questionId, () => {
     console.log("experiential", testStore.experiential);
 });
 
-// 사용자가 선택한 답변을 저장할 배열
 const selectedAnswers = ref([]);
 
-// 점수 계산 로직 부분
-const calculateResult = () => {
-    const total = selectedAnswers.value.reduce((sum, answer) => sum + answer, 0);
-    if (total < 10) {
-        return 1;
-    } else if (total < 20) {
-        return 2;
-    } else if (total < 30) {
-        return 3;
-    }
-    return 0; // 기본 결과
-};
-
-// 다음 문제 라우팅 및 답변 저장
 const nextQuestion = (answerId, answerScore, questionType) => {
-    selectedAnswers.value.push(answerId); // 선택한 답변 저장
+    selectedAnswers.value.push(answerId); 
 
-     // 질문 유형에 따라 점수 추가 로직 실행
      if (questionType === 1) {
         testStore.incrementImpulseScore(answerScore);
     } else if (questionType === 2) {
@@ -74,14 +58,11 @@ const nextQuestion = (answerId, answerScore, questionType) => {
         testStore.incrementExperientialScore(answerScore);
     }
 
-    // 총 점수도 증가시킴
     testStore.incrementScore(answerScore);
 
-    // 다음 질문으로 이동
     if (questionId.value < testStore.questions.length) {
         router.push({ name: "testQuestion", params: { number: questionId.value + 1 } });
     } else {
-        const resultId = calculateResult();
         router.push({ name: "testLoading" });
     }
 };

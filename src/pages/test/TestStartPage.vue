@@ -1,9 +1,11 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const testStore = useTestStore();
+const authStore = useAuthStore();
 
 const startTest = () => {
     console.log(testStore.score);
@@ -11,8 +13,13 @@ const startTest = () => {
     testStore.fetchTypes();
     console.log(testStore.fetchTypes);
     console.log(testStore.score);
-    router.push({ name: 'testSurvey' });
-    
+    if (authStore.member.memberId) {
+        console.log(authStore.member.memberId);
+        testStore.fetchSurveyInfo(authStore.member.memberId);
+        router.push({ name: "testQuestion", params: { number: 1 } }); 
+    } else {
+        router.push({ name: "testSurvey" }); 
+    }
 };
 </script>
 
