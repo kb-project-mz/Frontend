@@ -2,9 +2,11 @@
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const testStore = useTestStore();
+const authStore = useAuthStore();
 
 const calculateResult = () => {
     let resultValue = 0;
@@ -27,15 +29,21 @@ const calculateResult = () => {
         resultValue = 8;
     }
 
-    // 3초 후 결과 페이지로 이동
     setTimeout(() => {
         router.push({ name: "testResult", params: { resultId: resultValue } });
     }, 1000);
 };
 
 onMounted(() => {
-    // 로딩 페이지에 도착하면 계산을 수행
     calculateResult();
+    if(testStore.birthYear == ''){
+        const memberId = authStore.member.memberId;
+        const info = testStore.getSurveyInfo(memberId);
+        testStore.setBirthYear(info.birthYear);
+        testStore.setGender(info.gender);
+        console.log(testStore.birthday);
+        console.log(testStore.gender);
+    }
 });
 </script>
 

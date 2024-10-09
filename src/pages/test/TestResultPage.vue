@@ -5,21 +5,29 @@ import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; // 카카오톡 공유하기 컴포넌트 추가
+import ChartComponent from "@/components/test/ResultChart.vue";
 
 const route = useRoute();
 const router = useRouter();
 const testStore = useTestStore();
 const authStore = useAuthStore();
 
+const resultImage = ref('');
+const resultContent = ref('');
 const resultId = computed(() => parseInt(route.params.resultId, 10));
-onMounted(() => {
-    console.log("컴포넌트에서 확인하는 types:", testStore.types);
-    console.log("1111111111111111111111111111111111",testStore.selectedGender);
+
+onMounted(async () => {
+    resultContent.value = await getResultContent();
+    console.log('결과==============================');
+    console.log("inpulse", testStore.impulseScore);
+    console.log("plannedScore", testStore.plannedScore);
+    console.log("costEffective", testStore.costEffective);
+    console.log("goodForSatisfaction", testStore.goodForSatisfaction);
+    console.log("material", testStore.material);
+    console.log("experiential", testStore.experiential);
 });
 
-let resultImage = ref('');
-
-const resultContent = computed(() => {
+const getResultContent = async () => {
     let resultText = "";
     let resultValue = 0;
 
@@ -27,7 +35,6 @@ const resultContent = computed(() => {
         resultText = testStore.types[0].typeName;
         resultValue = 1;
         resultImage.value = testStore.types[0].typeImage;
-        console.log(resultImage.value);
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[1].typeName;
@@ -66,13 +73,11 @@ const resultContent = computed(() => {
     }
 
     if (resultValue !== null) {
-        testStore.sendType(resultValue);
+        testStore.saveResult(resultValue);
     }
-
-    resultImage.value = "https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/impulse_effect_material.png";
-    console.log('1111111111', resultImage.value);
+    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${resultImage.value}`;
     return resultText;
-});
+};
 
 const restartTest = () => {
     router.push({ name: "testStart" });
@@ -90,10 +95,19 @@ const goToSignup = () => {
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
-        <img :src="resultImage.value" alt="Result Image" />
-        <p class="text-lg" v-text="resultContent"></p>
+        <img :src="resultImage" alt="Result Image" />
+        <p class="text-lg">{{ resultContent }}</p>
+
+        <ChartComponent 
+            :impulseScore="testStore.impulseScore"
+            :plannedScore="testStore.plannedScore"
+            :costEffective="testStore.costEffective"
+            :goodForSatisfaction="testStore.goodForSatisfaction"
+            :material="testStore.material"
+            :experiential="testStore.experiential"
+        />
+
         <ShareButton class="mt-4" /> 
-        <!-- 카카오톡 공유하기 버튼 추가 -->
         <KakaoShareButton 
             class="mt-4" 
             :title="resultContent" 

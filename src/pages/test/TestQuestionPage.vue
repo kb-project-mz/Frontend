@@ -58,8 +58,6 @@ const nextQuestion = (answerId, answerScore, questionType) => {
         testStore.incrementExperientialScore(answerScore);
     }
 
-    testStore.incrementScore(answerScore);
-
     if (questionId.value < testStore.questions.length) {
         router.push({ name: "testQuestion", params: { number: questionId.value + 1 } });
     } else {
