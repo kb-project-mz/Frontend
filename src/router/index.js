@@ -12,10 +12,10 @@ import TestStartPage from "@/pages/test/TestStartPage.vue";
 import TestQuestionPage from "@/pages/test/TestQuestionPage.vue";
 import TestResultPage from "@/pages/test/TestResultPage.vue";
 import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
+import TestSurveyPage from "@/pages/test/TestSurveyPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
-
-
 import MemberHomePage from "@/pages/home/MemberHomePage.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,6 +84,11 @@ const router = createRouter({
       path: "/test/start",
       name: "testStart",
       component: TestStartPage,
+    },
+    {
+      path: "/test/survey",
+      name: "testSurvey",
+      component: TestSurveyPage,
     },
     {
       path: "/test/question/:number",
