@@ -19,10 +19,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="SBTIResult">
-    {{ SBTIResult.typeImage }}
-  </div>
-  <div v-else>
-    <RouterLink to="/test/start"> 소비 테스트 하러가기! </RouterLink>
+  <div class="border border-gray-300 rounded-lg p-4 max-w-sm mx-auto">
+    <div v-if="SBTIResult">
+      {{ SBTIResult.typeImage }}
+    </div>
+    <div v-else>
+      <RouterLink to="/test/start"> 소비 테스트 하러가기! </RouterLink>
+    </div>
   </div>
 </template>
