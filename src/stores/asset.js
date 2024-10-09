@@ -1,7 +1,8 @@
-import { defineStore } from "pinia";
-import apiInstance from "@/util/axios-instance";
+import { defineStore } from 'pinia';
+import apiInstance from '@/util/axios-instance';
+import { useAuthStore } from '@/stores/auth.js';
 
-export const useAssetStore = defineStore("asset", {
+export const useAssetStore = defineStore('asset', {
   state: () => ({
     allAssetList: [],
     allAccountList: [],
@@ -12,10 +13,10 @@ export const useAssetStore = defineStore("asset", {
   actions: {
     async getAssetList(memberIdx) {
       try {
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const response = await apiInstance.get(`/asset/${memberIdx}`, {
           headers: {
-            Authorization: `Bearer ${authData.accessToken}`,
+            Authorization: authStore.member.accessToken,
           },
         });
         this.allAssetList = response.data.data;
@@ -32,7 +33,7 @@ export const useAssetStore = defineStore("asset", {
           (asset) => asset.connectedStatus === 1
         );
       } catch (error) {
-        console.error("Failed to fetch asset list:", error);
+        console.error('Failed to fetch asset list:', error);
         throw error;
       }
     },
@@ -40,20 +41,20 @@ export const useAssetStore = defineStore("asset", {
     async updateAccountStatus(selectedAccount) {
       try {
         const accountIdx = selectedAccount.prdtId;
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const response = await apiInstance.post(
           `/asset/account/${accountIdx}`,
           {},
           {
             headers: {
-              Authorization: `Bearer ${authData.accessToken}`,
+              Authorization: authStore.member.accessToken,
             },
           }
         );
         this.connectedAccountList.push(selectedAccount);
         return response.data;
       } catch (error) {
-        console.error("Failed to update account status:", error);
+        console.error('Failed to update account status:', error);
         throw error;
       }
     },
@@ -61,20 +62,20 @@ export const useAssetStore = defineStore("asset", {
     async updateCardStatus(selectedCard) {
       try {
         const cardIdx = selectedCard.prdtId;
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const response = await apiInstance.post(
           `/asset/card/${cardIdx}`,
           {},
           {
             headers: {
-              Authorization: `Bearer ${authData.accessToken}`,
+              Authorization: authStore.member.accessToken,
             },
           }
         );
         this.connectedCardList.push(selectedCard);
         return response.data;
       } catch (error) {
-        console.error("Failed to update card status:", error);
+        console.error('Failed to update card status:', error);
         throw error;
       }
     },
