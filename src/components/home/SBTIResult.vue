@@ -19,7 +19,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="memberIdx">
+  <div v-if="SBTIResult">
     {{ SBTIResult.typeImage }}
   </div>
   <div v-else>
