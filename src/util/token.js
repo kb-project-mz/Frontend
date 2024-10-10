@@ -3,8 +3,8 @@ import apiInstance from "@/util/axios-instance";
 export function setTokens(accessToken, refreshToken) {
   const authData = JSON.parse(localStorage.getItem("auth")) || {};
 
-  authData.accessToken = "Bearer " + accessToken;
-  authData.refreshToken = "Bearer " + refreshToken;
+  authData.accessToken = accessToken;
+  authData.refreshToken = refreshToken;
 
   localStorage.setItem("auth", JSON.stringify(authData));
 }
@@ -48,6 +48,9 @@ export function setLocalStorage(loginData) {
   if (!loginData.memberId) {
     console.error("memberId가 null입니다. 로그인 데이터:", loginData);
   }
+
+	console.log(loginData.accessToken);
+	console.log(loginData.refreshToken);
   loginData.accessToken = `Bearer ${loginData.accessToken}`;
   loginData.refreshToken = `Bearer ${loginData.refreshToken}`;
   
