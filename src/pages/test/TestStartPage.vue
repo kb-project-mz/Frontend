@@ -41,16 +41,21 @@ const startTest = async () => {
                 <span class="text-blue-600 text-2xl gong-gothic-font">START!</span>
             </button>
         </div>
+        <div class="flex justify-center">
+            <ShareButton class="mt-4" />
+        </div>
+        <br />
+        <br />
+        <h1 class="gong-gothic-font flex justify-center">카카오톡으로 공유하기</h1>
+        <div class="flex justify-center">
+            <KakaoShareButton class="mt-4 custom-button" description="나의 소비 성향 테스트 하러 가기" :linkUrl="`http://localhost:8080/test/start`" />
+        </div>
     </div>
 </template>
 
 <style>
 .custom-shadow {
     box-shadow: 0 4px 20px rgba(0, 0, 5, 0.5);
-}
-
-.lotteria-font {
-    font-family: "LotteriaDdag", sans-serif;
 }
 
 @font-face {
