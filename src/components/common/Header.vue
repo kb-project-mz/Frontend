@@ -8,6 +8,7 @@ const router = useRouter();
 
 const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
+const imageUrl = computed(() => authStore.member.imageUrl);
 
 const logout = async () => {
   await authStore.logout();
@@ -20,17 +21,24 @@ const logout = async () => {
 <template>
   <nav class="bg-white shadow-md p-4 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
     <div class="max-w-7.5xl mx-auto flex justify-between items-center">
-			<router-link to="/" class="flex items-center">
+      <router-link to="/" class="flex items-center">
         <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
       </router-link>
-  
-      <div v-if="memberId">
+
+      <div v-if="memberId" class="flex space-x-20">
+        <router-link to="/test/start">소비 심리 테스트</router-link>
+        <router-link to="/analysis">소비 습관 분석</router-link>
+        <router-link to="/challenge">돈과의 전쟁</router-link>
+      </div>
+
+      <div v-if="memberId" class="flex items-center">
+        <img class="w-8 h-8 rounded-full mr-2" :src="`https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${imageUrl}`" alt="Profile Image">
         <router-link v-if="memberId" to="/mypage" class="mr-2">
           {{ memberName }}님
         </router-link>
         <button
           @click="logout"
-          class="bg-navy ml-2 py-1.5 px-2.5 text-white rounded-md text-xs"
+          class="bg-navy py-1.5 px-2.5 text-white rounded-md text-xs"
         >
           로그아웃
         </button>

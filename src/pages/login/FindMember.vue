@@ -1,20 +1,35 @@
+<script setup>
+import { ref } from 'vue';
+import FindMemberId from '@/components/login/FindMemberId.vue';
+import FindPassword from '@/components/login/FindPassword.vue';
+
+const menu = ref('memberId');
+
+const selectMenu = (value) => {
+  menu.value = value;
+}
+</script>
+
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-screen-lg bg-white shadow-lg rounded-lg grid grid-cols-1 md:grid-cols-2 min-h-screen">
-      <div class="flex flex-col items-center justify-center p-8 border-r border-gray-300">
-        <FindMemberId />
+  <div class="mx-[20%] flex flex-col justify-center items-center">
+    <div class="grid grid-cols-2 w-full">
+      <div class="col-span-1">
+        <button :class="['w-full text-2xl font-bold', menu === 'memberId' ? 'text-navy' : 'text-gray-400']" type="button" @click="selectMenu('memberId')">
+          <div>아이디 찾기</div>
+          <div :class="['w-full border-b-4 mt-2', menu === 'memberId' ? 'border-navy' : 'border-gray-400']"></div>
+        </button>
       </div>
-      <div class="flex flex-col items-center justify-center p-8">
-        <FindPassword />
+      <div class="col-span-1">
+        <button :class="['w-full text-2xl font-bold', menu === 'memberId' ? 'text-gray-400' : 'text-navy']" type="button" @click="selectMenu('password')">
+          <div>비밀번호 찾기</div>
+          <div :class="['w-full border-b-4 mt-2', menu === 'memberId' ? 'border-gray-400' : 'border-navy']"></div>
+        </button>
       </div>
     </div>
+    <FindMemberId v-if="menu === 'memberId'"/>
+    <FindPassword v-else/>
   </div>
 </template>
-
-<script setup>
-import FindMemberId from '../../components/Login/FindMemberId.vue';
-import FindPassword from '../../components/Login/FindPassword.vue';
-</script>
 
 <style scoped>
 .text-navy {
@@ -22,5 +37,8 @@ import FindPassword from '../../components/Login/FindPassword.vue';
 }
 .bg-navy {
   background-color: #0B1573;
+}
+.border-navy {
+  border-color: #0B1573;
 }
 </style>

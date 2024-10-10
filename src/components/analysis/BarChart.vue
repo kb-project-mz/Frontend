@@ -173,7 +173,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="bg-white border rounded-xl shadow">
     <div class="ml-8 mt-2 font-bold text-lg">월별 총 지출 내역</div>
     <div class="flex justify-center items-center h-full w-full bg-transparent">
       <canvas ref="canvasRef" width="400" height="230"></canvas>

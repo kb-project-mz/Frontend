@@ -62,10 +62,14 @@ onMounted(async () => {
 <template>
   <div v-if="isDataLoaded">
     <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
-      <div class="p-3 bg-navy text-white text-center rounded-lg">
-        <router-link to="/mypage/asset">자산 연결하러 가기</router-link>
+      <div class="flex items-end">
+        <div class="p-3 bg-navy text-white text-center rounded-lg w-fit">
+          <router-link to="/mypage/asset">자산 연결하러 가기</router-link>
+        </div>
+        <div class="p-3 bg-navy text-white rounded-lg">
+          <button @click="toggleCardFlip">과거 소비와 비교하기</button>
+        </div>
       </div>
-      <button @click="toggleCardFlip" class="p-2 bg-navy text-white rounded">과거 소비와 비교하기</button>
       <div class="flip w-full inline-block relative">
         <div class="card w-full inline-block relative flex" :class="{ '[transform:rotateY(180deg)]': isFlipped }">
           <div class="front w-full absolute">
@@ -78,26 +82,27 @@ onMounted(async () => {
         </div>
       </div>
       
-      <div class="grid grid-cols-1 lg:grid-cols-5">
-        <div class="lg:col-span-2 space-y-10">
+      <div class="grid grid-cols-1 lg:grid-cols-5 space-x-10">
+        <div class="h-full lg:col-span-2 space-y-10">
           <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
                       :card-transaction-last-month-data="cardTransactionLastMonthData"
                       :account-transaction-this-month-data="accountTransactionThisMonthData" 
                       :account-transaction-last-month-data="accountTransactionLastMonthData"/>
           <FixedExpenses />
         </div>
-        <div class="lg:col-span-3">
+        <div class="h-full lg:col-span-3">
           <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-5">
-        <div class="lg:col-span-3">
+      <div class="grid grid-cols-1 lg:grid-cols-7 space-x-10">
+        <div class="lg:col-span-4">
           <ConsumptionCalendar :account-transaction-data="accountTransactionData"
             :card-transaction-data="cardTransactionData" />
         </div>
-        <div class="lg:col-span-2">
-          <ConsumptionList :card-transaction-data="cardTransactionData" />
+        <div class="lg:col-span-3">
+          <ConsumptionList :card-transaction-data="cardTransactionThisMonthData" 
+            :account-transaction-data="accountTransactionThisMonthData" />
         </div>
       </div>
 
