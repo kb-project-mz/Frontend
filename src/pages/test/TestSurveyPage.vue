@@ -62,9 +62,9 @@ const selectGender = (option) => {
 
 const goToQuestions = () => {
     if (selectedGender.value === "여성") {
-        selectedGender.value = "F";
+        selectedGender.value = "female";
     } else {
-        selectedGender.value = "M";
+        selectedGender.value = "male";
     }
     testStore.setBirthYear(birthYear.value);
     testStore.setGender(selectedGender.value);
@@ -73,7 +73,7 @@ const goToQuestions = () => {
 
 const onScroll = (event) => {
     const scrollPosition = event.target.scrollTop;
-    const itemHeight = 40; // 각 항목의 높이
+    const itemHeight = 40;
     const index = Math.round(scrollPosition / itemHeight);
     birthYear.value = years[index];
 };

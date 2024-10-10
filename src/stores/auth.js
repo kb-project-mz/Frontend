@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
-import apiInstance from "@/util/axios-instance";
-import { setLocalStorage, setTokens, clearTokens } from "@/util/token";
+import { defineStore } from 'pinia';
+import apiInstance from '@/util/axios-instance';
+import { setLocalStorage, clearTokens } from '@/util/token';
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -10,6 +10,7 @@ export const useAuthStore = defineStore("auth", {
       memberId: null,
       imageUrl: null,
       accessToken: null,
+			role: null,
     },
   }),
 
@@ -22,14 +23,15 @@ export const useAuthStore = defineStore("auth", {
         });
         const loginData = response.data.data;
 
+				console.log("loginData: ", loginData);
         if (!loginData || !loginData.accessToken) {
           return null;
         }
 
-        // localStorage 설정 및 Pinia 상태 업데이트
         setLocalStorage(loginData);
         this.loadAuthState();
-
+				
+				console.log(this.member.memberIdx);
         return loginData;
       } catch (error) {
           throw error;
@@ -62,12 +64,12 @@ export const useAuthStore = defineStore("auth", {
               params: { email: email },
           });
 
-          if (response && response.data) {
-            console.log("이메일 중복 확인 응답 데이터:", response.data);
-            return response.data.exists; // exists 필드가 존재하는지 확인 후 반환
+        if (response && response.data) {
+          console.log("이메일 중복 확인 응답 데이터:", response.data);
+          return response.data.exists;
         } else {
-            console.log("응답 데이터가 존재하지 않습니다.");
-            return false; // 오류 처리
+          console.log("응답 데이터가 존재하지 않습니다.");
+          return false;
         }
       } catch (error) {
           console.error("이메일 중복 확인 오류:", error);
@@ -110,6 +112,7 @@ export const useAuthStore = defineStore("auth", {
       try {
         await apiInstance.post('/member/logout');
         clearTokens();
+        localStorage.clear(); 
         this.clearAuthState();
       } catch (error) {
         console.error(
@@ -124,6 +127,7 @@ export const useAuthStore = defineStore("auth", {
       this.member.memberName = null;
       this.member.memberId = null;
       this.member.accessToken = null;
+      this.member.imageUrl = null;
       localStorage.clear();
     },
 
@@ -132,9 +136,10 @@ export const useAuthStore = defineStore("auth", {
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
-				this.member.memberIdx = authData.memberIdx;
-				this.member.imageUrl = authData.imageUrl || '';
         this.member.accessToken = authData.accessToken;
+        this.member.memberIdx = authData.memberIdx;
+        this.member.imageUrl = authData.imageUrl || "";
+				this.member.role = authData.role;
       }
     },
 
