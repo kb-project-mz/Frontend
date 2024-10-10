@@ -1,5 +1,5 @@
 <template>
-    <button id="kakao-share-btn" class="kakao-share-button" @click="shareKakao">
+    <button id="kakao-share-btn" class="kakao-share-button py-2 px-4 rounded w-40" @click="shareKakao">
       <img 
         src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" 
         alt="카카오톡 공유하기" 
@@ -15,8 +15,8 @@
   // TODO : 현재 경로 하드 코딩
   const route = useRoute();
   const baseUrl = "https://localhost:5173"; // 로컬 환경 URL
-  const linkUrl = `${baseUrl}${route.fullPath}`; // 현재 페이지 URL 조합
-  const imageUrl = "https://raw.githubusercontent.com/kb-project-mz/FingerTips/main/test_start.png";
+  const linkUrl = `${baseUrl}${route.fullPath}`;
+  const imageUrl = "https://raw.githubusercontent.com/kb-project-mz/FingerTips/main/test.png";
 
   
   // 카카오 공유 기능 메서드
@@ -27,7 +27,7 @@
         content: {
           title: "나의 소비 성향은?",
           description: "지금 바로 소비 성향 테스트하러 가기",
-          imageUrl: imageUrl, // 공유 메시지에 포함될 이미지
+          imageUrl: imageUrl, 
           link: {
             mobileWebUrl: linkUrl,
             webUrl: linkUrl,

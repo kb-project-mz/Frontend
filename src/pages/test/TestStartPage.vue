@@ -40,6 +40,7 @@ const startTest = async () => {
                 <span class="text-blue-600 text-2xl gong-gothic-font">START!</span>
             </button>
         </div>
+        <br/>
         <div class="flex justify-center">
             <ShareButton class="mt-4" />
         </div>
