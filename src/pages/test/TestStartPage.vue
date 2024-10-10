@@ -1,20 +1,27 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
+import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; 
 
 const router = useRouter();
 const testStore = useTestStore();
+const authStore = useAuthStore();
 
-const startTest = () => {
-    console.log(testStore.score);
+const startTest = async () => {
     testStore.resetScore();
+    testStore.resetInfo();
     testStore.fetchTypes();
-    console.log(testStore.fetchTypes);
-    console.log(testStore.score);
-    router.push({ name: 'testSurvey' });
-    
+
+    if (authStore.member.memberId) {
+        const info = await testStore.getSurveyInfo(authStore.member.memberId);
+        testStore.setBirthYear(info.birthYear);
+        testStore.setGender(info.gender);
+        router.push({ name: "testQuestion", params: { number: 1 } }); 
+    } else { 
+        router.push({ name: "testSurvey" }); 
+    }
 };
 </script>
 

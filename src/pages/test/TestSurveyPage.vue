@@ -1,28 +1,32 @@
 <script setup>
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useTestStore } from "@/stores/test";
 
 const router = useRouter();
+const testStore = useTestStore();
 
-  
-  const birthYear = ref(null);
-  const selectedGender = ref(null);
-  const years = Array.from({ length: 100 }, (v, i) => new Date().getFullYear() - i);
-  const genderOptions = ["남성", "여성", "기타"];
-  
-  const selectGender = (option) => {
-    selectedGender.value = option;
-  };
-  
-  const goToNext = () => {
-    if (birthYear.value && selectedGender.value) {
-      alert(`선택한 생년: ${birthYear.value}, 성별: ${selectedGender.value}`);
-    } else {
-      alert("모든 질문에 답해주세요.");
-    }
-  };
-  const goToQuestions = () => {
-    router.push({ name: "testQuestion", params: { number: 1 } });
+const birthYear = ref(null);
+const selectedGender = ref(null);
+
+const years = Array.from({ length: 100 }, (v, i) => new Date().getFullYear() - i);
+const genderOptions = ["남성", "여성"];
+const selectGender = (option) => {
+  selectedGender.value = option;
+};
+
+const goToQuestions = () => {
+  if(selectedGender.value==='여성'){
+    selectedGender.value ='F';
+  }else {
+    selectedGender.value ='M';
+  }
+  testStore.setBirthYear(birthYear.value);
+  testStore.setGender(selectedGender.value);
+  console.log(testStore.birthYear); 
+  console.log(testStore.gender); 
+  router.push({ name: "testQuestion", params: { number: 1 } });
+
 };
   
   </script>
@@ -30,16 +34,12 @@ const router = useRouter();
   <template>
     <div class="survey-container">
       <h1>회원가입</h1>
-      
-      <!-- 생년 선택 -->
       <div class="question">
         <label>당신이 태어난 연도는?</label>
         <select v-model="birthYear">
           <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
       </div>
-  
-      <!-- 성별 선택 -->
       <div class="question">
         <label>당신의 성별은?</label>
         <div class="gender-options">

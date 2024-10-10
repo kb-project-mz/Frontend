@@ -2,9 +2,11 @@
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const testStore = useTestStore();
+const authStore = useAuthStore();
 
 const calculateResult = () => {
     let resultValue = 0;
@@ -34,8 +36,15 @@ const calculateResult = () => {
 };
 
 onMounted(() => {
-    // 로딩 페이지에 도착하면 계산을 수행
     calculateResult();
+    if(testStore.birthYear == ''){
+        const memberId = authStore.member.memberId;
+        const info = testStore.getSurveyInfo(memberId);
+        testStore.setBirthYear(info.birthYear);
+        testStore.setGender(info.gender);
+        console.log(testStore.birthday);
+        console.log(testStore.gender);
+    }
 });
 </script>
 
