@@ -236,9 +236,9 @@ const join = async () => {
     isLoading.value = true;
     
     if (member.gender === '1' || member.gender === '3') {
-      member.gender = 'M';
+      member.gender = 'male';
     } else {
-      member.gender = 'F';
+      member.gender = 'female';
     }
 
     const createResponse = await auth.create(member);
