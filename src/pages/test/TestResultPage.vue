@@ -5,16 +5,13 @@ import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 
-
-
 const route = useRoute();
 const router = useRouter();
 const testStore = useTestStore();
-const authStore = useAuthStore(); 
+const authStore = useAuthStore();
 
 const resultId = computed(() => parseInt(route.params.resultId, 10));
 onMounted(() => {
-    
     console.log("컴포넌트에서 확인하는 types:", testStore.types);
 });
 
@@ -60,11 +57,8 @@ const resultContent = computed(() => {
         testStore.sendType(resultValue);
     }
 
-    
-
     return resultText;
 });
-
 
 const restartTest = () => {
     router.push({ name: "testStart" });
@@ -74,7 +68,7 @@ const goToSignup = () => {
     if (authStore.isLogin()) {
         router.push({ name: "memberHomePage" });
     } else {
-        router.push({ name: "join" }); 
+        router.push({ name: "join" });
     }
 };
 </script>
@@ -83,8 +77,10 @@ const goToSignup = () => {
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
         <p class="text-lg" v-text="resultContent"></p>
-        <ShareButton class="mt-4" /> 
+        <ShareButton class="mt-4" />
         <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">테스트 다시 하기</button>
-        <button @click="goToSignup" class="mt-2 px-4 py-2 bg-green-500 text-white rounded">회원가입 하러 가기</button>
+        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-green-500' : 'bg-blue-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded']">
+            {{ authStore.isLogin() ? "홈 화면으로 가기" : "회원가입 하러 가기" }}
+        </button>
     </div>
 </template>
