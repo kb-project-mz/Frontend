@@ -9,9 +9,11 @@ const router = useRouter();
 const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
 
-const logout = () => {
-  authStore.logout();
-  router.push("/");
+const logout = async () => {
+  await authStore.logout();
+  authStore.clearAuthState();
+  localStorage.clear(); 
+  router.push('/login');
 };
 </script>
 
@@ -28,8 +30,6 @@ const logout = () => {
       <router-link v-else to="/" class="flex items-center">
         <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
       </router-link>
-
-			<!-- <img :src="member.imageUrl || 'default-profile.jpg'" alt="Profile Image"> -->
 
       <div v-if="memberId">
         <router-link v-if="memberId" to="/mypage" class="mr-2">

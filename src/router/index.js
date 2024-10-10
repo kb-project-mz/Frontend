@@ -13,9 +13,9 @@ import TestQuestionPage from "@/pages/test/TestQuestionPage.vue";
 import TestResultPage from "@/pages/test/TestResultPage.vue";
 import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
-
-
+import { useAuthStore } from '@/stores/auth';
 import MemberHomePage from "@/pages/home/MemberHomePage.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -100,6 +100,22 @@ const router = createRouter({
       name: "testResult",
       component: TestResultPage,
     },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: () => import('@/pages/admin/Admin.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        const userRole = authStore.member.role;
+  
+        if (userRole === 'ROLE_ADMIN') {
+          next();
+        } else {
+          alert('관리자 권한이 없습니다.');
+          next('/login');
+        }
+      },
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 };
@@ -107,10 +123,21 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem("auth");
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    next("/login");
-  } else {
+  const authStore = useAuthStore();
+  const isLoggedIn = authStore.isLogin();
+  const userRole = authStore.member.role;
+
+  if (to.path.startsWith('/admin') && (!isLoggedIn || userRole !== 'ROLE_ADMIN')) {
+    alert("관리자 권한이 필요합니다.");
+    authStore.clearAuthState();
+    localStorage.clear();
+    next('/login');
+  } 
+  else if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login');
+  } 
+
+  else {
     next();
   }
 });

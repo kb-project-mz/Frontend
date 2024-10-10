@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import Chart from "chart.js/auto";
-
 const props = defineProps({
   chartId: {
     type: String,
@@ -16,17 +15,12 @@ const props = defineProps({
     required: true,
   },
 });
-
 const authData = JSON.parse(localStorage.getItem("auth"));
 const memberName = authData.memberName;
-
 const chartInstance = ref(null);
-
 const now = new Date();
 const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30)); // 현재 날짜 기준 30일 전
-
 const today = new Date(); // 오늘 날짜
-
 // 필터링된 계좌 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredAccountExpenses = computed(() => {
   return props.accountTransactionData.filter((item) => {
@@ -40,7 +34,6 @@ const filteredAccountExpenses = computed(() => {
     );
   });
 });
-
 // 필터링된 카드 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredCardExpenses = computed(() => {
   return props.cardTransactionData.filter((item) => {
@@ -54,34 +47,27 @@ const filteredCardExpenses = computed(() => {
     );
   });
 });
-
 // 30일 동안의 총 지출액 계산 (계좌 지출 + 카드 지출)
 const getTotalExpensesFor30Days = () => {
   let totalExpenses = 0;
-
   // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
     totalExpenses += Math.abs(e.amount); // 계좌 지출 합산
   });
-
   // 카드 지출 데이터
   filteredCardExpenses.value.forEach((e) => {
     totalExpenses += e.amount; // 카드 지출 합산
   });
-
   return totalExpenses;
 };
-
 // 30일간의 일평균 지출액 계산
 const dailyAverageExpense = computed(() => {
   const totalExpenses = getTotalExpensesFor30Days();
   return Math.round(totalExpenses / 30).toLocaleString();
 });
-
 // 일별 지출 총합 계산 함수 (차트에 사용할 데이터)
 const getDailyExpenses = () => {
   const dailyExpenses = Array(30).fill(0); // 30일 동안의 지출 데이터
-
   // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
     const date = Math.floor(
@@ -91,7 +77,6 @@ const getDailyExpenses = () => {
       dailyExpenses[29 - date] += Math.abs(e.amount); // 날짜별로 금액 합산
     }
   });
-
   // 카드 지출 데이터
   filteredCardExpenses.value.forEach((e) => {
     const date = Math.floor(
@@ -101,10 +86,8 @@ const getDailyExpenses = () => {
       dailyExpenses[29 - date] += e.amount; // 날짜별로 금액 합산
     }
   });
-
   return dailyExpenses;
 };
-
 // 날짜 배열을 생성하는 함수 (30일간의 실제 날짜를 생성)
 const getLast30DaysDates = () => {
   const dates = [];
@@ -115,28 +98,22 @@ const getLast30DaysDates = () => {
   }
   return dates;
 };
-
 // 차트를 초기화하거나 새로 그리는 함수
 const renderChart = () => {
   const canvasElement = document.getElementById(props.chartId);
-
   if (chartInstance.value) {
     console.log("차트 존재");
     chartInstance.value.destroy();
   }
-
   if (!canvasElement) {
     return;
   }
-
   const ctx = canvasElement.getContext("2d");
   if (!ctx) {
     return;
   }
-
   const dailyExpenses = getDailyExpenses();
   const dates = getLast30DaysDates(); // 30일간의 실제 날짜 배열
-
   chartInstance.value = new Chart(ctx, {
     type: "bar",
     data: {
@@ -165,7 +142,6 @@ const renderChart = () => {
     },
   });
 };
-
 onMounted(() => {
   if (
     props.accountTransactionData?.length &&
@@ -174,7 +150,6 @@ onMounted(() => {
     renderChart();
   }
 });
-
 // 데이터가 변경될 때 차트를 다시 렌더링
 watch(
   [props.accountTransactionData, props.cardTransactionData],
@@ -185,7 +160,6 @@ watch(
   }
 );
 </script>
-
 <template>
   <div
     class="py-6 px-8 bg-navy text-white border border-gray-200 rounded-2xl shadow"
@@ -199,9 +173,8 @@ watch(
     </div>
   </div>
 </template>
-
 <style scoped>
 .bg-navy {
-  background-color: #0b1573;
+  background-color: #0B1573;
 }
 </style>

@@ -19,7 +19,8 @@ export const useAccountTransactionStore = defineStore("accountTransaction", {
         });
         this.accountTransaction = res.data.data;
 
-        const now = new Date();
+        // TODO: 10월 소비 내역이 없는 관계로 now를 9월로 고정, 추후 new Date()로 변경해야 함
+        const now = new Date(2024, 8, 30);
         const thisYear = now.getFullYear();
         const thisMonth = now.getMonth() + 1;
 
