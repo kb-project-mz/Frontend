@@ -11,7 +11,8 @@ const props = defineProps({
     required: true,
   },
   period: {
-    type: String
+    type: String,
+    required: true,
   }
 });
 </script>
@@ -23,7 +24,7 @@ const props = defineProps({
       <div>바로 이 곳에서 사용했어요</div>
     </div>
     <span class="mb-3 font-normal text-gray-700">
-      <div class="text-lg">
+      <div class="text-md">
         <div v-for="(value, key, index) in maximumUsed" :key="index" class="flex items-center space-x-2">
           <div><img :src="getMedal(index)" alt="medal" /></div>
           <div>{{ key }}<span class="font-bold">&nbsp;{{ value.toLocaleString() }}</span>원</div>
