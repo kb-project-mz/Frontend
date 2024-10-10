@@ -42,13 +42,13 @@ const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'b
   <div class="overflow-hidden">
     <div class="text-xl font-bold mb-6">내 또래에게 현재 인기가 많은 챌린지예요</div> 
     <div class="wrap flex flex-col overflow-hidden shrink-0">
-      <div class="rolling-list flex flex-col">
+      <div class="rolling-list">
         <ul class="flex flex-col">
-          <li class="py-8 my-8 px-6 border border-gray-200 rounded-3xl shadow-lg"
+          <li class="h-fit py-9 my-7 px-10 border border-gray-200 rounded-3xl shadow-lg"
             :class="liBackgroundClasses[index % liBackgroundClasses.length]"
             v-for="(challenge, index) in peerChallengeList" 
             :key="index">
-            <div class="text-gray-700 py-3 px-5 flex justify-between items-center">
+            <div class="text-gray-700 flex justify-between items-center">
               <div class="text-lg font-bold">{{ challenge.detailedCategory }}</div>
               <div class="rounded-full w-fit py-1 px-4 items-center text-center text-white" :class="divBackgroundClasses[index % divBackgroundClasses.length]">
                 {{ challenge.challengeCount }}명
@@ -93,19 +93,19 @@ const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'b
   background-color: #DDA4FF;
 }
 .rolling-list.original {
-	animation: rollingup1 50s linear infinite;
+  animation: rollingup1 50s linear infinite;
 }
 .rolling-list.clone {
-	animation: rollingup2 50s linear infinite;
+  animation: rollingup2 50s linear infinite;
 }
 @keyframes rollingup1 {
-	0% { transform: translateY(0); }
-	50% { transform: translateY(-100%); }
-	50.01% { transform: translateY(100%); }
-	100% { transform: translateY(0); }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-100%); }
+  50.01% { transform: translateY(100%); }
+  100% { transform: translateY(0); }
 }
 @keyframes rollingup2 {
-	0% { transform: translateY(0); }
-	100% { transform: translateY(-200%); }
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-200%); }
 }
 </style>
