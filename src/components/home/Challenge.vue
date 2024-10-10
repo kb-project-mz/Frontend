@@ -29,7 +29,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="border border-gray-300 rounded-lg p-4 bg-gray-50 max-w-lg mx-auto"
+    class="border border-gray-200 rounded-lg p-4 bg-gray-50 max-w-lg mx-auto"
   >
     <div v-if="challengeTop3ByMember.length === 0">
       또래 챌린지 보여줘야함.
@@ -48,7 +48,7 @@ onMounted(async () => {
       >
         <h1>{{ challenge.challengeName }}</h1>
         <ProgressBar
-          class="mt-8"
+          class="mt-6"
           v-if="challenge"
           :limit="challenge.challengeLimit"
           :completed="challenge.cardHistoryCount"

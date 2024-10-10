@@ -53,7 +53,7 @@ const prevAccount = () => {
 
 <template>
   <div
-    class="border border-gray-300 rounded-lg p-4 bg-gray-100 max-w-sm mx-auto"
+    class="border border-gray-200 rounded-lg p-6 bg-yellow-400 max-w-s mx-auto"
   >
     <div v-if="balanceByMember.length === 0">
       <RouterLink to="/mypage/asset">계좌연동하러가기 </RouterLink>
@@ -71,7 +71,6 @@ const prevAccount = () => {
           <RouterLink to="/mypage/asset">내 계좌 보러가기 </RouterLink>
         </div>
         <button class="flex items-center text-sm text-gray-500">
-          <!-- 거래내역보기 -->
           <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
             <!-- 화살표 아이콘 -->
             <!-- <path d="M7 10l5 5 5-5H7z" /> -->
@@ -93,14 +92,14 @@ const prevAccount = () => {
         <button
           @click="prevAccount"
           :disabled="currentAccountIndex === 0"
-          class="w-6 h-6 text-sm bg-gray-400 text-white rounded flex justify-center items-center"
+          class="w-6 h-6 text-sm bg-gray-300 text-white rounded flex justify-center items-center"
         >
           <
         </button>
         <button
           @click="nextAccount"
           :disabled="currentAccountIndex === balanceByMember.length - 1"
-          class="w-6 h-6 text-sm bg-gray-400 text-white rounded flex justify-center items-center"
+          class="w-6 h-6 text-sm bg-gray-300 text-white rounded flex justify-center items-center"
         >
           >
         </button>
