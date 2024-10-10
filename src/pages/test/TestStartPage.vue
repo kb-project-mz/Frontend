@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
+import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; 
 

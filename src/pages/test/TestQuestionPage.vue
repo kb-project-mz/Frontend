@@ -2,7 +2,6 @@
 import { useRouter, useRoute } from "vue-router";
 import { computed, ref, onMounted, watch } from "vue";
 import { useTestStore } from "@/stores/test";
-import starImage from '@/assets/star.png';
 
 const router = useRouter();
 const route = useRoute();
@@ -69,13 +68,12 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
 
-        <div class="relative w-3/4 bg-gray-200 rounded-full h-2 mb-6">
+        <div class="relative w-1/2 bg-gray-200 rounded-full h-2 mb-6">
             <div
                 class="h-2 rounded-full"
                 :style="{ 
                     width: `${progress}%`, 
                     backgroundColor: '#C0EBA6',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)'
                 }"
             ></div>
 
@@ -85,15 +83,15 @@ const nextQuestion = (answerId, answerScore, questionType) => {
                 :style="{ 
                     left: `calc(${progress}% - 3px)`,
                     top: '-80px',
-                    width: '100px', 
-                    height: '100px'
+                    width: '170px', 
+                    height: '175px'
                 }"
                 alt="Progress Star"
             />
         </div>
         
         <div class="text-center">
-            <h1 class="text-2xl font-bold mb-4">Q{{ questionId }}.</h1>
+            <h1 class="text-3xl font-bold mb-4">Q{{ questionId }}.</h1>
             <p class="mb-8" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
 
             <div class="flex flex-col space-y-4">
@@ -102,7 +100,7 @@ const nextQuestion = (answerId, answerScore, questionType) => {
                     v-for="answer in answers"
                     :key="answer.optionIdx"
                     @click="nextQuestion(answer.optionIdx, answer.score, answer.typeIdx)"
-                    class="bg-white text-red-500 font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
+                    class="bg-white text-red-600 font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
                 >
                     {{ answer.optionText }}
                 </button>
