@@ -5,7 +5,6 @@ import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; // 카카오톡 공유하기 컴포넌트 추가
-import ChartComponent from "@/components/test/ResultChart.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -97,15 +96,6 @@ const goToSignup = () => {
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
         <img :src="resultImage" alt="Result Image" />
         <p class="text-lg">{{ resultContent }}</p>
-
-        <ChartComponent 
-            :impulseScore="testStore.impulseScore"
-            :plannedScore="testStore.plannedScore"
-            :costEffective="testStore.costEffective"
-            :goodForSatisfaction="testStore.goodForSatisfaction"
-            :material="testStore.material"
-            :experiential="testStore.experiential"
-        />
 
         <ShareButton class="mt-4" /> 
         <KakaoShareButton 
