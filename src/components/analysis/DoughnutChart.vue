@@ -10,17 +10,14 @@ const props = defineProps({
     type: String,
     required: true
   },
-  startDate: {
-    type: Date,
+  period: {
+    type: String,
     required: true
-  },
-  endDate: {
-    type: Date,
-    required: true
-  },
+  }
 });
 
 const categoryTransactionStore = useCategoryTransactionStore();
+
 const chartData = ref({
   labels: [],
   datasets: [
@@ -47,17 +44,6 @@ const chartOptions = ref({
 
 let doughnutChartInstance = null;
 
-//날짜 계산 UTC 기준으로 설정
-const getStartOfMonth = () => {
-  const now = new Date();
-  return new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1));
-};
-
-const getEndOfMonth = () => {
-  const now = new Date();
-  return new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999));
-};
-
 const renderChart = () => {
   const ctx = document.getElementById(props.chartId).getContext("2d");
 
@@ -72,60 +58,29 @@ const renderChart = () => {
   });
 };
 
-onMounted(async () => {
-  console.log(props.chartId);
-  const authData = JSON.parse(localStorage.getItem("auth"));
-  const memberIdx = authData.memberIdx;
+onMounted(() => {
+  if (props.period === '이번 달') {
+    console.log("이번달");
+    const uniqueCategories = [...new Set(categoryTransactionStore.categoryDataThisMonth.map((item) => item.categoryName))];
 
-  const startYear = props.startDate.getFullYear();
-  const startMonth = props.startDate.getMonth();
-  const startDate = props.startDate.getDate();
-  const endYear = props.endDate.getFullYear();
-  const endMonth = props.endDate.getMonth();
-  const endDate = props.endDate.getDate();
-
-  if (memberIdx) {
-    await categoryTransactionStore.fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
-
-    if (categoryTransactionStore.categoryData.length > 0) {
-      const startOfMonth = getStartOfMonth().toISOString().split("T")[0];
-      const endOfMonth = getEndOfMonth().toISOString().split("T")[0];
-
-      const filteredData = categoryTransactionStore.categoryData.filter((item) => {
-        const transactionDate = new Date(item.transactionDate).toISOString().split("T")[0];
-        return transactionDate >= startOfMonth && transactionDate <= endOfMonth;
-      });
-
-      if (filteredData.length === 0) {
-        console.error("필터링된 데이터가 없습니다.");
-        return;
-      }
-
-      const uniqueCategories = [...new Set(filteredData.map((item) => item.categoryName))];
-
-      const totalTransactions = filteredData.reduce((acc, item) => acc + item.totalSpent, 0);
-
-      chartData.value.labels = uniqueCategories;
-      chartData.value.datasets[0].data = uniqueCategories.map((category) => {
-        const categoryTransactions = filteredData
-          .filter((item) => item.categoryName === category)
-          .reduce((acc, item) => acc + item.totalSpent, 0);
-
-        if (totalTransactions === 0) {
-          return 0; // 전체 거래 금액이 0이면 비율을 0으로 설정
-        }
-
-        // 전체 대비 비율 계산 후 소수점 첫째 자리까지만 표시
-        return ((categoryTransactions / totalTransactions) * 100).toFixed(1);
-      });
-
-      renderChart();
-    } else {
-      console.error("카테고리 데이터가 없습니다.");
-    }
+    chartData.value.labels = uniqueCategories;
+    chartData.value.datasets[0].data = uniqueCategories.map((category) => {
+      const categoryData = categoryTransactionStore.categoryDataThisMonth.find((item) => item.categoryName === category);
+      return categoryData.percentage.toFixed(1);
+  });
   } else {
-    console.error("memberIdx가 유효하지 않습니다.");
+    console.log("해당 기간");
+    const uniqueCategories = [...new Set(categoryTransactionStore.categoryDataSelectedPeriod.map((item) => item.categoryName))];
+
+    chartData.value.labels = uniqueCategories;
+    chartData.value.datasets[0].data = uniqueCategories.map((category) => {
+      const categoryData = categoryTransactionStore.categoryDataSelectedPeriod.find((item) => item.categoryName === category);
+      return categoryData.percentage.toFixed(1);
+    });
   }
+
+
+  renderChart();
 });
 </script>
 

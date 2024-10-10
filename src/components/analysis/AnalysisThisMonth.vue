@@ -82,7 +82,7 @@ onMounted(() => {
         />
       </div>
       <CategoryChart class="lg:col-span-1" chart-id="thisMonthCategory"
-        :start-date="startDate" :end-date="endDate"/>
+        :start-date="startDate" :end-date="endDate" period="이번 달"/>
     </div>
   </div>
 </template>

@@ -15,60 +15,29 @@ const props = defineProps({
   endDate: {
     type: Date,
     required: true,
+  },
+  period: {
+    type: String,
+    required: true,
   }
 });
+
+const authData = JSON.parse(localStorage.getItem("auth"));
+const memberIdx = authData.memberIdx;
 
 const isLoaded = ref(false);
 const categoryStore = useCategoryTransactionStore();
 
-const getStartOfMonth = () => {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
-};
-
-const getEndOfMonth = () => {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-};
-
 const mostSpentCategory = computed(() => {
-  if (!categoryStore.categoryData || categoryStore.categoryData.length === 0) {
-    return "데이터가 없습니다.";
+  if (props.period === '이번 달') {
+    return categoryStore.mostSpentCategoryThisMonth;
+  } else {
+    return categoryStore.mostSpentCategorySelectedPeriod;
   }
-
-  const startOfMonth = getStartOfMonth().toISOString().split("T")[0];
-  const endOfMonth = getEndOfMonth().toISOString().split("T")[0];
-
-  const categoryTotals = {};
-
-  categoryStore.categoryData.forEach((transaction) => {
-    const transactionDate = transaction.transactionDate;
-
-    if (transactionDate >= startOfMonth && transactionDate <= endOfMonth) {
-      const category = transaction.categoryName;
-      const amount = transaction.totalSpent;
-
-      if (!categoryTotals[category]) {
-        categoryTotals[category] = 0;
-      }
-
-      categoryTotals[category] += amount;
-    }
-  });
-
-  const mostSpent = Object.entries(categoryTotals).reduce((prev, curr) => (curr[1] > prev[1] ? curr : prev), ["없음", 0]);
-
-  return mostSpent[0];
 });
 
 onMounted(async () => {
-  const authData = JSON.parse(localStorage.getItem("auth"));
-  const memberIdx = authData.memberIdx;
-  if (!memberIdx) {
-    console.error("memberIdx가 정의되지 않았습니다.");
-    return;
-  }
-
+  isLoaded.value = false;
   const startYear = props.startDate.getFullYear();
   const startMonth = props.startDate.getMonth();
   const startDate = props.startDate.getDate();
@@ -76,16 +45,15 @@ onMounted(async () => {
   const endMonth = props.endDate.getMonth();
   const endDate = props.endDate.getDate();
 
-  await categoryStore.fetchMostSpentCategory(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
-
+  await categoryStore.fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
+  
   isLoaded.value = true;
 });
 
-// watch를 사용하여 startDate와 endDate의 변경을 감시
 watch(
   [() => props.startDate, () => props.endDate],
   async ([newStartDate, newEndDate]) => {
-    isLoaded.value = false;
+    
     const startYear = newStartDate.getFullYear();
     const startMonth = newStartDate.getMonth();
     const startDate = newStartDate.getDate();
@@ -93,8 +61,11 @@ watch(
     const endMonth = newEndDate.getMonth();
     const endDate = newEndDate.getDate();
 
-    await categoryStore.fetchMostSpentCategory(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
-    isLoaded.value = true;
+    if (props.period === '해당 기간') {
+      isLoaded.value = false;
+      await categoryStore.fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
+      isLoaded.value = true;
+    }    
   }
 );
 </script>
@@ -102,14 +73,28 @@ watch(
 <template>
   <div class="p-10 bg-white border border-gray-200 rounded-2xl shadow">
     <div v-if="isLoaded">
-      <DoughnutChart :chart-id="chartId" :start-date="startDate" :end-date="endDate" />
-      <div v-if="categoryStore.categoryData.length > 0 && mostSpentCategory !== '없음'" class="flex flex-col justify-between">
-        <div>이번 달은 <span class="text-red font-bold">{{ mostSpentCategory }}</span>에</div>
-        <div>지출이 가장 많았어요.</div>
+      <div v-if="period === '이번 달'">
+        <div v-if="categoryStore.categoryDataThisMonth.length > 0" class="flex flex-col justify-between">
+          <DoughnutChart :chart-id="chartId" :period="period" />
+          <div>{{ period }}은 <span class="text-red font-bold">{{ mostSpentCategory }}</span>에</div>
+          <div>지출이 가장 많았어요.</div>
+        </div>
+        <div v-else class="flex justify-center items-center">
+          {{ period }} 지출이 없어요!
+        </div>
       </div>
-      <div v-else class="flex justify-center items-center">
-        이번 달 지출이 없어요!
+      <div v-else>
+        <div v-if="categoryStore.categoryDataSelectedPeriod.length > 0" class="flex flex-col justify-between">
+          <DoughnutChart :chart-id="chartId" :period="period" />
+          <div>{{ period }}은 <span class="text-red font-bold">{{ mostSpentCategory }}</span>에</div>
+          <div>지출이 가장 많았어요.</div>
+        </div>
+        <div v-else class="flex justify-center items-center">
+          {{ period }} 지출이 없어요!
+        </div>
       </div>
+
+      
     </div>
     <div v-else>
       <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
