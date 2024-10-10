@@ -1,6 +1,5 @@
 <script setup>
 import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import apiInstance from '@/util/axios-instance';
 
 const member = reactive({
@@ -11,7 +10,6 @@ const member = reactive({
 const error = ref('');
 const successMessage = ref('');
 const loading = ref(false);
-const router = useRouter();
 
 const checkEmailDuplicate = async (email) => {
   try {
@@ -95,8 +93,7 @@ const resetMessages = () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full max-w-md">
-      <h2 class="text-center text-2xl font-bold mb-6 text-navy">아이디 찾기</h2>
+  <div class="flex flex-col items-center w-1/2 my-32">
       <form @submit.prevent="findMemberId" class="bg-white p-8 shadow-md rounded-lg w-full">
         <div class="mb-6">
           <input

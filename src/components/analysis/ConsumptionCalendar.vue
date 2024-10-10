@@ -180,7 +180,7 @@ watch([currentYear, currentMonth], generateCalendar);
 </script>
 
 <template>
-  <div>
+  <div class="border rounded-xl shadow">
     <div class="calendar-header">
       <button @click="prevMonth">◀</button>
       <span class="calendar-title"

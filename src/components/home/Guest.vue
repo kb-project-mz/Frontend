@@ -3,10 +3,6 @@ import Button from "@/components/home/Button.vue";
 import testImage from "@/assets/테스트.png";
 import chartImage from "@/assets/차트.png";
 import challengeImage from "@/assets/챌린지.png";
-
-import { useAuthStore } from "@/stores/auth";
-
-const authStore = useAuthStore();
 </script>
 
 <template>
