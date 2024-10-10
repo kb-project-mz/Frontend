@@ -12,7 +12,7 @@ const challengeStore = useChallengeStore();
 
 const detailedCategories = ref([]);
 const maxLimit = ref(100);
-const limitMessage = ref("제한 횟수");
+const limitMessage = ref("제한횟수");
 
 const formData = ref({
   memberIdx: memberIdx,
@@ -41,6 +41,8 @@ const closeModal = () => {
     isPublic: 1,
   };
   detailedCategories.value = [];
+  limitMessage.value = "제한횟수";
+  maxLimit.value = 100;
   emit("close");
 };
 
@@ -67,10 +69,10 @@ const confirmSubmission = async () => {
 const onConditionChange = () => {
   if (formData.value.challengeType === "횟수") {
     maxLimit.value = 100;
-    limitMessage.value = "제한 횟수";
+    limitMessage.value = "제한횟수";
   } else {
     maxLimit.value = 1000000;
-    limitMessage.value = "제한 금액";
+    limitMessage.value = "제한금액";
   }
   formData.value.challengeLimit = 0;
 };
@@ -93,162 +95,112 @@ const selectPublicStatus = (status) => {
 </script>
 
 <template>
-  <div
-    v-if="showModal"
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30"
-    @click="closeModal"
-  >
-    <div class="bg-white p-5 rounded-lg shadow-lg fixed box-border" @click.stop>
-      <h3 class="text-xl font-semibold mb-4 text-center">
-        나의 챌린지 등록하기
-      </h3>
+  <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20"
+    @click="closeModal">
+    <div class="w-2/3 xl:w-1/4 bg-white px-12 py-10 rounded-lg shadow-lg box-border" @click.stop>
+      <div class="text-xl font-semibold mb-4 text-center">챌린지 등록하기</div>
       <form @submit.prevent="confirmSubmission">
-        <div>
-          <label for="challengeName" class="block text-sm font-medium mb-1"
-            >챌린지 이름</label
-          >
-          <input
-            id="challengeName"
-            type="text"
-            v-model="formData.challengeName"
-            class="bg-gray border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
-            required
-          />
-        </div>
-
-        <div class="mb-4">
-          <label for="challengeDuration" class="block text-sm font-medium mb-1"
-            >기간</label
-          >
-          <div class="flex">
-            <input
-              type="date"
-              v-model="formData.challengeStartDate"
-              class="form-input border-gray-300 rounded-md"
-              required
-            />
-            <span class="self-center">-</span>
-            <input
-              type="date"
-              v-model="formData.challengeEndDate"
-              class="form-input border-gray-300 rounded-md"
-              required
-            />
+        <div class="flex flex-col space-y-3">
+          <div class="flex items-center h-12">
+            <div class="w-20 text-end mr-4">이름</div>
+            <input id="challengeName" type="text" v-model="formData.challengeName"
+              class="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2" required />
           </div>
-        </div>
 
-        <div class="mb-4">
-          <label for="challengeType" class="block text-sm font-medium mb-1"
-            >조건</label
-          >
-          <select
-            v-model="formData.challengeType"
-            @change="onConditionChange"
-            class="form-select block w-full border-gray-300 rounded-md"
-          >
-            <option value="횟수">횟수 제한</option>
-            <option value="금액">금액 제한</option>
-          </select>
-        </div>
-
-        <div class="mb-4">
-          <label for="categoryIdx" class="block text-sm font-medium mb-1"
-            >카테고리</label
-          >
-          <select
-            v-model="formData.categoryIdx"
-            @change="onCategoryChange"
-            class="form-select block w-full border-gray-300 rounded-md"
-          >
-            <option value="1">식비</option>
-            <option value="2">카페/디저트</option>
-            <option value="3">교통비</option>
-            <option value="4">미용</option>
-            <option value="5">취미</option>
-            <option value="6">주거/통신</option>
-            <option value="7">의류</option>
-            <option value="8">의료/건강</option>
-            <option value="9">여행</option>
-            <option value="10">생필품</option>
-            <option value="11">미분류</option>
-          </select>
-        </div>
-
-        <div v-if="detailedCategories.length > 0" class="mb-4">
-          <p class="mb-1">반복된 항목들:</p>
-          <div class="flex flex-wrap">
-            <span
-              v-for="(category, index) in detailedCategories"
-              :key="index"
-              @click="selectDetailedCategory(category)"
-              class="bg-gray-200 rounded-full px-3 py-1 text-sm mr-2 mb-2 cursor-pointer hover:bg-gray-300"
-            >
-              {{ category }}
-            </span>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label for="challengeLimit" class="block text-sm font-medium mb-1">{{
-            limitMessage
-          }}</label>
-          <input
-            type="range"
-            v-model="formData.challengeLimit"
-            :min="0"
-            :max="maxLimit"
-            :step="formData.challengeType === '횟수' ? 1 : 100"
-            class="form-range w-full"
-          />
-          <span class="mt-1 text-center block">{{
-            formData.challengeLimit
-          }}</span>
-        </div>
-
-        <div class="mb-4">
-          <p class="block text-sm font-medium mb-1">챌린지 공개 여부</p>
-          <div class="flex justify-between">
-            <div
-              class="flex-1 cursor-pointer text-center p-2 rounded-lg"
-              :class="{
-                'bg-green-500 text-white': formData.isPublic === 1,
-                'bg-gray-200': formData.isPublic !== 1,
-              }"
-              @click="selectPublicStatus(1)"
-            >
-              공개
+          <div class="flex items-center h-12">
+            <div class="w-20 text-end mr-4">기간</div>
+            <div class="flex w-full py-2">
+              <input type="date" v-model="formData.challengeStartDate" class="form-input border-gray-300 rounded-md"
+                required />
+              <span class="self-center">-</span>
+              <input type="date" v-model="formData.challengeEndDate" class="form-input border-gray-300 rounded-md"
+                required />
             </div>
-            <div
-              class="flex-1 cursor-pointer text-center p-2 rounded-lg"
-              :class="{
+          </div>
+
+          <div class="flex items-center h-12">
+            <div class="w-20 text-end mr-4">조건</div>
+            <select v-model="formData.challengeType" @change="onConditionChange"
+              class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+              <option value="횟수">횟수 제한</option>
+              <option value="금액">금액 제한</option>
+            </select>
+          </div>
+
+          <div class="flex items-center h-12">
+            <div class="w-20 text-end mr-4">카테고리</div>
+            <select v-model="formData.categoryIdx" @change="onCategoryChange"
+              class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+              <option value="1">식비</option>
+              <option value="2">카페/디저트</option>
+              <option value="3">교통비</option>
+              <option value="4">미용</option>
+              <option value="5">취미</option>
+              <option value="6">주거/통신</option>
+              <option value="7">의류</option>
+              <option value="8">의료/건강</option>
+              <option value="9">여행</option>
+              <option value="10">생필품</option>
+              <option value="11">미분류</option>
+            </select>
+          </div>
+
+          <div class="flex min-h-12">
+            <div class="w-20 text-end mr-4 my-1">소분류</div>
+            <div class="w-full">
+              <div v-if="detailedCategories.length > 0" class="flex flex-wrap">
+                <div v-for="(category, index) in detailedCategories" 
+                    :key="index" 
+                    @click="selectDetailedCategory(category)" 
+                    :class="['rounded-full px-3 py-2 text-sm mr-2 mb-2 cursor-pointer', 
+                              formData.detailedCategory === category ? 'bg-navy text-white' : 'bg-gray-200 hover:bg-gray-300']">
+                  {{ category }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="flex min-h-12">
+            <div class="w-20 text-end mr-4">{{ limitMessage }}</div>
+            <div class="w-full flex flex-col">
+              <input type="range" v-model="formData.challengeLimit" :min="0" :max="maxLimit"
+                :step="formData.challengeType === '횟수' ? 1 : 100" class="cursor-pointer h-2 rounded-lg bg-gray-200" />
+              <div class="mt-1 text-center block">{{formData.challengeLimit}}</div>
+            </div>
+          </div>
+
+          <div class="flex items-center h-12">
+            <div class="w-20 text-end mr-4">공개여부</div>
+            <div class="flex space-x-2 w-full">
+              <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
+                'bg-navy text-white': formData.isPublic === 1,
+                'bg-gray-200': formData.isPublic !== 1,
+              }" @click="selectPublicStatus(1)">
+                공개
+              </div>
+              <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
                 'bg-red-500 text-white': formData.isPublic === 0,
                 'bg-gray-200': formData.isPublic !== 0,
-              }"
-              @click="selectPublicStatus(0)"
-            >
-              비공개
+              }" @click="selectPublicStatus(0)">
+                비공개
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-2">
-          <button
-            type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            등록
-          </button>
-          <button
-            type="button"
-            class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-            @click="closeModal"
-          >
-            취소
-          </button>
+        <div class="flex space-x-2 mt-12">
+          <button type="submit" class="flex-1 bg-navy text-white py-3 rounded-lg hover:bg-gray-700">등록</button>
+          <button type="button" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400"
+            @click="closeModal">취소</button>
         </div>
       </form>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.bg-navy {
+  background-color: #0B1573;
+}
+</style>
