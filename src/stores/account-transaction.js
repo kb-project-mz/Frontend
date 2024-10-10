@@ -1,7 +1,8 @@
-import { defineStore } from "pinia";
-import apiInstance from "@/util/axios-instance";
+import { defineStore } from 'pinia';
+import apiInstance from '@/util/axios-instance';
+import { useAuthStore } from '@/stores/auth.js';
 
-export const useAccountTransactionStore = defineStore("accountTransaction", {
+export const useAccountTransactionStore = defineStore('accountTransaction', {
   state: () => ({
     accountTransaction: [],
     accountTransactionThisMonth: [],
@@ -11,10 +12,10 @@ export const useAccountTransactionStore = defineStore("accountTransaction", {
   actions: {
     async getAccountTransactionList(memberIdx) {
       try {
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/transaction/account/${memberIdx}`, {
           headers: {
-            Authorization: `Bearer ${authData.accessToken}`,
+            Authorization: authStore.member.accessToken,
           },
         });
         this.accountTransaction = res.data.data;

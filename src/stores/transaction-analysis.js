@@ -1,11 +1,12 @@
-import { defineStore } from "pinia";
-import apiInstance from "@/util/axios-instance";
+import { defineStore } from 'pinia';
+import apiInstance from '@/util/axios-instance';
+import { useAuthStore } from '@/stores/auth.js';
 
-export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
+export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   state: () => ({
-    mostAndMaximum: "",
-    recommendation: "",
-    fixedExpenses: "",
+    mostAndMaximum: '',
+    recommendation: '',
+    fixedExpenses: '',
   }),
 
   actions: {
@@ -19,7 +20,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
       endDay
     ) {
       try {
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/transaction/top-usage`, {
           params: {
             memberIdx: memberIdx,
@@ -31,7 +32,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
             endDay: endDay,
           },
           headers: {
-            Authorization: `Bearer ${authData.accessToken}`,
+            Authorization: authStore.member.accessToken,
           },
         });
 
@@ -43,7 +44,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
 
     async fetchAiRecommendation(memberIdx, startYear, startMonth, endDay) {
       try {
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/transaction/recommendation`, {
           params: {
             memberIdx: memberIdx,
@@ -55,7 +56,7 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
             endDay: endDay,
           },
           headers: {
-            Authorization: `Bearer ${authData.accessToken}`,
+            Authorization: authStore.member.accessToken,
           },
         });
 
@@ -68,16 +69,17 @@ export const useTransactionAnalysisStore = defineStore("transactionAnalysis", {
 
     async fetchFixedExpenses(memberIdx) {
       try {
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/transaction/fixed/${memberIdx}`, {
           headers: {
-            Authorization: localStorage.getItem("accessToken")
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
-        
+
         this.fixedExpenses = res.data.data;
       } catch (err) {
         console.error(err);
       }
-    }
+    },
   },
 });

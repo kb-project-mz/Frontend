@@ -1,7 +1,8 @@
-import { defineStore } from "pinia";
-import apiInstance from "@/util/axios-instance";
+import { defineStore } from 'pinia';
+import apiInstance from '@/util/axios-instance';
+import { useAuthStore } from '@/stores/auth.js';
 
-export const useCardTransactionStore = defineStore("cardTransaction", {
+export const useCardTransactionStore = defineStore('cardTransaction', {
   state: () => ({
     cardTransaction: [],
     cardTransactionThisMonth: [],
@@ -12,10 +13,10 @@ export const useCardTransactionStore = defineStore("cardTransaction", {
   actions: {
     async getCardTransactionList(memberIdx) {
       try {
-        const authData = JSON.parse(localStorage.getItem("auth"));
+        const authStore = useAuthStore();
         const res = await apiInstance.get(`/transaction/card/${memberIdx}`, {
           headers: {
-            Authorization: `Bearer ${authData.accessToken}`,
+            Authorization: authStore.member.accessToken,
           },
         });
         this.cardTransaction = res.data.data;
@@ -94,7 +95,7 @@ export const useCardTransactionStore = defineStore("cardTransaction", {
           !this.cardTransactionThisMonth ||
           this.cardTransactionThisMonth.length === 0
         ) {
-          const authData = JSON.parse(localStorage.getItem("auth"));
+          const authData = JSON.parse(localStorage.getItem('auth'));
           const memberIdx = authData.memberIdx;
           await this.getCardTransactionList(memberIdx);
         }
@@ -115,7 +116,7 @@ export const useCardTransactionStore = defineStore("cardTransaction", {
 
         this.cardAmountBycardIdx = cardAmountBycardIdx;
       } catch (error) {
-        console.error("Error in getCardTransactionListByCardIdx:", error);
+        console.error('Error in getCardTransactionListByCardIdx:', error);
       }
     },
   },
