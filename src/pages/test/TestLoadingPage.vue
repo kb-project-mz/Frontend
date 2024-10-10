@@ -2,9 +2,11 @@
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const testStore = useTestStore();
+const authStore = useAuthStore();
 
 const calculateResult = () => {
     let resultValue = 0;
@@ -27,15 +29,22 @@ const calculateResult = () => {
         resultValue = 8;
     }
 
-    // 3초 후 결과 페이지로 이동
+    // 1초 후 결과 페이지로 이동
     setTimeout(() => {
         router.push({ name: "testResult", params: { resultId: resultValue } });
-    }, 1000);
+    }, 1500);
 };
 
 onMounted(() => {
-    // 로딩 페이지에 도착하면 계산을 수행
     calculateResult();
+    if(testStore.birthYear == ''){
+        const memberId = authStore.member.memberId;
+        const info = testStore.getSurveyInfo(memberId);
+        testStore.setBirthYear(info.birthYear);
+        testStore.setGender(info.gender);
+        console.log(testStore.birthday);
+        console.log(testStore.gender);
+    }
 });
 </script>
 
@@ -48,16 +57,31 @@ onMounted(() => {
 
 <style scoped>
 .loader {
-    border: 8px solid #f3f3f3; /* Light grey */
-    border-top: 8px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
+    width: 50px;
+    aspect-ratio: 1;
+    display: grid;
+}
+.loader::before,
+.loader::after {    
+    content:"";
+    grid-area: 1/1;
+    --c:no-repeat radial-gradient(farthest-side, #25b09b 92%, #0000);
+    background: 
+        var(--c) 50% 0, 
+        var(--c) 50% 100%, 
+        var(--c) 100% 50%, 
+        var(--c) 0 50%;
+    background-size: 12px 12px;
+    animation: l12 1s infinite;
+}
+.loader::before {
+    margin: 4px;
+    filter: hue-rotate(45deg);
+    background-size: 8px 8px;
+    animation-timing-function: linear;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+@keyframes l12 { 
+    100% { transform: rotate(0.5turn); }
 }
 </style>

@@ -1,8 +1,8 @@
 <script setup>
-import Button from '@/components/home/Button.vue';
-import testImage from '@/assets/테스트.png';
-import chartImage from '@/assets/차트.png';
-import challengeImage from '@/assets/챌린지.png';
+import Button from "@/components/home/Button.vue";
+import testImage from "@/assets/테스트.png";
+import chartImage from "@/assets/차트.png";
+import challengeImage from "@/assets/챌린지.png";
 </script>
 
 <template>

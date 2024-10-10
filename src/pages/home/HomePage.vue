@@ -1,16 +1,19 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth.js';
-import GuestHomePage from './GuestHomePage.vue';
-import MemberHomePage from './MemberHomePage.vue';
+import Guest from '@/components/home/Guest.vue';
+import Member from '@/components/home/Member.vue';
 
-const authStore  = useAuthStore();
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
 </script>
 
 <template>
-  <MemberHomePage v-if="authStore.member.accessToken" />
-  <GuestHomePage v-else />
+  <div>
+    <div v-if="authStore.member.memberIdx == null">
+      <Guest />
+    </div>
+    <div v-else>
+      <Member />
+    </div>
+  </div>
 </template>
-
-<style scoped>
-
-</style>

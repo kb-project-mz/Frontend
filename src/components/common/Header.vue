@@ -10,9 +10,11 @@ const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
 const imageUrl = computed(() => authStore.member.imageUrl);
 
-const logout = () => {
-  authStore.logout();
-  router.push("/");
+const logout = async () => {
+  await authStore.logout();
+  authStore.clearAuthState();
+  localStorage.clear(); 
+  router.push('/');
 };
 </script>
 

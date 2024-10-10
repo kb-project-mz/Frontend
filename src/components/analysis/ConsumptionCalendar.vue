@@ -15,7 +15,8 @@ const props = defineProps({
 const authData = JSON.parse(localStorage.getItem("auth"));
 const memberName = authData.memberName;
 
-const now = new Date();
+// TODO: 10월 소비 내역이 없는 관계로 now를 9월로 고정, 추후 new Date()로 변경해야 함
+const now = new Date(2024, 8, 30);
 const currentYear = ref(now.getFullYear());
 const currentMonth = ref(now.getMonth());
 

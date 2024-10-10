@@ -4,7 +4,15 @@ import { useAuthStore } from "@/stores/auth.js";
 
 export const useMemberStore = defineStore("memberStore", {
   state: () => ({
-    member: {}
+    member: {
+      memberId:'',
+      memberName:'',
+      socialType:'',
+      birthday:'',
+      gender:'',
+      email:'',
+      imageUrl:'',
+    }
   }),
 
   actions: {
@@ -16,7 +24,6 @@ export const useMemberStore = defineStore("memberStore", {
             Authorization: authStore.member.accessToken
           },
         });
-        
         this.member = response.data.data;
         return response.data.data;
       } catch (error) {

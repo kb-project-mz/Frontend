@@ -10,11 +10,13 @@ const memberStore = useMemberStore();
 const profile = reactive({
   memberId: '',
   memberName: '',
+  socialType:'',
   email: '',
   birthday: '',
   imageUrl: '',
 });
 
+const isSocialLogin = ref(false);
 const selectedImage = ref(null);
 
 const password = ref('');
@@ -30,7 +32,7 @@ const inputCode = ref('');
 const verificationFail = ref('');
 const verificationSuccess = ref('');
 const isVerifiedEmail = ref(false);
-const isEmailChanged = ref('');
+const isEmailChanged = ref(false);
 
 const isLoading = ref(false);
 
@@ -40,15 +42,20 @@ onMounted(async () => {
 
 // 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
+  isLoading.value = true; // 로딩 시작
   try {
     const profileData = await memberStore.getProfile();
     profile.memberId = profileData.memberId;
     profile.memberName = profileData.memberName;
     profile.birthday = profileData.birthday;
+    profile.socialType = profileData.socialType;
     profile.email = profileData.email;
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
-    console.log('이메일ㄹㄹㄹ', profile.email);
+    
+    if(profile.socialType==='GOOGLE'){
+      isSocialLogin.value = true;
+    }
   } catch (error) {
     console.log(error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
@@ -191,7 +198,6 @@ const sendVerificationCode = async () => {
   }
 };
 const verifyCode = async () => {
-  console.log('11111111111111111111111111', inputCode.value);
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
@@ -218,6 +224,9 @@ const verifyCode = async () => {
   }
 };
 const saveEmail = async () => {
+  console.log('이메일', profile.email);
+  console.log('isVerifiedEmail', isVerifiedEmail.value);
+  console.log('isEmailChanged', isEmailChanged.value);
   if (!isVerifiedEmail.value) {
     return alert('이메일 인증을 완료해 주세요.');
   }
@@ -226,7 +235,6 @@ const saveEmail = async () => {
     const response = await apiInstance.post(
       '/member/email',
       {
-        memberId: profile.memberId,
         newEmail: profile.email,
       },
       {
@@ -236,9 +244,15 @@ const saveEmail = async () => {
       }
     );
     if (response.data.success) {
+      isEmailChanged.value = true;
+      console.log('이메일', profile.email);
+  console.log('isVerifiedEmail', isVerifiedEmail.value);
+  console.log('isEmailChanged', isEmailChanged.value);
       console.log(profile.email);
       alert('이메일이 성공적으로 변경되었습니다.');
-      isEmailChanged = true;
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000); 
     } else {
       alert('이메일 변경에 실패하였습니다.');
     }
@@ -285,7 +299,6 @@ const uploadImage = async (event) => {
 };
 const deleteImage = async (profileImage) => {
   alert('삭제 하시겠습니까? 삭제하시면 기본 이미지로 변경됩니다.');
-  console.log('지울 이미지ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ', profileImage);
   try {
     const authStore = useAuthStore();
     const response = await apiInstance.delete(`/member/image`, {
@@ -296,7 +309,7 @@ const deleteImage = async (profileImage) => {
         Authorization: authStore.member.accessToken,
       },
     });
-    console.log('Response Data:', response.data); // 서버 응답 로그 추가
+    console.log('Response Data:', response.data); 
     if (response.data.success) {
       profile.imageUrl = 'basic.jpg';
       await fetchProfile();
@@ -389,10 +402,12 @@ const deleteImage = async (profileImage) => {
           autocomplete="current-password"
           class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
           placeholder="현재 비밀번호"
+          :disabled="isSocialLogin"
         />
         <button
           @click.prevent="verifyPassword"
           class="mt-7 px-4 py-1 bg-navy text-white rounded-xl text-sm"
+          :disabled="isSocialLogin"
         >
           확인
         </button>
@@ -501,6 +516,7 @@ const deleteImage = async (profileImage) => {
           <button
             @click.prevent="editEmail"
             class="mt-7 px-4 py-1 bg-navy text-white rounded-lg text-sm"
+            :disabled="isSocialLogin"
           >
             수정
           </button>
