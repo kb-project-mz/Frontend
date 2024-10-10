@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useCategoryTransactionStore } from "@/stores/category-transaction";
 import DoughnutChart from "@/components/analysis/DoughnutChart.vue";
 
@@ -7,6 +7,14 @@ const props = defineProps({
   chartId: {
     type: String,
     required: true
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
   }
 });
 
@@ -61,16 +69,40 @@ onMounted(async () => {
     return;
   }
 
-  await categoryStore.fetchMostSpentCategory(memberIdx);
+  const startYear = props.startDate.getFullYear();
+  const startMonth = props.startDate.getMonth();
+  const startDate = props.startDate.getDate();
+  const endYear = props.endDate.getFullYear();
+  const endMonth = props.endDate.getMonth();
+  const endDate = props.endDate.getDate();
+
+  await categoryStore.fetchMostSpentCategory(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
 
   isLoaded.value = true;
 });
+
+// watch를 사용하여 startDate와 endDate의 변경을 감시
+watch(
+  [() => props.startDate, () => props.endDate],
+  async ([newStartDate, newEndDate]) => {
+    isLoaded.value = false;
+    const startYear = newStartDate.getFullYear();
+    const startMonth = newStartDate.getMonth();
+    const startDate = newStartDate.getDate();
+    const endYear = newEndDate.getFullYear();
+    const endMonth = newEndDate.getMonth();
+    const endDate = newEndDate.getDate();
+
+    await categoryStore.fetchMostSpentCategory(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
+    isLoaded.value = true;
+  }
+);
 </script>
 
 <template>
   <div class="p-10 bg-white border border-gray-200 rounded-2xl shadow">
     <div v-if="isLoaded">
-      <DoughnutChart :chart-id="chartId" />
+      <DoughnutChart :chart-id="chartId" :start-date="startDate" :end-date="endDate" />
       <div v-if="categoryStore.categoryData.length > 0 && mostSpentCategory !== '없음'" class="flex flex-col justify-between">
         <div>이번 달은 <span class="text-red font-bold">{{ mostSpentCategory }}</span>에</div>
         <div>지출이 가장 많았어요.</div>

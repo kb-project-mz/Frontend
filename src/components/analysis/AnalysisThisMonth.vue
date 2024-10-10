@@ -81,7 +81,8 @@ onMounted(() => {
           :account-transaction-data="accountTransactionData"
         />
       </div>
-      <CategoryChart class="lg:col-span-1" chart-id="thisMonthCategory" />
+      <CategoryChart class="lg:col-span-1" chart-id="thisMonthCategory"
+        :start-date="startDate" :end-date="endDate"/>
     </div>
   </div>
 </template>

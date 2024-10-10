@@ -137,7 +137,7 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
           <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
           <AverageConsumption chart-id="selectedPeriod" :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
         </div>
-        <CategoryChart class="lg:col-span-1" chart-id="selectedPeriodCategory" />
+        <!-- <CategoryChart class="lg:col-span-1" chart-id="selectedPeriodCategory" /> -->
       </div>
     </div>
   </div>

@@ -9,11 +9,21 @@ export const useCategoryTransactionStore = defineStore("categoryTransaction", {
   }),
 
   actions: {
-    async fetchCategoryTransactionCount(memberIdx) {
+    async fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
+      const authStore = useAuthStore();
       try {
-        const res = await apiInstance.get(`/transaction/category-count/${memberIdx}`, {
+        const res = await apiInstance.get(`/transaction/category-count`, {
+          params: {
+            memberIdx: memberIdx,
+            startYear: startYear,
+            startMonth: startMonth + 1,
+            startDay: startDay,
+            endYear: endYear,
+            endMonth: endMonth + 1,
+            endDay: endDay,
+          },
           headers: {
-            Authorization: localStorage.getItem("accessToken"),
+            Authorization: authStore.member.accessToken,
           },
         });
 
@@ -25,11 +35,21 @@ export const useCategoryTransactionStore = defineStore("categoryTransaction", {
       }
     },
 
-    async fetchMostSpentCategory(memberIdx) {
+    async fetchMostSpentCategory(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
+      const authStore = useAuthStore();
       try {
-        const res = await apiInstance.get(`/transaction/most-spent-category/${memberIdx}`, {
+        const res = await apiInstance.get(`/transaction/most-spent-category`, {
+          params: {
+            memberIdx: memberIdx,
+            startYear: startYear,
+            startMonth: startMonth + 1,
+            startDay: startDay,
+            endYear: endYear,
+            endMonth: endMonth + 1,
+            endDay: endDay,
+          },
           headers: {
-            Authorization: localStorage.getItem("accessToken"),
+            Authorization: authStore.member.accessToken,
           },
         });
 

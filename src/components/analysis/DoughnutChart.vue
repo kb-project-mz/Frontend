@@ -9,7 +9,15 @@ const props = defineProps({
   chartId: {
     type: String,
     required: true
-  }  
+  },
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    type: Date,
+    required: true
+  },
 });
 
 const categoryTransactionStore = useCategoryTransactionStore();
@@ -69,8 +77,15 @@ onMounted(async () => {
   const authData = JSON.parse(localStorage.getItem("auth"));
   const memberIdx = authData.memberIdx;
 
+  const startYear = props.startDate.getFullYear();
+  const startMonth = props.startDate.getMonth();
+  const startDate = props.startDate.getDate();
+  const endYear = props.endDate.getFullYear();
+  const endMonth = props.endDate.getMonth();
+  const endDate = props.endDate.getDate();
+
   if (memberIdx) {
-    await categoryTransactionStore.fetchCategoryTransactionCount(memberIdx);
+    await categoryTransactionStore.fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
 
     if (categoryTransactionStore.categoryData.length > 0) {
       const startOfMonth = getStartOfMonth().toISOString().split("T")[0];
