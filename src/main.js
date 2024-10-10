@@ -19,6 +19,8 @@ import { useAuthStore } from './stores/auth';
 library.add(fas, far, fab);
 const app = createApp(App);
 
+const pinia = createPinia();
+
 app.use(createPinia());
 app.use(router);
 
@@ -37,6 +39,7 @@ app.mount('#app');
 
 function initializeSocket() {
   socket.on('authUpdate', (socketAuthData) => {
+		console.log("socket 연결 당시 스토어", localStorage.getItem('auth'));
     const localAuth = JSON.parse(localStorage.getItem('auth'));
 
     if (
@@ -46,8 +49,8 @@ function initializeSocket() {
         localAuth.memberIdx !== socketAuthData.memberIdx)
     ) {
       // 로그아웃
-      localStorage.removeItem('auth');
-      authStore.clearAuthState();
+      // localStorage.removeItem('auth');
+      // authStore.clearAuthState();
       router.push('/');
     }
   });
@@ -55,6 +58,7 @@ function initializeSocket() {
 
 // 스토어 상태가 변경될 때마다 호출 -> 로그인 상태 감지
 authStore.$subscribe((mutation, state) => {
+	console.log("is_login", authStore.isLogin());
   if (authStore.isLogin()) {
     // 로그인해야만 socket 연결
     initializeSocket();
@@ -73,8 +77,8 @@ window.addEventListener('storage', (event) => {
       oldAuthData &&
       oldAuthData.memberIdx !== newAuthData.memberIdx
     ) {
-      localStorage.removeItem('auth');
-      authStore.clearAuthState();
+      // localStorage.removeItem('auth');
+      // authStore.clearAuthState();
       router.push('/');
     }
   }
