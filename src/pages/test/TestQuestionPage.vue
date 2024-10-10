@@ -89,11 +89,6 @@ const nextQuestion = (answerId, answerScore, questionType) => {
                 alt="Progress Star"
             />
         </div>
-        
-        <div class="text-center">
-            <h1 class="text-3xl font-bold mb-4">Q{{ questionId }}.</h1>
-
-            <p class="mb-8" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
 
         <div class="text-center">
             <h1 class="text-3xl font-bold mb-4 gong-gothic-font">Q{{ questionId }}.</h1>
