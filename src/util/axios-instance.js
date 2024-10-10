@@ -20,13 +20,13 @@ apiInstance.interceptors.response.use(
         router.push('/login');
       }
 
-      if (error.response.status === 401) {
-        alert('세션이 만료되었습니다. 다시 로그인하세요.');
-        authStore.logout();
-        authStore.clearAuthState();
-        localStorage.clear();
-        router.push('/login');
-      }
+      // if (error.response.status === 401) {
+      //   alert('세션이 만료되었습니다. 다시 로그인하세요.');
+      //   authStore.logout();
+      //   authStore.clearAuthState();
+      //   localStorage.clear();
+      //   router.push('/login');
+      // }
     }
 
     return Promise.reject(error);

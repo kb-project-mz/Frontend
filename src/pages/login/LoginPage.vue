@@ -30,7 +30,6 @@ const login = async () => {
         if (response && response.memberId) {
             console.log("로그인 성공:", response);
 						
-						setLocalStorage(response)
             if (response.role === 'ROLE_ADMIN') {
                 router.push("/admin"); 
             } else {
