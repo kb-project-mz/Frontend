@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
-import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; 
+import KakaoShareButton from "@/components/common/KakaoShareButton.vue";
 
 const router = useRouter();
 const testStore = useTestStore();
@@ -17,11 +17,11 @@ const startTest = async () => {
         const info = await testStore.getSurveyInfo(authStore.member.memberId);
         testStore.setBirthYear(info.birthYear);
         testStore.setGender(info.gender);
-        console.log('스타투', testStore.birthYear);
-        console.log('스타투', testStore.gender);
-        router.push({ name: "testQuestion", params: { number: 1 } }); 
-    } else { 
-        router.push({ name: "testSurvey" }); 
+        console.log("스타투", testStore.birthYear);
+        console.log("스타투", testStore.gender);
+        router.push({ name: "testQuestion", params: { number: 1 } });
+    } else {
+        router.push({ name: "testSurvey" });
     }
 };
 </script>
@@ -35,23 +35,11 @@ const startTest = async () => {
         <div class="flex justify-center">
             <button
                 @click="startTest"
-                class="custom-button"
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-bold py-4 px-6 rounded-xl text-xl transition duration-300 transform hover:scale-105 w-[300px]"
             >
                 나의 소비 성향 테스트 <br />
-                <span class="text-blue-600 text-lg">START!</span>
+                <span class="text-blue-600 text-2xl gong-gothic-font">START!</span>
             </button>
-        </div>
-        
-        <div class="flex justify-center">
-            <ShareButton class="mt-4 " /> 
-        </div>
-        
-        <div class="flex justify-center">
-            <KakaoShareButton 
-                class="mt-4 custom-button" 
-                description="나의 소비 성향 테스트 하러 가기"
-                :linkUrl="`http://localhost:8080/test/start`" 
-            />
         </div>
     </div>
 </template>
@@ -65,23 +53,14 @@ const startTest = async () => {
     font-family: "LotteriaDdag", sans-serif;
 }
 
-/* 공통 스타일 */
-.custom-button {
-    font-family: "LotteriaDdag", sans-serif;
-    box-shadow: 0 4px 20px rgba(0, 0, 5, 0.5);
-    background-color: white;
-    color: #4B5563; /* text-gray-500 */
-    font-weight: bold;
-    padding: 16px 24px;
-    border-radius: 0.75rem;
-    font-size: 1.25rem;
-    transition: transform 0.3s ease;
-    width: 300px;
-    text-align: center;
+@font-face {
+    font-family: "GongGothicMedium";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
 }
 
-.custom-button:hover {
-    transform: scale(1.05);
+.gong-gothic-font {
+    font-family: "GongGothicMedium", sans-serif;
 }
 </style>
-

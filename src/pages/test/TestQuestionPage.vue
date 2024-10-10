@@ -11,25 +11,25 @@ const questions = ref([]);
 const options = ref([]);
 
 const questionId = computed(() => parseInt(route.params.number, 10));
-const currentQuestion = computed(() => testStore.questions[questionId.value - 1]); 
+const currentQuestion = computed(() => testStore.questions[questionId.value - 1]);
 const currentOptions = computed(() => testStore.getOptionsByQuestionIdx(questionId.value));
 const answers = computed(() => currentOptions.value);
 
 const progress = computed(() => {
-    return ((questionId.value - 1) / testStore.questions.length) * 100; 
+    return ((questionId.value - 1) / testStore.questions.length) * 100;
 });
 
 const fetchData = async () => {
-    questions.value = await testStore.fetchQuestions(); 
-    options.value = await testStore.fetchOptions(questionId.value); 
-}
+    questions.value = await testStore.fetchQuestions();
+    options.value = await testStore.fetchOptions(questionId.value);
+};
 
 onMounted(() => {
-    fetchData(); 
-})
+    fetchData();
+});
 
 watch(questionId, () => {
-    fetchData(); 
+    fetchData();
     console.log("inpulse", testStore.impulseScore);
     console.log("plannedScore", testStore.plannedScore);
     console.log("costEffective", testStore.costEffective);
@@ -41,9 +41,10 @@ watch(questionId, () => {
 const selectedAnswers = ref([]);
 
 const nextQuestion = (answerId, answerScore, questionType) => {
-    selectedAnswers.value.push(answerId); 
+    selectedAnswers.value.push(answerId);
 
-     if (questionType === 1) {
+    // 질문 유형에 따라 점수 추가 로직 실행
+    if (questionType === 1) {
         testStore.incrementImpulseScore(answerScore);
     } else if (questionType === 2) {
         testStore.incrementPlannedScore(answerScore);
@@ -67,12 +68,11 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
-
         <div class="relative w-1/2 bg-gray-200 rounded-full h-2 mb-6">
             <div
                 class="h-2 rounded-full"
-                :style="{ 
-                    width: `${progress}%`, 
+                :style="{
+                    width: `${progress}%`,
                     backgroundColor: '#C0EBA6',
                 }"
             ></div>
@@ -80,27 +80,26 @@ const nextQuestion = (answerId, answerScore, questionType) => {
             <img
                 src="@/assets/star.png"
                 class="absolute transform -translate-x-1/2"
-                :style="{ 
+                :style="{
                     left: `calc(${progress}% - 3px)`,
                     top: '-80px',
-                    width: '170px', 
-                    height: '175px'
+                    width: '170px',
+                    height: '175px',
                 }"
                 alt="Progress Star"
             />
         </div>
-        
-        <div class="text-center">
-            <h1 class="text-3xl font-bold mb-4">Q{{ questionId }}.</h1>
-            <p class="mb-8" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
 
+        <div class="text-center">
+            <h1 class="text-3xl font-bold mb-4 gong-gothic-font">Q{{ questionId }}.</h1>
+            <p class="mb-8 gong-gothic-font text-xl" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
             <div class="flex flex-col space-y-4">
                 <button
                     v-if="answers.length > 0"
                     v-for="answer in answers"
                     :key="answer.optionIdx"
                     @click="nextQuestion(answer.optionIdx, answer.score, answer.typeIdx)"
-                    class="bg-white text-red-600 font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
+                    class="bg-white text-red-600 gong-gothic-font py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
                 >
                     {{ answer.optionText }}
                 </button>
@@ -108,3 +107,16 @@ const nextQuestion = (answerId, answerScore, questionType) => {
         </div>
     </div>
 </template>
+
+<style>
+@font-face {
+    font-family: "GongGothicMedium";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.gong-gothic-font {
+    font-family: "GongGothicMedium", sans-serif;
+}
+</style>
