@@ -69,18 +69,31 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
 
-        <div class="w-3/4 bg-gray-200 rounded-full h-2 mb-6">
-            <div class="bg-gray-500 h-2 rounded-full" :style="{ width: `${progress}%` }"></div>
-            <img 
-                :src="starImage" 
-                alt="Progress Image" 
-                class="absolute h-6 transform -translate-x-1/2"
-                :style="{ left: `${progress}%`, top: '-2px' }"  
+        <div class="relative w-3/4 bg-gray-200 rounded-full h-2 mb-6">
+            <div
+                class="h-2 rounded-full"
+                :style="{ 
+                    width: `${progress}%`, 
+                    backgroundColor: '#C0EBA6',
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)'
+                }"
+            ></div>
+
+            <img
+                src="@/assets/star.png"
+                class="absolute transform -translate-x-1/2"
+                :style="{ 
+                    left: `calc(${progress}% - 3px)`,
+                    top: '-80px',
+                    width: '100px', 
+                    height: '100px'
+                }"
+                alt="Progress Star"
             />
         </div>
+        
         <div class="text-center">
             <h1 class="text-2xl font-bold mb-4">Q{{ questionId }}.</h1>
-
             <p class="mb-8" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
 
             <div class="flex flex-col space-y-4">

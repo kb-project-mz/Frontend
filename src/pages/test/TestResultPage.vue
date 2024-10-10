@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
-import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; // 카카오톡 공유하기 컴포넌트 추가
+import KakaoShareButton from "@/components/common/KakaoShareButton.vue"; 
 
 const route = useRoute();
 const router = useRouter();
