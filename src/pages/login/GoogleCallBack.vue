@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth'; 
 import { setLocalStorage } from '@/util/token'; 
 
+
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
@@ -14,24 +15,32 @@ const memberId = computed(() => route.query.member_id);
 const memberIdx = computed(() => route.query.member_idx);
 const memberName = computed(() => route.query.member_name);
 
-onMounted(() => {
+authStore.isLogin = function() {
+  return !!this.accessToken && !!this.member.memberId;
+};
 
-  console.log("초기 구글 토큰 값 확인:", googleAccessToken.value, googleRefreshToken.value);
-  console.log("초기 memberId 및 memberIdx 값 확인:", memberId.value, memberIdx.value);
-
+onMounted(async () => {
   if (googleAccessToken.value) {
+
     try {
       authStore.$patch({
         member: {
           memberId: memberId.value,
           memberName: memberName.value,
           memberIdx: memberIdx.value,
+          accessToken: googleAccessToken.value,
         },
-        accessToken: googleAccessToken.value || localStorage.getItem('accessToken')
       });
 
-      console.log("AuthStore에 저장된 데이터:", authStore.member);
-      console.log("AuthStore의 accessToken 확인:", authStore.accessToken);
+      console.log("AuthStore memberId:", authStore.member.memberId);
+      console.log("AuthStore accessToken:", authStore.member.accessToken);
+
+      if (authStore.isLogin()) {
+        console.log("로그인 성공");
+      } else {
+        console.log("로그인 실패");
+      }
+
       console.log("AuthStore의 로그인 상태 확인:", authStore.isLogin());
 
       setLocalStorage({
@@ -42,15 +51,16 @@ onMounted(() => {
         memberIdx: memberIdx.value,
       });
 
-      console.log("AuthStore에 저장된 데이터:", authStore.member);
-      console.log("로컬 스토리지에 저장된 auth:", localStorage.getItem('auth'));
-
       authStore.loadAuthState();
-      router.push('/'); 
+      router.push('/');
+
     } catch (error) {
       console.error('토큰 저장 또는 리다이렉트 중 오류 발생:', error);
     }
+  } else {
+    console.error("googleAccessToken 값이 없습니다!");
   }
 });
+
 </script>
 
