@@ -48,7 +48,9 @@ export function setLocalStorage(loginData) {
   if (!loginData.memberId) {
     console.error("memberId가 null입니다. 로그인 데이터:", loginData);
   }
-
+  loginData.accessToken = `Bearer ${loginData.accessToken}`;
+  loginData.refreshToken = `Bearer ${loginData.refreshToken}`;
+  
   setTokens(loginData.accessToken, loginData.refreshToken);
 
   localStorage.setItem("auth", JSON.stringify(loginData));
