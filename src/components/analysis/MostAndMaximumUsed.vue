@@ -6,7 +6,6 @@ import MaximumUsed from "./MaximumUsed.vue";
 import medalFirst from "@/assets/medal_first.png";
 import medalSecond from "@/assets/medal_second.png";
 import medalThird from "@/assets/medal_third.png";
-
 const props = defineProps({
   startDate: {
     type: Date,
@@ -20,16 +19,12 @@ const props = defineProps({
     type: String,
   },
 });
-
 const authData = JSON.parse(localStorage.getItem("auth"));
 const memberIdx = authData.memberIdx;
-
 const transactionAnalysisStore = useTransactionAnalysisStore();
 const mostUsed = ref({});
 const maximumAmount = ref({});
-
 const isLoaded = ref(false);
-
 const fetchTransactionAnalysis = async (
   memberIdx,
   startYear,
@@ -50,12 +45,10 @@ const fetchTransactionAnalysis = async (
   );
   formatMostUsed(transactionAnalysisStore.mostAndMaximum);
 };
-
 const formatMostUsed = (data) => {
   const parts = data.split("2. ");
   const mostUsedData = parts[0].match(/\[.*\]/)[0];
   const maximumAmountData = parts[1].match(/\[.*\]/)[0];
-
   mostUsed.value = mostUsedData
     .replace(/[\[\]]/g, "")
     .split(", ")
@@ -64,7 +57,6 @@ const formatMostUsed = (data) => {
       obj[key] = parseInt(value);
       return obj;
     }, {});
-
   maximumAmount.value = maximumAmountData
     .replace(/[\[\]]/g, "")
     .split(", ")
@@ -74,7 +66,6 @@ const formatMostUsed = (data) => {
       return obj;
     }, {});
 };
-
 const getMedal = (index) => {
   switch (index) {
     case 0:
@@ -87,7 +78,6 @@ const getMedal = (index) => {
       return "";
   }
 };
-
 // watch를 사용하여 startDate와 endDate의 변경을 감시
 watch(
   [() => props.startDate, () => props.endDate],
@@ -99,7 +89,6 @@ watch(
     const endYear = newEndDate.getFullYear();
     const endMonth = newEndDate.getMonth();
     const endDate = newEndDate.getDate();
-
     mostUsed.value = { "배달의 민족": 15, 스타벅스: 3, 편의점: 4 };
     maximumAmount.value = {
       "배달의 민족": 120000,
@@ -110,7 +99,6 @@ watch(
     isLoaded.value = true;
   }
 );
-
 onMounted(async () => {
   const startYear = props.startDate.getFullYear();
   const startMonth = props.startDate.getMonth();
@@ -118,7 +106,6 @@ onMounted(async () => {
   const endYear = props.endDate.getFullYear();
   const endMonth = props.endDate.getMonth();
   const endDate = props.endDate.getDate();
-
   mostUsed.value = { "배달의 민족": 15, 스타벅스: 3, 편의점: 4 };
   maximumAmount.value = {
     "배달의 민족": 120000,
@@ -129,7 +116,6 @@ onMounted(async () => {
   isLoaded.value = true;
 });
 </script>
-
 <template>
   <div
     v-if="isLoaded"

@@ -26,6 +26,7 @@ const goToQuestions = () => {
   console.log(testStore.birthYear); 
   console.log(testStore.gender); 
   router.push({ name: "testQuestion", params: { number: 1 } });
+
 };
   
   </script>
@@ -33,14 +34,12 @@ const goToQuestions = () => {
   <template>
     <div class="survey-container">
       <h1>회원가입</h1>
-      
       <div class="question">
         <label>당신이 태어난 연도는?</label>
         <select v-model="birthYear">
           <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
       </div>
-  
       <div class="question">
         <label>당신의 성별은?</label>
         <div class="gender-options">

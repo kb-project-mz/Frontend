@@ -13,12 +13,11 @@ const startTest = async () => {
     testStore.resetScore();
     testStore.resetInfo();
     testStore.fetchTypes();
+
     if (authStore.member.memberId) {
         const info = await testStore.getSurveyInfo(authStore.member.memberId);
         testStore.setBirthYear(info.birthYear);
         testStore.setGender(info.gender);
-        console.log('스타투', testStore.birthYear);
-        console.log('스타투', testStore.gender);
         router.push({ name: "testQuestion", params: { number: 1 } }); 
     } else { 
         router.push({ name: "testSurvey" }); 

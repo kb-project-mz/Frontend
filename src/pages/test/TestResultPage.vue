@@ -44,21 +44,25 @@ const getResultContent = async () => {
         resultText = testStore.types[2].typeName;
         resultValue = 3;
         resultImage.value = testStore.types[2].typeImage;
+
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[3].typeName;
         resultValue = 4;
         resultImage.value = testStore.types[3].typeImage;
+
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[4].typeName;
         resultValue = 5;
         resultImage.value = testStore.types[4].typeImage;
+
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[5].typeName;
         resultValue = 6;
         resultImage.value = testStore.types[5].typeImage;
+
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[6].typeName;
@@ -84,9 +88,10 @@ const restartTest = () => {
 
 const goToSignup = () => {
     if (authStore.isLogin()) {
-        router.push({ name: "memberHomePage" });
+        router.push({ name: "homePage" });
     } else {
         router.push({ name: "join" }); 
+
     }
 };
 </script>
@@ -96,8 +101,9 @@ const goToSignup = () => {
         <h1 class="text-2xl font-bold mb-4">당신의 결과는:</h1>
         <img :src="resultImage" alt="Result Image" />
         <p class="text-lg">{{ resultContent }}</p>
-
+        
         <ShareButton class="mt-4" /> 
+
         <KakaoShareButton 
             class="mt-4" 
             :title="resultContent" 
@@ -106,6 +112,8 @@ const goToSignup = () => {
             :linkUrl="`http://localhost:8080/test/${resultId}`" 
         />
         <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">테스트 다시 하기</button>
-        <button @click="goToSignup" class="mt-2 px-4 py-2 bg-green-500 text-white rounded">회원가입 하러 가기</button>
+        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-green-500' : 'bg-blue-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded']">
+            {{ authStore.isLogin() ? "홈 화면으로 가기" : "회원가입 하러 가기" }}
+        </button>
     </div>
 </template>
