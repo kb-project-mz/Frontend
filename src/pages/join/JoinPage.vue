@@ -248,19 +248,25 @@ const join = async () => {
   if (!member.terms || !member.personalInfoAgreed) {
     return alert('약관에 동의해야 합니다.');
   }
-  if (member.gender !== '1' && member.gender !== '2' && member.gender !== '3' && member.gender !== '4') {
+
+	if (
+    member.gender !== '1' &&
+    member.gender !== '2' &&
+    member.gender !== '3' &&
+    member.gender !== '4'
+  ) {
     return alert('주민번호 뒷자리 첫째 자리를 정확하게 입력해주세요.');
   }
 
   try {
-    isLoading.value = true;
-    
+		isLoading.value = true;
     if (member.gender === '1' || member.gender === '3') {
       member.gender = 'M';
     } else {
       member.gender = 'F';
     }
 
+    isLoading.value = true;
     const createResponse = await auth.create(member);
     console.log('회원가입 요청:', member);
     console.log('회원가입 응답:', createResponse);
@@ -269,7 +275,7 @@ const join = async () => {
 
     if (loginResponse && loginResponse.memberId) {
       console.log('로그인 성공:', loginResponse);
-      router.push({ name: 'memberHomePage' });
+      router.push({ name: 'homePage' });
     }
   } catch (error) {
     alert('회원가입 중 오류가 발생했습니다.');

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import FindMember from "@/pages/login/FindMember.vue"
-import GuestHomePage from "@/pages/home/GuestHomePage.vue";
 import LoginPage from "@/pages/login/LoginPage.vue";
 import JoinPage from "@/pages/join/JoinPage.vue";
 import ConnectPage from "@/pages/mypage/ConnectPage.vue";
@@ -13,22 +12,18 @@ import TestQuestionPage from "@/pages/test/TestQuestionPage.vue";
 import TestResultPage from "@/pages/test/TestResultPage.vue";
 import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
+import { useAuthStore } from '@/stores/auth';
+import HomePage from "@/pages/home/HomePage.vue";
+import Admin from "@/pages/admin/Admin.vue"
 
-
-import MemberHomePage from "@/pages/home/MemberHomePage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "guestHomePage",
-      component: GuestHomePage,
-    },
-    {
-      path: "/memberHomePage",
-      name: "memberHomePage",
-      component: MemberHomePage,
+      name: "homePage",
+      component: HomePage,
     },
     {
       path: "/login",
@@ -100,6 +95,11 @@ const router = createRouter({
       name: "testResult",
       component: TestResultPage,
     },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: Admin,
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 };
@@ -107,10 +107,21 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = !!localStorage.getItem("auth");
-  if (to.meta.requiresAuth && !isLoggedIn) {
-    next("/login");
-  } else {
+  const authStore = useAuthStore();
+  const isLoggedIn = authStore.isLogin();
+  const userRole = authStore.member.role;
+
+  if (to.path.startsWith('/admin') && (!isLoggedIn || userRole !== 'ROLE_ADMIN')) {
+    alert("관리자 권한이 필요합니다.");
+    authStore.clearAuthState();
+    localStorage.clear();
+    next('/login');
+  } 
+  else if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login');
+  } 
+
+  else {
     next();
   }
 });

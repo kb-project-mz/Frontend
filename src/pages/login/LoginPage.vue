@@ -3,6 +3,7 @@ import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
 import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
+import { setLocalStorage } from '@/util/token'; 
 
 const cr = useRoute();
 const router = useRouter();
@@ -11,28 +12,25 @@ const auth = useAuthStore();
 const member = reactive({
   memberId: "",
   password: "",
-  memberIdx: "",
 });
 
 const error = ref("");
 const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
-    console.log("login 호출:", member);
-
-    if (!member.memberId || !member.password) {
-        error.value = "아이디와 비밀번호를 모두 입력해주세요.";
-        console.error("입력 오류:", error.value);
-        return;
-    }
-
     try {
         const response = await auth.login(member.memberId, member.password);
         console.log("로그인 응답:", response);
 
-        if (response.memberId) {
+        if (response && response.memberId) {
             console.log("로그인 성공:", response);
-            router.push("/memberHomePage");
+						
+						setLocalStorage(response)
+            if (response.role === 'ROLE_ADMIN') {
+                router.push("/admin"); 
+            } else {
+            		router.push("/"); 
+            }
         } else {
             error.value = response;
             console.error("로그인 실패:", response);
@@ -94,8 +92,8 @@ const login = async () => {
                 </div>
             </div>
 
-            <button type="submit" class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5">
-                <router-link to="memberHomePage">로그인</router-link>
+            <button type="submit" class="cursor-pointer bg-navy text-white text-sm rounded-xl block w-full ps-10 p-5" :click="login">
+							로그인
             </button>
         </form>
 
