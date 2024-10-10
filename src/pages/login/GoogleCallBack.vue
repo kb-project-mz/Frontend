@@ -31,7 +31,7 @@ onMounted(() => {
       });
 
       authStore.loadAuthState();
-      router.push('/memberHomePage'); 
+      router.push('/'); 
     } catch (error) {
       console.error('토큰 저장 또는 리다이렉트 중 오류 발생:', error);
     }

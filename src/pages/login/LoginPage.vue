@@ -29,7 +29,7 @@ const login = async () => {
             if (response.role === 'ROLE_ADMIN') {
                 router.push("/admin"); 
             } else {
-            		router.push("/memberHomePage"); 
+            		router.push("/"); 
             }
         } else {
             error.value = response;

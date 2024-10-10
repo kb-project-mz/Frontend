@@ -13,24 +13,17 @@ const logout = async () => {
   await authStore.logout();
   authStore.clearAuthState();
   localStorage.clear(); 
-  router.push('/login');
+  router.push('/');
 };
 </script>
 
 <template>
   <nav class="bg-white shadow-md p-4 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
     <div class="max-w-7.5xl mx-auto flex justify-between items-center">
-      <router-link
-        v-if="memberId"
-        to="/memberHomePage"
-        class="flex items-center"
-      >
+			<router-link to="/" class="flex items-center">
         <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
       </router-link>
-      <router-link v-else to="/" class="flex items-center">
-        <img src="/src/assets/logo.png" alt="Company Logo" class="h-8 w-auto" />
-      </router-link>
-
+  
       <div v-if="memberId">
         <router-link v-if="memberId" to="/mypage" class="mr-2">
           {{ memberName }}님

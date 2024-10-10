@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import FindMember from "@/pages/login/FindMember.vue"
-import GuestHomePage from "@/pages/home/GuestHomePage.vue";
 import LoginPage from "@/pages/login/LoginPage.vue";
 import JoinPage from "@/pages/join/JoinPage.vue";
 import ConnectPage from "@/pages/mypage/ConnectPage.vue";
@@ -14,7 +13,8 @@ import TestResultPage from "@/pages/test/TestResultPage.vue";
 import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
 import { useAuthStore } from '@/stores/auth';
-import MemberHomePage from "@/pages/home/MemberHomePage.vue";
+import HomePage from "@/pages/home/HomePage.vue";
+import Admin from "@/pages/admin/Admin.vue"
 
 
 const router = createRouter({
@@ -22,13 +22,8 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "guestHomePage",
-      component: GuestHomePage,
-    },
-    {
-      path: "/memberHomePage",
-      name: "memberHomePage",
-      component: MemberHomePage,
+      name: "homePage",
+      component: HomePage,
     },
     {
       path: "/login",
@@ -103,18 +98,7 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'Admin',
-      component: () => import('@/pages/admin/Admin.vue'),
-      beforeEnter: (to, from, next) => {
-        const authStore = useAuthStore();
-        const userRole = authStore.member.role;
-  
-        if (userRole === 'ROLE_ADMIN') {
-          next();
-        } else {
-          alert('관리자 권한이 없습니다.');
-          next('/login');
-        }
-      },
+      component: Admin,
     },
   ],
   scrollBehavior(to, from, savedPosition) {
