@@ -5,6 +5,7 @@ import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 import KakaoShareButton from "@/components/common/KakaoShareButton.vue";
+import ResultBar from "@/components/test/ResultBar.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -15,8 +16,18 @@ const resultImage = ref("");
 const resultContent = ref("");
 const resultId = computed(() => parseInt(route.params.resultId, 10));
 
+const impulseVsPlanned = ref({ left: 0, right: 0});
+const costEffectiveVsSatisfaction = ref({ left: 0, right: 0});
+const materialVsExperiential = ref({ left: 0, right: 0});
+
 onMounted(async () => {
     resultContent.value = await getResultContent();
+
+    // 그래프 데이터를 채웁니다.
+    impulseVsPlanned.value = { left: testStore.impulseScore, right: testStore.plannedScore };
+    costEffectiveVsSatisfaction.value = { left: testStore.costEffective, right: testStore.goodForSatisfaction };
+    materialVsExperiential.value = { left: testStore.material, right: testStore.experiential };
+
     console.log("결과==============================");
     console.log("inpulse", testStore.impulseScore);
     console.log("plannedScore", testStore.plannedScore);
@@ -24,6 +35,8 @@ onMounted(async () => {
     console.log("goodForSatisfaction", testStore.goodForSatisfaction);
     console.log("material", testStore.material);
     console.log("experiential", testStore.experiential);
+
+    console.log("impulseVsPlanned:", impulseVsPlanned.value);
 });
 
 const getResultContent = async () => {
@@ -97,6 +110,27 @@ const goToSignup = () => {
         <img :src="resultImage" alt="Result Image" />
         <p class="text-lg">{{ resultContent }}</p>
     
+
+        <div class="w-full max-w-lg">
+            <ResultBar
+                :labelLeft="'충동적'"
+                :labelRight="'계획적'"
+                :scoreLeft="impulseVsPlanned.left"
+                :scoreRight="impulseVsPlanned.right"
+            />
+            <ResultBar
+                :labelLeft="'가성비'"
+                :labelRight="'가심비'"
+                :scoreLeft="costEffectiveVsSatisfaction.left"
+                :scoreRight="costEffectiveVsSatisfaction.right"
+            />
+            <ResultBar
+                :labelLeft="'물질적'"
+                :labelRight="'경험적'"
+                :scoreLeft="materialVsExperiential.left"
+                :scoreRight="materialVsExperiential.right"
+            />
+        </div>
         <ShareButton class="mt-4" /> 
 
         <KakaoShareButton 
