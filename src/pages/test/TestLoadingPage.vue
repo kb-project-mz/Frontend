@@ -37,7 +37,7 @@ const calculateResult = () => {
 
 onMounted(() => {
     calculateResult();
-    if(testStore.birthYear == ''){
+    if (testStore.birthYear == "") {
         const memberId = authStore.member.memberId;
         const info = testStore.getSurveyInfo(memberId);
         testStore.setBirthYear(info.birthYear);
@@ -50,7 +50,7 @@ onMounted(() => {
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
-        <h1 class="text-2xl font-bold mb-4">결과를 계산 중입니다...</h1>
+        <h1 class="text-2xl gong-gothic-font font-bold mb-4">결과를 계산 중입니다...</h1>
         <div class="loader"></div>
     </div>
 </template>
@@ -62,15 +62,11 @@ onMounted(() => {
     display: grid;
 }
 .loader::before,
-.loader::after {    
-    content:"";
+.loader::after {
+    content: "";
     grid-area: 1/1;
-    --c:no-repeat radial-gradient(farthest-side, #25b09b 92%, #0000);
-    background: 
-        var(--c) 50% 0, 
-        var(--c) 50% 100%, 
-        var(--c) 100% 50%, 
-        var(--c) 0 50%;
+    --c: no-repeat radial-gradient(farthest-side, #25b09b 92%, #0000);
+    background: var(--c) 50% 0, var(--c) 50% 100%, var(--c) 100% 50%, var(--c) 0 50%;
     background-size: 12px 12px;
     animation: l12 1s infinite;
 }
@@ -81,7 +77,20 @@ onMounted(() => {
     animation-timing-function: linear;
 }
 
-@keyframes l12 { 
-    100% { transform: rotate(0.5turn); }
+@keyframes l12 {
+    100% {
+        transform: rotate(0.5turn);
+    }
+}
+
+@font-face {
+    font-family: "GongGothicMedium";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.gong-gothic-font {
+    font-family: "GongGothicMedium", sans-serif;
 }
 </style>
