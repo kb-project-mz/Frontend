@@ -102,13 +102,13 @@ const selectPublicStatus = (status) => {
       <form @submit.prevent="confirmSubmission">
         <div class="flex flex-col space-y-3">
           <div class="flex items-center h-12">
-            <div class="w-20 text-end mr-4">이름</div>
+            <div class="w-20 text-end mr-8">이름</div>
             <input id="challengeName" type="text" v-model="formData.challengeName"
               class="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2" required />
           </div>
 
           <div class="flex items-center h-12">
-            <div class="w-20 text-end mr-4">기간</div>
+            <div class="w-20 text-end mr-8">기간</div>
             <div class="flex w-full py-2">
               <input type="date" v-model="formData.challengeStartDate" class="form-input border-gray-300 rounded-md"
                 required />
@@ -119,7 +119,7 @@ const selectPublicStatus = (status) => {
           </div>
 
           <div class="flex items-center h-12">
-            <div class="w-20 text-end mr-4">조건</div>
+            <div class="w-20 text-end mr-8">조건</div>
             <select v-model="formData.challengeType" @change="onConditionChange"
               class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
               <option value="횟수">횟수 제한</option>
@@ -128,7 +128,7 @@ const selectPublicStatus = (status) => {
           </div>
 
           <div class="flex items-center h-12">
-            <div class="w-20 text-end mr-4">카테고리</div>
+            <div class="w-20 text-end mr-8">카테고리</div>
             <select v-model="formData.categoryIdx" @change="onCategoryChange"
               class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
               <option value="1">식비</option>
@@ -146,7 +146,7 @@ const selectPublicStatus = (status) => {
           </div>
 
           <div class="flex min-h-12">
-            <div class="w-20 text-end mr-4 my-1">소분류</div>
+            <div class="w-20 text-end mr-8 my-1">소분류</div>
             <div class="w-full">
               <div v-if="detailedCategories.length > 0" class="flex flex-wrap">
                 <div v-for="(category, index) in detailedCategories" 
@@ -162,7 +162,7 @@ const selectPublicStatus = (status) => {
 
 
           <div class="flex min-h-12">
-            <div class="w-20 text-end mr-4">{{ limitMessage }}</div>
+            <div class="w-20 text-end mr-8">{{ limitMessage }}</div>
             <div class="w-full flex flex-col">
               <input type="range" v-model="formData.challengeLimit" :min="0" :max="maxLimit"
                 :step="formData.challengeType === '횟수' ? 1 : 100" class="cursor-pointer h-2 rounded-lg bg-gray-200" />
@@ -171,7 +171,7 @@ const selectPublicStatus = (status) => {
           </div>
 
           <div class="flex items-center h-12">
-            <div class="w-20 text-end mr-4">공개여부</div>
+            <div class="w-20 text-end mr-8">공개여부</div>
             <div class="flex space-x-2 w-full">
               <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
                 'bg-navy text-white': formData.isPublic === 1,
