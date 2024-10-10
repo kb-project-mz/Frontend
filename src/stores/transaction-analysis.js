@@ -37,6 +37,7 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
         });
 
         this.mostAndMaximum = res.data.data;
+        console.log(res.data.data);
       } catch (err) {
         console.error(err);
       }

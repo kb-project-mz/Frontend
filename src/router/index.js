@@ -14,7 +14,6 @@ import TestLoadingPage from "@/pages/test/TestLoadingPage.vue";
 import TestSurveyPage from "@/pages/test/TestSurveyPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
 import { useAuthStore } from '@/stores/auth';
-import HomePage from "@/pages/home/HomePage.vue";
 import Admin from "@/pages/admin/Admin.vue"
 
 const router = createRouter({
