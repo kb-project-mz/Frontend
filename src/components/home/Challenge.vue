@@ -1,12 +1,13 @@
 <script setup>
-import ProgressBar from "@/components/challenge/ProgressBar.vue";
-import { useChallengeTop3Store } from "@/stores/challengeTop3";
-import { ref, onMounted } from "vue";
+import ProgressBar from '@/components/challenge/ProgressBar.vue';
+import { useChallengeTop3Store } from '@/stores/challengeTop3';
+import { ref, onMounted } from 'vue';
 
 const challengeTop3Store = useChallengeTop3Store();
 const challengeTop3ByMember = ref([]);
 const peerChallenge = ref([]);
-const authData = JSON.parse(localStorage.getItem("auth"));
+
+const authData = JSON.parse(localStorage.getItem('auth'));
 const memberIdx = authData.memberIdx;
 
 const fetchChallengeTop3 = async (memberIdx) => {
