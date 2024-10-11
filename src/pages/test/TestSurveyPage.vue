@@ -8,6 +8,8 @@ const testStore = useTestStore();
 
 const birthYear = ref(null);
 const selectedGender = ref(null);
+const region = ref(""); 
+const occupation = ref("");
 
 const years = Array.from({ length: 100 }, (v, i) => new Date().getFullYear() - i);
 const genderOptions = ["남성", "여성"];
@@ -24,6 +26,9 @@ const goToQuestions = () => {
     }
     testStore.setBirthYear(birthYear.value);
     testStore.setGender(selectedGender.value);
+    testStore.setRegion(region.value); 
+    testStore.setOccupation(occupation.value); 
+
     router.push({ name: "testQuestion", params: { number: 1 } });
 };
 
@@ -67,12 +72,32 @@ const onScroll = (event) => {
                 </button>
             </div>
         </div>
-        <button
-            class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
-            @click="goToQuestions"
-        >
+        <div class="question gong-gothic-font">
+            <label class="text-2xl">당신의 거주지는? ('구'까지 입력)</label>
+            <br />
+            <input
+                v-model="region"
+                type="text"
+                placeholder="거주지 입력"
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
+            />
+        </div>
+        <div class="question gong-gothic-font">
+            <label class="text-2xl">당신의 직업은?</label>
+            <br />
+            <input
+                v-model="occupation"
+                type="text"
+                placeholder="직업 입력"
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
+            />
+                </div>
+            <button
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
+                @click="goToQuestions"
+            >
             다음
-        </button>
+            </button>
     </div>
 </template>
 <style>

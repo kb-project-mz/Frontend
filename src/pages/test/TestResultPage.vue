@@ -121,7 +121,6 @@ const goToSignup = () => {
         <h1 class="text-2xl gong-gothic-font font-bold mb-4">당신의 결과는:</h1>
         <img :src="resultImage" alt="Result Image" />
         <p class="text-lg">{{ resultContent }}</p>
-    
 
         <div class="w-full max-w-lg">
             <ResultBar

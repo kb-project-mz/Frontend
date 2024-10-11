@@ -16,6 +16,8 @@ export const useTestStore = defineStore("testStore", {
         experiential: 0,
         birthYear: 0,
         gender: '',
+        region: "", 
+        occupation: "", 
     }),
     actions: {
         async fetchQuestions() {
@@ -58,22 +60,23 @@ export const useTestStore = defineStore("testStore", {
             }
         },
         
-        // 결과 저장하는 통신
         async saveResult(result) {
             const authStore = useAuthStore(); 
             const memberIdx = authStore.member.memberIdx || null; 
             const typeIdx = result;
             const birthYear = this.birthYear;
             const gender = this.gender;
+            const region = this.region;
+            const occupation = this.occupation;
 
-            console.log('여기서도 찍히나', birthYear);
-            console.log('이곳에서도', gender);
             try {
                 const response = await apiInstance.post("/test/result", {
                     typeIdx: typeIdx,
                     memberIdx: memberIdx,
                     birthYear: birthYear,  
                     gender: gender, 
+                    region: region,
+                    occupation: occupation,
                 });
                 console.log("데이터 전송 성공:", response.data);
             } catch (error) {
@@ -81,12 +84,10 @@ export const useTestStore = defineStore("testStore", {
             }
         },
 
-        // 로그인한 사용자의 서베이 정보를 가져오는 통신
         async getSurveyInfo(memberId) {
             try {
                 const response = await apiInstance.get(`/test/survey/${memberId}`);
                 if (response.data.success) {
-                    console.log('서베이정보', response.data.data);
                     return response.data.data;
                 } else {
                     console.error("정보를 가져오는 데 실패했습니다.", response.data.error);
@@ -96,6 +97,12 @@ export const useTestStore = defineStore("testStore", {
             }
         },
 
+        setRegion(region) {
+            this.region = region; 
+        },
+        setOccupation(occupation) {
+            this.occupation = occupation; 
+        },
         setBirthYear(year) {
             this.birthYear = year;
         },
