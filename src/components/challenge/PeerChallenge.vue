@@ -8,6 +8,10 @@ const memberIdx = authData.memberIdx;
 const challengeStore = useChallengeStore();
 const peerChallengeList = ref([]);
 
+const formatDate = (date) => {
+  return date.split("-").join(".");
+}
+
 onMounted(async () => {
   await challengeStore.getPeerChallengeList(memberIdx);
   console.log(challengeStore.peerChallengeList);
@@ -40,7 +44,7 @@ const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'b
 
 <template>
   <div class="overflow-hidden">
-    <div class="text-xl font-bold mb-6">내 또래에게 현재 인기가 많은 챌린지예요</div> 
+    <div class="text-xl font-bold mb-6">또래가 등록한 신규 챌린지예요</div> 
     <div class="wrap flex flex-col overflow-hidden shrink-0">
       <div class="rolling-list">
         <ul class="flex flex-col">
@@ -48,11 +52,12 @@ const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'b
             :class="liBackgroundClasses[index % liBackgroundClasses.length]"
             v-for="(challenge, index) in peerChallengeList" 
             :key="index">
-            <div class="text-gray-700 flex justify-between items-center">
-              <div class="text-lg font-bold">{{ challenge.detailedCategory }}</div>
-              <div class="rounded-full w-fit py-1 px-4 items-center text-center text-white" :class="divBackgroundClasses[index % divBackgroundClasses.length]">
-                {{ challenge.challengeCount }}명
-              </div>
+            <div class="text-gray-700">
+              <div class="text-lg font-bold">카테고리: {{ challenge.detailedCategory }}({{ challenge.categoryName }})</div>
+              <div>이름: {{ challenge.challengeName }}</div>
+              <div>종류: {{ challenge.challengeType }}</div>
+              <div>제한: {{ challenge.challengeLimit }}</div>
+              <div>기간: {{ formatDate(challenge.challengeStartDate) }} - {{ formatDate(challenge.challengeEndDate) }}</div>
             </div>
           </li>
         </ul>
@@ -93,10 +98,10 @@ const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'b
   background-color: #DDA4FF;
 }
 .rolling-list.original {
-  animation: rollingup1 50s linear infinite;
+  animation: rollingup1 80s linear infinite;
 }
 .rolling-list.clone {
-  animation: rollingup2 50s linear infinite;
+  animation: rollingup2 80s linear infinite;
 }
 @keyframes rollingup1 {
   0% { transform: translateY(0); }
