@@ -34,6 +34,7 @@ const isEmailChanged = ref(false);
 
 onMounted(async () => {
   await fetchProfile();
+  console.log('onmounted',authStore.member.imageUrl);
 });
 
 // 프로필 정보를 API에서 불러오는 함수
@@ -253,6 +254,7 @@ const uploadImage = async (event) => {
       alert('이미지 업로드에 성공했습니다.');
       const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${response.data.data.storeFileName}`;
       profile.imageUrl = imageUrl;
+      authStore.updateImageUrl(response.data.data.storeFileName)
       Object.assign(profile, { imageUrl: imageUrl });
       await fetchProfile();
     }
@@ -279,6 +281,7 @@ const deleteImage = async (profileImage) => {
       console.log('Response Data:', response.data);
       if (response.data.success) {
         profile.imageUrl = 'basic.jpg';
+        authStore.updateImageUrl("basic.jpg")
         await fetchProfile();
       }
     } catch (error) {
@@ -302,6 +305,10 @@ const withdraw = async () => {
     }
   }
 }
+
+onMounted(() => {
+  console.log(authStore.member.imageUrl);
+})
 </script>
 
 <template>
