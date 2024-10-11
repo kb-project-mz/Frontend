@@ -11,6 +11,10 @@ const authData = JSON.parse(localStorage.getItem('auth'));
 const memberIdx = authData.memberIdx;
 const memberName = authData.memberName;
 
+const formatDate = (date) => {
+  return date.split('-').join('.');
+};
+
 const fetchChallengeTop3 = async (memberIdx) => {
   await challengeTop3Store.getChallengeTop3(memberIdx);
 };
@@ -32,9 +36,20 @@ onMounted(async () => {
     class="border border-gray-200 rounded-lg p-4 bg-gray-50 max-w-lg mx-auto"
   >
     <div v-if="challengeTop3ByMember.length === 0">
-      또래 챌린지 보여줘야함.
-      <div v-for="(peer, index) in peerChallenge" :key="index">
-        {{ peer.challengeName }}
+      <div class="mb-4 text-center font-bold text-sm">
+        {{ memberName }}님은 진행 중인 챌린지가 없어요..
+      </div>
+      <div class="mb-4 text-center font-bold text-md">
+        {{ memberName }}님의 또래는 어떤 챌린지를 진행 중 일까요?
+      </div>
+      <div
+        v-for="(peer, index) in peerChallenge"
+        :key="index"
+        class="w-full border border-gray-300 rounded-lg p-4 mb-4 shadow font-semibold"
+      >
+        {{ peer.challengeName }} ({{ peer.detailedCategory }})<br />
+        {{ formatDate(peer.challengeStartDate) }} ~
+        {{ formatDate(peer.challengeEndDate) }}
       </div>
     </div>
     <div v-else>
