@@ -106,7 +106,13 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       try {
-        await apiInstance.post('/member/logout');
+        const authStore = useAuthStore();
+        const response = await apiInstance.post('/member/logout', null, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        console.log(response.data);
         clearTokens();
         localStorage.clear();
         this.clearAuthState();

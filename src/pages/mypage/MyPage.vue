@@ -3,6 +3,7 @@ import { reactive, ref, onMounted, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useMemberStore } from '@/stores/member.js';
 import apiInstance from '@/util/axios-instance';
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const memberStore = useMemberStore();
@@ -16,6 +17,7 @@ const profile = reactive({
   imageUrl: '',
 });
 
+const router = useRouter();
 const isSocialLogin = ref(false);
 const selectedImage = ref(null);
 
@@ -281,6 +283,22 @@ const deleteImage = async (profileImage) => {
     console.error('파일 삭제 실패');
   }
 };
+
+const withdraw = async () => {
+  const confirmed = window.confirm("정말 탈퇴하시겠습니까?");
+
+  if (confirmed) {
+    try {
+      await memberStore.withdraw();
+      await authStore.logout();
+      authStore.clearAuthState();
+      localStorage.clear(); 
+      router.push('/');
+    } catch (err) {
+      console.error('탈퇴 처리 중 오류 발생: ', erorr);
+    }
+  }
+}
 </script>
 
 <template>
@@ -424,10 +442,11 @@ const deleteImage = async (profileImage) => {
     </div>
     </div>
 
-    <div class="text-center mt-4">
-      <div class="inline-block p-3 bg-navy text-white rounded-lg">
+    <div class="mx-auto text-center mt-4">
+      <div class="p-3 bg-navy text-white rounded-lg">
         <router-link to="/mypage/asset">연결된 자산 보기</router-link>
       </div>
+      <button @click="withdraw" class="my-5 underline text-gray-500">탈퇴하기</button>
     </div>
   </div>
 </template>
