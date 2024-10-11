@@ -5,6 +5,7 @@ import { useTestStore } from "@/stores/test";
 import { useAuthStore } from "@/stores/auth";
 import ShareButton from "@/components/common/ShareButton.vue";
 import KakaoShareButton from "@/components/common/KakaoShareButton.vue";
+import ResultBar from "@/components/test/ResultBar.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -15,8 +16,36 @@ const resultImage = ref("");
 const resultContent = ref("");
 const resultId = computed(() => parseInt(route.params.resultId, 10));
 
+const impulseVsPlanned = ref({ left: 0, right: 0});
+const costEffectiveVsSatisfaction = ref({ left: 0, right: 0});
+const materialVsExperiential = ref({ left: 0, right: 0});
+
 onMounted(async () => {
     resultContent.value = await getResultContent();
+
+    const storedResultText = localStorage.getItem('resultName');
+    if (storedResultText) {
+        resultContent.value = storedResultText; 
+    } else {
+        resultContent.value = await getResultContent(); 
+    }
+
+    testStore.impulseScore = parseInt(localStorage.getItem('impulseScore')) || 0;
+    testStore.plannedScore = parseInt(localStorage.getItem('plannedScore')) || 0;
+    testStore.costEffective = parseInt(localStorage.getItem('costEffective')) || 0;
+    testStore.goodForSatisfaction = parseInt(localStorage.getItem('goodForSatisfaction')) || 0;
+    testStore.material = parseInt(localStorage.getItem('material')) || 0;
+    testStore.experiential = parseInt(localStorage.getItem('experiential')) || 0;
+
+    const storedImage = localStorage.getItem('resultImage');
+    if (storedImage) {
+        resultImage.value = storedImage;
+    }
+
+    impulseVsPlanned.value = { left: testStore.impulseScore, right: testStore.plannedScore };
+    costEffectiveVsSatisfaction.value = { left: testStore.costEffective, right: testStore.goodForSatisfaction };
+    materialVsExperiential.value = { left: testStore.material, right: testStore.experiential };
+
     console.log("결과==============================");
     console.log("inpulse", testStore.impulseScore);
     console.log("plannedScore", testStore.plannedScore);
@@ -24,6 +53,7 @@ onMounted(async () => {
     console.log("goodForSatisfaction", testStore.goodForSatisfaction);
     console.log("material", testStore.material);
     console.log("experiential", testStore.experiential);
+
 });
 
 const getResultContent = async () => {
@@ -33,48 +63,43 @@ const getResultContent = async () => {
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[0].typeName;
         resultValue = 1;
-        resultImage.value = testStore.types[0].typeImage;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[1].typeName;
         resultValue = 2;
-        resultImage.value = testStore.types[1].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.material > testStore.experiential) {
         resultText = testStore.types[2].typeName;
         resultValue = 3;
-        resultImage.value = testStore.types[2].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.costEffective > testStore.goodForSatisfaction && testStore.experiential > testStore.material) {
         resultText = testStore.types[3].typeName;
         resultValue = 4;
-        resultImage.value = testStore.types[3].typeImage;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[4].typeName;
         resultValue = 5;
-        resultImage.value = testStore.types[4].typeImage;
     }
     if (testStore.impulseScore > testStore.plannedScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[5].typeName;
         resultValue = 6;
-        resultImage.value = testStore.types[5].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.material > testStore.experiential) {
         resultText = testStore.types[6].typeName;
         resultValue = 7;
-        resultImage.value = testStore.types[6].typeImage;
     }
     if (testStore.plannedScore > testStore.impulseScore && testStore.goodForSatisfaction > testStore.costEffective && testStore.experiential > testStore.material) {
         resultText = testStore.types[7].typeName;
         resultValue = 8;
-        resultImage.value = testStore.types[7].typeImage;
     }
 
-    if (resultValue !== null) {
+    if (resultValue !== 0) {
         testStore.saveResult(resultValue);
+        resultImage.value = testStore.types[resultValue - 1].typeImage; 
+        resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${resultImage.value}`;
+        localStorage.setItem('resultName', resultText);
+        localStorage.setItem('resultImage', resultImage.value); 
     }
-    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${resultImage.value}`;
     return resultText;
 };
 
@@ -97,6 +122,27 @@ const goToSignup = () => {
         <img :src="resultImage" alt="Result Image" />
         <p class="text-lg">{{ resultContent }}</p>
     
+
+        <div class="w-full max-w-lg">
+            <ResultBar
+                :labelLeft="'충동적'"
+                :labelRight="'계획적'"
+                :scoreLeft="impulseVsPlanned.left"
+                :scoreRight="impulseVsPlanned.right"
+            />
+            <ResultBar
+                :labelLeft="'가성비'"
+                :labelRight="'가심비'"
+                :scoreLeft="costEffectiveVsSatisfaction.left"
+                :scoreRight="costEffectiveVsSatisfaction.right"
+            />
+            <ResultBar
+                :labelLeft="'물질적'"
+                :labelRight="'경험적'"
+                :scoreLeft="materialVsExperiential.left"
+                :scoreRight="materialVsExperiential.right"
+            />
+        </div>
         <ShareButton class="mt-4" /> 
 
         <KakaoShareButton 

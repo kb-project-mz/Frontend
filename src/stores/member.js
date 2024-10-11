@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import apiInstance from "@/util/axios-instance";
 import { useAuthStore } from "@/stores/auth.js";
 
+
 export const useMemberStore = defineStore("memberStore", {
   state: () => ({
     member: {
@@ -25,6 +26,7 @@ export const useMemberStore = defineStore("memberStore", {
           },
         });
         this.member = response.data.data;
+        console.log("response: ", response);
         return response.data.data;
       } catch (error) {
         console.error('Failed to profile data', error);

@@ -14,6 +14,15 @@ const startTest = async () => {
     testStore.resetInfo();
     testStore.fetchTypes();
 
+    localStorage.removeItem('impulseScore');
+    localStorage.removeItem('plannedScore');
+    localStorage.removeItem('costEffective');
+    localStorage.removeItem('goodForSatisfaction');
+    localStorage.removeItem('material');
+    localStorage.removeItem('experiential');
+    localStorage.removeItem('resultImage');
+    localStorage.removeItem('resultName');
+
     if (authStore.member.memberId) {
         const info = await testStore.getSurveyInfo(authStore.member.memberId);
         testStore.setBirthYear(info.birthYear);
@@ -40,6 +49,7 @@ const startTest = async () => {
                 <span class="text-blue-600 text-2xl gong-gothic-font">START!</span>
             </button>
         </div>
+        <br/>
         <div class="flex justify-center">
             <ShareButton class="mt-4" />
         </div>
