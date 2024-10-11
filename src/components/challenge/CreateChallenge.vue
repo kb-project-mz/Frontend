@@ -19,7 +19,7 @@ const formData = ref({
   challengeName: "",
   challengeType: "횟수",
   challengeLimit: 0,
-  categoryIdx: 1,
+  categoryIdx: 0,
   detailedCategory: "",
   challengeStatus: "",
   challengeStartDate: "",
@@ -33,7 +33,7 @@ const closeModal = () => {
     challengeName: "",
     challengeType: "횟수",
     challengeLimit: 0,
-    categoryIdx: 1,
+    categoryIdx: 0,
     detailedCategory: "",
     challengeStatus: "",
     challengeStartDate: "",
@@ -78,11 +78,15 @@ const onConditionChange = () => {
 };
 
 const onCategoryChange = async () => {
-  await challengeStore.getDetailedCategory(
-    memberIdx,
-    formData.value.categoryIdx
-  );
-  detailedCategories.value = challengeStore.detailedCategories;
+  if (formData.value.categoryIdx != 0) {
+    await challengeStore.getDetailedCategory(
+      memberIdx,
+      formData.value.categoryIdx
+    );
+    detailedCategories.value = challengeStore.detailedCategories;
+  } else {
+    detailedCategories.value = [];
+  }
 };
 
 const selectDetailedCategory = (detailedCategory) => {
@@ -131,6 +135,7 @@ const selectPublicStatus = (status) => {
             <div class="w-24 text-end mr-8">카테고리</div>
             <select v-model="formData.categoryIdx" @change="onCategoryChange"
               class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+              <option value="0">카테고리를 선택해주세요.</option>
               <option value="1">식비</option>
               <option value="2">카페/디저트</option>
               <option value="3">교통비</option>
