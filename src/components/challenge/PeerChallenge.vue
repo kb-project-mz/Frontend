@@ -38,26 +38,32 @@ onMounted(async () => {
 });
 
 const liBackgroundClasses = ['bg-li-1', 'bg-li-2', 'bg-li-3','bg-li-4', 'bg-li-5'];
-
-const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'bg-div-5'];
 </script>
 
 <template>
   <div class="overflow-hidden">
-    <div class="text-xl font-bold mb-6">또래가 등록한 신규 챌린지예요</div> 
+    <div class="text-xl font-bold mb-6 text-center">또래가 등록한 신규 챌린지예요</div> 
     <div class="wrap flex flex-col overflow-hidden shrink-0">
       <div class="rolling-list">
         <ul class="flex flex-col">
-          <li class="h-fit py-9 my-7 px-10 border border-gray-200 rounded-3xl shadow-lg"
+          <li class="text-base text-start h-fit p-8 my-7 border border-gray-200 rounded-3xl shadow-lg"
             :class="liBackgroundClasses[index % liBackgroundClasses.length]"
             v-for="(challenge, index) in peerChallengeList" 
             :key="index">
-            <div class="text-gray-700">
-              <div class="text-lg font-bold">카테고리: {{ challenge.detailedCategory }}({{ challenge.categoryName }})</div>
-              <div>이름: {{ challenge.challengeName }}</div>
-              <div>종류: {{ challenge.challengeType }}</div>
-              <div>제한: {{ challenge.challengeLimit }}</div>
-              <div>기간: {{ formatDate(challenge.challengeStartDate) }} - {{ formatDate(challenge.challengeEndDate) }}</div>
+            <div class="text-gray-600 flex">
+              <div class="w-1/5 text-end mr-5 space-y-1">
+                <div>카테고리</div>
+                <div>이름</div>
+                <div>{{ challenge.challengeType === '횟수' ? '제한횟수' : '제한금액' }}</div>
+                <div>기간</div>
+              </div>
+              <div class="w-4/5 space-y-1">
+                <div class="font-bold">{{ challenge.detailedCategory }}({{ challenge.categoryName }})</div>
+              <div>{{ challenge.challengeName }}</div>
+              <div>{{ challenge.challengeLimit.toLocaleString() }}{{ challenge.challengeType === '횟수' ? '회' : '원' }}</div>
+              <div>{{ formatDate(challenge.challengeStartDate) }} - {{ formatDate(challenge.challengeEndDate) }}</div>
+              </div>
+              
             </div>
           </li>
         </ul>
