@@ -33,5 +33,20 @@ export const useMemberStore = defineStore("memberStore", {
         throw error;
       }
     },
-  },
+    async withdraw() {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.post(`/member/withdraw`, authStore.member.memberIdx, {
+          headers: {
+            Authorization: authStore.member.accessToken,
+            'Content-Type': 'application/json'
+          },
+        });
+        
+        console.log(response.data);
+      } catch (error) {
+        console.error('Failed to withdraw', error);
+      }
+    }
+  },  
 });

@@ -3,19 +3,21 @@ import { reactive, ref, onMounted, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useMemberStore } from '@/stores/member.js';
 import apiInstance from '@/util/axios-instance';
+import { useRouter } from "vue-router";
 
-const auth = useAuthStore();
+const authStore = useAuthStore();
 const memberStore = useMemberStore();
 
 const profile = reactive({
   memberId: '',
   memberName: '',
-  socialType:'',
+  socialType: '',
   email: '',
   birthday: '',
   imageUrl: '',
 });
 
+const router = useRouter();
 const isSocialLogin = ref(false);
 const selectedImage = ref(null);
 
@@ -25,16 +27,10 @@ const confirmNewPassword = ref('');
 const isPasswordStrong = ref(false);
 const isPasswordVerified = ref(false);
 const isPasswordMatch = ref(false);
-
-const isEditingEmail = ref(false);
 const isVerificationCodeSent = ref(false);
 const inputCode = ref('');
-const verificationFail = ref('');
-const verificationSuccess = ref('');
 const isVerifiedEmail = ref(false);
 const isEmailChanged = ref(false);
-
-const isLoading = ref(false);
 
 onMounted(async () => {
   await fetchProfile();
@@ -42,7 +38,6 @@ onMounted(async () => {
 
 // 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
-  isLoading.value = true; // 로딩 시작
   try {
     const profileData = await memberStore.getProfile();
     profile.memberId = profileData.memberId;
@@ -52,8 +47,8 @@ const fetchProfile = async () => {
     profile.email = profileData.email;
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
-    
-    if(profile.socialType==='GOOGLE'){
+
+    if (profile.socialType === 'GOOGLE') {
       isSocialLogin.value = true;
     }
   } catch (error) {
@@ -62,7 +57,6 @@ const fetchProfile = async () => {
   }
 };
 
-// 생일
 const formattedBirthDay = computed(() => {
   if (!profile.birthday) return '';
   const date = new Date(profile.birthday);
@@ -72,7 +66,6 @@ const formattedBirthDay = computed(() => {
   return `${year}-${month}-${day}`;
 });
 
-// 비밀번호
 const enhancedSecurityPassword = (password) => {
   const minLength = 8;
   const specialChars = /[~!@#$%^&*]/;
@@ -86,6 +79,7 @@ const enhancedSecurityPassword = (password) => {
     lowerCase.test(password)
   );
 };
+
 const checkPasswordStrength = () => {
   if (enhancedSecurityPassword(newPassword.value)) {
     isPasswordStrong.value = true;
@@ -93,6 +87,7 @@ const checkPasswordStrength = () => {
     isPasswordStrong.value = false;
   }
 };
+
 const checkPasswordConfirmation = () => {
   if (newPassword.value === confirmNewPassword.value) {
     isPasswordMatch.value = true;
@@ -100,14 +95,14 @@ const checkPasswordConfirmation = () => {
     isPasswordMatch.value = false;
   }
 };
+
 const verifyPassword = async () => {
   if (!password.value) {
     return alert('비밀번호를 입력해주세요.');
   }
+
   try {
-    const authStore = useAuthStore();
-    const response = await apiInstance.post(
-      '/member/verification/password',
+    const response = await apiInstance.post('/member/verification/password',
       {
         inputPassword: password.value,
       },
@@ -117,19 +112,19 @@ const verifyPassword = async () => {
         },
       }
     );
+
     if (response.data.success) {
-      alert('비밀번호 인증 성공');
       isPasswordVerified.value = true;
     } else {
-      alert('비밀번호 인증 실패');
+      alert('기존 비밀번호와 일치하지 않습니다.');
     }
   } catch (error) {
-    alert('기존의 비밀번호와 같지 않습니다.');
+    alert('기존 비밀번호와 일치하지 않습니다.');
   }
 };
+
 const changePassword = async () => {
   try {
-    const authStore = useAuthStore();
     const response = await apiInstance.post(
       '/member/verification/newPassword',
       {
@@ -152,88 +147,60 @@ const changePassword = async () => {
   }
 };
 
-// 이메일
-const editEmail = () => {
-  isEditingEmail.value = !isEditingEmail.value;
-};
 const sendVerificationCode = async () => {
   if (!profile.email) {
     return alert('이메일을 입력해 주세요.');
   }
 
-  // 이메일 유효성 검사
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(profile.email)) {
     return alert(
       '유효하지 않은 이메일 형식입니다. 올바른 이메일을 입력해 주세요.'
     );
   }
-
   try {
-    isLoading.value = true;
-
-    const isEmailExists = await auth.checkEmailDuplicate(profile.email);
-    console.log('이메일 중복 확인 결과:', isEmailExists);
-
+    const isEmailExists = await authStore.checkEmailDuplicate(profile.email);
     if (isEmailExists) {
       alert('이미 존재하는 이메일입니다.');
-      isLoading.value = false;
       return;
     }
 
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
 
-    const result = await auth.sendEmailVerification(profile.email);
+    const result = await authStore.sendEmailVerification(profile.email);
     console.log('인증 코드 발송 성공:', result);
 
     isVerificationCodeSent.value = true;
-    alert(
-      '인증 코드가 해당 이메일로 발송되었습니다. 인증 코드를 입력해 이메일 변경을 완료해주세요.'
-    );
+    alert('인증 코드가 해당 이메일로 발송되었습니다. 인증 코드를 입력해 이메일 변경을 완료해주세요.');
   } catch (error) {
     console.log('인증 코드 전송 중 오류 발생:', error);
     alert('인증 코드 전송 중 오류가 발생했습니다.');
-  } finally {
-    isLoading.value = false;
   }
 };
+
 const verifyCode = async () => {
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
 
   try {
-    isLoading.value = true;
-    const result = await auth.verifyEmailCode(profile.email, inputCode.value);
-
+    const result = await authStore.verifyEmailCode(profile.email, inputCode.value);
     if (result) {
-      verificationSuccess.value = '이메일 인증이 완료되었습니다.';
-      verificationFail.value = '';
-      isVerifiedEmail.value = true;
+      saveEmail();
+      return alert('이메일이 변경되었습니다.');
     } else {
-      verificationFail.value = '인증 코드가 올바르지 않습니다.';
-      verificationSuccess.value = '';
-      isVerifiedEmail.value = false;
+      return alert('인증 코드가 올바르지 않습니다.');
     }
-  } catch (error) {
-    console.error('인증 코드 확인 오류:', error);
-    verificationFail.value = '인증 코드가 일치하지 않습니다.';
-    isVerifiedEmail.value = false;
-  } finally {
-    isLoading.value = false;
+  } catch(err) {
+    console.error(err);
+    return alert('인증 코드가 올바르지 않습니다.');
   }
 };
+
 const saveEmail = async () => {
-  console.log('이메일', profile.email);
-  console.log('isVerifiedEmail', isVerifiedEmail.value);
-  console.log('isEmailChanged', isEmailChanged.value);
-  if (!isVerifiedEmail.value) {
-    return alert('이메일 인증을 완료해 주세요.');
-  }
   try {
     const authStore = useAuthStore();
-    const response = await apiInstance.post(
-      '/member/email',
+    const response = await apiInstance.post('/member/email',
       {
         newEmail: profile.email,
       },
@@ -243,16 +210,13 @@ const saveEmail = async () => {
         },
       }
     );
+
     if (response.data.success) {
       isEmailChanged.value = true;
-      console.log('이메일', profile.email);
-  console.log('isVerifiedEmail', isVerifiedEmail.value);
-  console.log('isEmailChanged', isEmailChanged.value);
-      console.log(profile.email);
       alert('이메일이 성공적으로 변경되었습니다.');
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
+      }, 2000);
     } else {
       alert('이메일 변경에 실패하였습니다.');
     }
@@ -275,7 +239,7 @@ const uploadImage = async (event) => {
   profile.imageUrl = previewUrl;
   const formData = new FormData();
   formData.append('file', selectedImage.value);
-  alert('업로드 하시겠습니까?');
+  
   try {
     const authStore = useAuthStore();
     const response = await apiInstance.post(`/member/image`, formData, {
@@ -298,296 +262,203 @@ const uploadImage = async (event) => {
     alert('이미지 업로드에 실패하셨습니다.');
   }
 };
+
 const deleteImage = async (profileImage) => {
-  alert('삭제 하시겠습니까? 삭제하시면 기본 이미지로 변경됩니다.');
-  try {
-    const authStore = useAuthStore();
-    const response = await apiInstance.delete(`/member/image`, {
-      params: {
-        fileUrl: profileImage,
-      },
-      headers: {
-        Authorization: authStore.member.accessToken,
-      },
-    });
-    console.log('Response Data:', response.data); 
-    if (response.data.success) {
-      profile.imageUrl = 'basic.jpg';
-      await fetchProfile();
+  const confirmed = window.confirm("정말 삭제하시겠습니까? 기본 이미지로 변경됩니다.");
+
+  if (confirmed) {
+    try {
+      const authStore = useAuthStore();
+      const response = await apiInstance.delete(`/member/image`, {
+        params: {
+          fileUrl: profileImage,
+        },
+        headers: {
+          Authorization: authStore.member.accessToken,
+        },
+      });
+      console.log('Response Data:', response.data);
+      if (response.data.success) {
+        profile.imageUrl = 'basic.jpg';
+        await fetchProfile();
+      }
+    } catch (error) {
+      console.error('파일 삭제 실패');
     }
-  } catch (error) {
-    console.error('파일 삭제 실패');
   }
 };
+
+const withdraw = async () => {
+  const confirmed = window.confirm("정말 탈퇴하시겠습니까?");
+
+  if (confirmed) {
+    try {
+      await memberStore.withdraw();
+      await authStore.logout();
+      authStore.clearAuthState();
+      localStorage.clear(); 
+      router.push('/');
+    } catch (err) {
+      console.error('탈퇴 처리 중 오류 발생: ', erorr);
+    }
+  }
+}
 </script>
 
 <template>
-  <div class="flex justify-center">
-    <div class="w-1/3 px-16 py-10 bg-white border rounded-lg shadow">
+  <div class="mx-[20%] lg:mx-[32%]">
+    <div class="p-10 bg-white border rounded-xl shadow">
       <div class="mb-5 font-bold text-2xl text-blue">
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;나만의 프로필을 완성해보세요</div>
+        <div>나만의 프로필을</div>
+        <div>완성해보세요</div>
       </div>
 
-      <!-- 프로필 이미지 섹션 -->
-      <div class="profile-image-section relative flex justify-center">
-        <img :src="profile.imageUrl" alt="P" class="profile-image" />
+      <div class="px-5">
+      <div class="flex flex-col items-center space-y-4 mb-6">
+          <img :src="profile.imageUrl" alt="P" class="w-32 h-32 rounded-full" />
+          <div class="flex space-x-3">
+            <button class="bg-navy text-white text-xs py-2 px-3 rounded-lg" @click="() => $refs.profileImageInput.click()">
+              변경
+            </button>
+            <button class="bg-gray-300 text-xs py-2 px-3 rounded-lg" @click="deleteImage(profile.imageUrl)"
+              :disabled="profile.imageUrl === 'https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/basic.jpg'">
+              삭제
+            </button>
+          </div>
+          
+        <input type="file" @change="uploadImage" class="hidden" ref="profileImageInput" />
+      </div>
 
-        <div class="absolute bottom-0 right-0 flex space-x-2">
-          <button
-            @click="() => $refs.profileImageInput.click()"
-            class="btn-edit-image"
-          >
-            수정
-          </button>
-
-          <button
-            @click="deleteImage(profile.imageUrl)"
-            class="btn-delete-image"
-            :disabled="
-              profile.imageUrl ===
-              'https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/basic.jpg'
-            "
-          >
-            삭제
-          </button>
+      <div class="flex items-center mb-6">
+        <div class="w-1/4 text-end mr-10">이름</div>
+        <div class="w-3/4">
+          <input v-model="profile.memberName" type="text"
+            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            readonly />
         </div>
-        <input
-          type="file"
-          @change="uploadImage"
-          class="hidden"
-          ref="profileImageInput"
-        />
       </div>
 
-      <!-- 이름 (읽기 전용) -->
-      <div class="relative mb-6">
-        <label
-          for="memberName"
-          class="block mb-2 text-sm font-medium text-gray-900"
-          >이름</label
-        >
-        <input
-          v-model="profile.memberName"
-          type="text"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-          placeholder="이름"
-          readonly
-        />
+      <div class="flex items-center mb-6">
+        <div class="w-1/4 text-end mr-10">아이디</div>
+        <div class="w-3/4">
+          <input v-model="profile.memberId" type="text"
+            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            readonly />
+        </div>
       </div>
 
-      <!-- 아이디 (읽기 전용) -->
-      <div class="relative mb-6">
-        <label
-          for="memberId"
-          class="block mb-2 text-sm font-medium text-gray-900"
-          >아이디</label
-        >
-        <input
-          v-model="profile.memberId"
-          type="text"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-          placeholder="아이디"
-          readonly
-          autocomplete="username"
-        />
-      </div>
-
-      <!-- 현재 비밀번호 검증 -->
-      <label for="password" class="block mb-2 text-sm font-medium text-gray-900"
-        >현재 비밀번호</label
-      >
-      <div class="relative mb-6 flex items-center space-x-3">
-        <input
-          v-model="password"
-          type="password"
-          autocomplete="current-password"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-          placeholder="현재 비밀번호"
-          :disabled="isSocialLogin"
-        />
-        <button
-          @click.prevent="verifyPassword"
-          class="mt-7 px-4 py-1 bg-navy text-white rounded-xl text-sm"
-          :disabled="isSocialLogin"
-        >
-          확인
-        </button>
-      </div>
-
-      <!-- 새 비밀번호 -->
-      <div v-if="isPasswordVerified" class="relative mb-6">
-        <label
-          for="newPassword"
-          class="block mb-2 text-sm font-medium text-gray-900"
-          >새 비밀번호</label
-        >
-        <input
-          v-model="newPassword"
-          type="password"
-          autocomplete="new-password"
-          id="newPassword"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
-          placeholder="새 비밀번호"
-          @input="checkPasswordStrength"
-          required
-        />
-        <p v-if="isPasswordStrong === true" class="text-green-500">
-          비밀번호가 강합니다.
-        </p>
-        <p
-          v-else-if="isPasswordStrong == false && newPassword.length > 0"
-          class="text-red-500"
-        >
-          비밀번호가 약합니다.
-        </p>
-        <p
-          v-else-if="isPasswordStrong == false && newPassword.length === 0"
-          class="text-red-500"
-        >
-          대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.
-        </p>
-      </div>
-
-      <!-- 새 비밀번호 확인 -->
-      <div v-if="isPasswordVerified" class="relative mb-6">
-        <label
-          for="confirmNewPassword"
-          class="block mb-2 text-sm font-medium text-gray-900"
-          >새 비밀번호 확인</label
-        >
-        <input
-          v-model="confirmNewPassword"
-          type="password"
-          autocomplete="new-password"
-          id="confirmNewPassword"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-          placeholder="새 비밀번호 확인"
-          @input="checkPasswordConfirmation"
-        />
-        <p v-if="isPasswordMatch === true" class="text-green-500">
-          비밀번호가 일치합니다.
-        </p>
-        <p
-          v-else-if="isPasswordMatch === false && confirmNewPassword.length > 0"
-          class="text-red-500"
-        >
-          비밀번호가 일치하지 않습니다.
-        </p>
-      </div>
-
-      <!-- 비밀번호 변경 버튼 -->
-      <div v-if="isPasswordVerified" class="flex justify-center mt-6">
-        <button
-          @click="changePassword"
-          class="mt-2 px-4 py-2 bg-navy text-white rounded-lg"
-          :disabled="!isPasswordStrong || newPassword !== confirmNewPassword"
-        >
-          비밀번호 변경
-        </button>
-      </div>
-
-      <!-- 생년월일 (읽기 전용) -->
-      <div class="mb-6">
-        <label
-          for="birthDay"
-          class="block mb-2 text-sm font-medium text-gray-900"
-          >생년월일</label
-        >
-        <input
-          :value="formattedBirthDay"
-          type="date"
-          class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-          readonly
-        />
-      </div>
-
-      <!-- 이메일 입력 -->
-      <div class="mb-4 flex flex-col">
-        <label for="email" class="block mb-2 text-sm font-medium text-gray-900"
-          >이메일</label
-        >
-        <div class="relative mb-6 flex items-center space-x-3">
-          <input
-            v-model="profile.email"
-            type="text"
-            class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-            placeholder="이메일"
-            :readonly="!isEditingEmail"
-          />
-          <button
-            @click.prevent="editEmail"
-            class="mt-7 px-4 py-1 bg-navy text-white rounded-lg text-sm"
-            :disabled="isSocialLogin"
-          >
-            수정
-          </button>
-          <button
-            v-if="isEditingEmail"
-            @click="sendVerificationCode"
-            class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm"
-          >
-            인증 코드 전송
+      <div class="flex items-center mb-6">
+        <div class="w-1/4 text-end mr-10">현재 비밀번호</div>
+        <div class="w-3/4 flex justify-between">
+          <input v-model="password" type="password"
+            class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
+            :disabled="isSocialLogin" />
+          <button @click.prevent="verifyPassword"
+            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-navy text-white rounded-xl text-sm"
+            :disabled="isSocialLogin">
+            확인
           </button>
         </div>
       </div>
 
-      <!-- 인증 코드 입력 -->
-      <div v-if="isVerificationCodeSent" class="mt-2">
-        <input
-          v-model="inputCode"
-          type="text"
-          placeholder="인증 코드를 입력해 주세요"
-          class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          @click="verifyCode"
-          class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm"
-          :disabled="isVerifiedEmail"
-        >
-          인증 코드 확인
-        </button>
-        <div v-if="verificationFail" class="text-red-500">
-          {{ verificationFail }}
-        </div>
-        <div v-if="verificationSuccess" class="text-green-500">
-          {{ verificationSuccess }}
+      <div v-if="isPasswordVerified" >
+        <div class="flex items-center mb-6">
+          <div class="w-1/4 text-end mr-10">
+            <div>새 비밀번호</div>
+            <div>&nbsp;</div>
+          </div>
+          <div class="w-3/4">
+            <div>
+              <input v-model="newPassword" type="password" autocomplete="new-password" id="newPassword"
+              class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
+              placeholder="새 비밀번호를 입력해주세요." @input="checkPasswordStrength" required />
+            </div>
+            <div class="text-sm">
+              <p v-if="isPasswordStrong === true" class="text-green-500">
+                비밀번호가 강합니다.
+              </p>
+              <p v-else-if="isPasswordStrong == false && newPassword.length > 0" class="text-red-500">비밀번호가 약합니다.</p>
+              <p v-else-if="isPasswordStrong == false && newPassword.length === 0" class="text-red-500">대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.</p>
+            </div>
+          </div>
         </div>
 
-        <button
-          @click="saveEmail"
-          class="cursor-pointer w-1/2 bg-navy text-white py-1 rounded-xl flex justify-center items-center"
-          :disabled="isEmailChanged"
-        >
-          <span class="ml-2">이메일 변경 완료하기</span>
-        </button>
-      </div>
-
-      <div class="text-center mt-4">
-        <div class="inline-block p-3 bg-navy text-white rounded-lg">
-          <router-link to="/mypage/asset">연결된 자산 보기</router-link>
+        <div class="flex items-center mb-6">
+          <div class="w-1/4 text-end mr-10">
+            <div>비밀번호 확인</div>
+            <div v-if="isPasswordMatch || confirmNewPassword.length > 0">&nbsp;</div>
+          </div>
+          <div class="w-3/4">
+            <div class="flex justify-between">
+              <input v-model="confirmNewPassword" type="password" autocomplete="new-password" id="confirmNewPassword"
+                class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
+                placeholder="새 비밀번호를 다시 입력해주세요." @input="checkPasswordConfirmation" />
+              <button @click="changePassword" class="w-16 min-w-16 text-center items-center my-1 py-3 px-4 bg-navy text-white rounded-xl text-sm"
+                :disabled="!isPasswordStrong || newPassword !== confirmNewPassword">
+                변경
+              </button>
+            </div>
+            <div class="text-sm">
+              <p v-if="isPasswordMatch === true" class="text-green-500">비밀번호가 일치합니다.</p>
+              <p v-else-if="isPasswordMatch === false && confirmNewPassword.length > 0" class="text-red-500">비밀번호가 일치하지 않습니다.</p>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div class="flex items-center mb-6">
+        <div class="w-1/4 text-end mr-10">생년월일</div>
+        <div class="w-3/4">
+          <input :value="formattedBirthDay" type="date"
+            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            readonly />
+        </div>
+      </div>
+
+      <div class="flex items-center mb-6">
+        <div class="w-1/4 text-end mr-10">이메일</div>
+        <div class="w-3/4 flex justify-between">
+          <input v-model="profile.email" type="text"
+            class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
+            placeholder="이메일" />
+          <button @click.prevent="sendVerificationCode"
+            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-navy text-white rounded-xl text-sm"
+            :disabled="isSocialLogin">
+            변경
+          </button>
+        </div>
+      </div>
+
+      <div v-if="isVerificationCodeSent">
+        <div class="flex items-center mb-6">
+          <div class="w-1/4 text-end mr-10">인증 코드</div>
+          <div class="w-3/4 flex justify-between">
+            <input v-model="inputCode" type="text" placeholder="인증 코드를 입력해 주세요"
+              class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3" />
+            <button @click="verifyCode"
+              class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-navy text-white rounded-xl text-sm"
+              :disabled="isVerifiedEmail">
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="mx-auto text-center mt-4">
+      <div class="p-3 bg-navy text-white rounded-lg">
+        <router-link to="/mypage/asset">연결된 자산 보기</router-link>
+      </div>
+      <button @click="withdraw" class="my-5 underline text-gray-500">탈퇴하기</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.profile-image {
-  @apply w-72 h-72 rounded-full border-2 border-gray-200 mb-2;
-}
-
-.btn-edit-image {
-  @apply bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300;
-}
-
-.btn-delete-image {
-  @apply bg-gray-200 text-sm px-3 py-1 rounded hover:bg-gray-300;
-}
-
 .text-blue {
   color: #0b1573;
 }
-
 .bg-navy {
   background-color: #0b1573;
 }
