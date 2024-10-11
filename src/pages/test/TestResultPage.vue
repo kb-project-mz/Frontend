@@ -152,7 +152,7 @@ const goToSignup = () => {
             :linkUrl="`http://localhost:8080/test/${resultId}`"
         />
         <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">테스트 다시 하기</button>
-        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-green-500' : 'bg-blue-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded']">
+        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-yellow-400' : 'bg-green-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded']">
             {{ authStore.isLogin() ? "홈 화면으로 가기" : "회원가입 하러 가기" }}
         </button>
     </div>
