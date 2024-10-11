@@ -147,8 +147,7 @@ export const useAuthStore = defineStore("auth", {
 
     isLogin() {
       const authData = localStorage.getItem('auth');
-      const isLoggedIn = !!authData;
-      return isLoggedIn;
+      return !!authData;
     },
 
     async verifyPassword(password) {
