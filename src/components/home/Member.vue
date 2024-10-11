@@ -7,15 +7,12 @@ import SBTIResult from './SBTIResult.vue';
 <template>
   <div class="mx-[10%] grid grid-cols-1 lg:grid-cols-3 gap-20">
     <div>
-      <h1>[소비 테스트 결과지]</h1>
       <SBTIResult />
     </div>
     <div>
-      <h1>[challenge top3]</h1>
       <Challenge />
     </div>
     <div>
-      <h1>[Account]</h1>
       <Account />
     </div>
   </div>
