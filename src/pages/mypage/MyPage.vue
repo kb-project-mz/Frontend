@@ -239,7 +239,7 @@ const uploadImage = async (event) => {
   profile.imageUrl = previewUrl;
   const formData = new FormData();
   formData.append('file', selectedImage.value);
-  alert('업로드 하시겠습니까?');
+  
   try {
     const authStore = useAuthStore();
     const response = await apiInstance.post(`/member/image`, formData, {
@@ -263,24 +263,27 @@ const uploadImage = async (event) => {
 };
 
 const deleteImage = async (profileImage) => {
-  alert('삭제 하시겠습니까? 삭제하시면 기본 이미지로 변경됩니다.');
-  try {
-    const authStore = useAuthStore();
-    const response = await apiInstance.delete(`/member/image`, {
-      params: {
-        fileUrl: profileImage,
-      },
-      headers: {
-        Authorization: authStore.member.accessToken,
-      },
-    });
-    console.log('Response Data:', response.data);
-    if (response.data.success) {
-      profile.imageUrl = 'basic.jpg';
-      await fetchProfile();
+  const confirmed = window.confirm("정말 삭제하시겠습니까? 기본 이미지로 변경됩니다.");
+
+  if (confirmed) {
+    try {
+      const authStore = useAuthStore();
+      const response = await apiInstance.delete(`/member/image`, {
+        params: {
+          fileUrl: profileImage,
+        },
+        headers: {
+          Authorization: authStore.member.accessToken,
+        },
+      });
+      console.log('Response Data:', response.data);
+      if (response.data.success) {
+        profile.imageUrl = 'basic.jpg';
+        await fetchProfile();
+      }
+    } catch (error) {
+      console.error('파일 삭제 실패');
     }
-  } catch (error) {
-    console.error('파일 삭제 실패');
   }
 };
 
