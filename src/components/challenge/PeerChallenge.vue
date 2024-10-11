@@ -58,12 +58,11 @@ const liBackgroundClasses = ['bg-li-1', 'bg-li-2', 'bg-li-3','bg-li-4', 'bg-li-5
                 <div>기간</div>
               </div>
               <div class="w-4/5 space-y-1">
-                <div class="font-bold">{{ challenge.detailedCategory }}({{ challenge.categoryName }})</div>
+                <div class="font-bold">{{ challenge.detailedCategory }} ({{ challenge.categoryName }})</div>
               <div>{{ challenge.challengeName }}</div>
               <div>{{ challenge.challengeLimit.toLocaleString() }}{{ challenge.challengeType === '횟수' ? '회' : '원' }}</div>
               <div>{{ formatDate(challenge.challengeStartDate) }} - {{ formatDate(challenge.challengeEndDate) }}</div>
               </div>
-              
             </div>
           </li>
         </ul>

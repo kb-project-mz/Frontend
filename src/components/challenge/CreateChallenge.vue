@@ -27,6 +27,8 @@ const formData = ref({
   isPublic: 1,
 });
 
+const isDetailedCategoryInput = ref(false);
+
 const closeModal = () => {
   formData.value = {
     memberIdx: memberIdx,
@@ -90,12 +92,21 @@ const onCategoryChange = async () => {
 };
 
 const selectDetailedCategory = (detailedCategory) => {
-  formData.value.detailedCategory = detailedCategory;
+  if (formData.value.detailedCategory === detailedCategory) {
+    formData.value.detailedCategory = '';
+  } else {
+    formData.value.detailedCategory = detailedCategory;  
+  }
 };
 
 const selectPublicStatus = (status) => {
   formData.value.isPublic = status;
 };
+
+const dd = () => {
+  isDetailedCategoryInput.value = !isDetailedCategoryInput.value;
+  formData.value.detailedCategory = '';
+}
 </script>
 
 <template>
@@ -151,9 +162,9 @@ const selectPublicStatus = (status) => {
           </div>
 
           <div class="flex min-h-12">
-            <div class="w-24 text-end mr-8 my-1">소분류</div>
+            <div class="w-24 text-end mr-8 my-2">소분류</div>
             <div class="w-full">
-              <div v-if="detailedCategories.length > 0" class="flex flex-wrap">
+              <div v-if="detailedCategories.length > 0 && !isDetailedCategoryInput" class="flex flex-wrap">
                 <div v-for="(category, index) in detailedCategories" 
                     :key="index" 
                     @click="selectDetailedCategory(category)" 
@@ -161,6 +172,15 @@ const selectPublicStatus = (status) => {
                               formData.detailedCategory === category ? 'bg-navy text-white' : 'bg-gray-200 hover:bg-gray-300']">
                   {{ category }}
                 </div>
+              </div>
+              <div v-if="formData.categoryIdx != 0" :class="['cursor-pointer w-fit px-3 py-2 text-sm bg-gray-200 rounded-full', isDetailedCategoryInput ? 'bg-navy text-white' : 'bg-gray-200']"
+                @click="dd">
+                직접 입력
+              </div>
+              <div v-if="isDetailedCategoryInput" class="my-3">
+                <input v-model="formData.detailedCategory" type="text"
+                  placeholder="세부 내역을 입력해주세요."
+                  class="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2">
               </div>
             </div>
           </div>
