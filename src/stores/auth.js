@@ -132,6 +132,13 @@ export const useAuthStore = defineStore("auth", {
       this.member.imageUrl = null;
       localStorage.clear();
     },
+    
+    updateImageUrl(imageUrl) {
+      this.member.imageUrl = imageUrl;
+      const authData = JSON.parse(localStorage.getItem('auth') || '{}');
+      authData.imageUrl = imageUrl;
+      localStorage.setItem('auth', JSON.stringify(authData));
+    },
 
     loadAuthState() {
       const authData = JSON.parse(localStorage.getItem('auth'));
