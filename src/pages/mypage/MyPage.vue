@@ -289,6 +289,7 @@ const uploadImage = async (event) => {
       alert('이미지 업로드에 성공했습니다.');
       const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${response.data.data.storeFileName}`;
       profile.imageUrl = imageUrl;
+      authStore.member.imageUrl = response.data.data.storeFileName;
       Object.assign(profile, { imageUrl: imageUrl });
       await fetchProfile();
     }

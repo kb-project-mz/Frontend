@@ -46,16 +46,22 @@ const nextQuestion = (answerId, answerScore, questionType) => {
     // 질문 유형에 따라 점수 추가 로직 실행
     if (questionType === 1) {
         testStore.incrementImpulseScore(answerScore);
+        localStorage.setItem('impulseScore', testStore.impulseScore);
     } else if (questionType === 2) {
         testStore.incrementPlannedScore(answerScore);
+        localStorage.setItem('plannedScore', testStore.plannedScore);
     } else if (questionType === 3) {
         testStore.incrementCostEffective(answerScore);
+        localStorage.setItem('costEffective', testStore.costEffective);
     } else if (questionType === 4) {
         testStore.incrementGoodForSatisfaction(answerScore);
+        localStorage.setItem('goodForSatisfaction', testStore.goodForSatisfaction);
     } else if (questionType === 5) {
         testStore.incrementMaterialScore(answerScore);
+        localStorage.setItem('material', testStore.material);
     } else if (questionType === 6) {
         testStore.incrementExperientialScore(answerScore);
+        localStorage.setItem('experiential', testStore.experiential);
     }
 
     if (questionId.value < testStore.questions.length) {

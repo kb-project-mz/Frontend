@@ -140,13 +140,13 @@ export const useAuthStore = defineStore("auth", {
         this.member.memberIdx = authData.memberIdx;
         this.member.imageUrl = authData.imageUrl || "";
 				this.member.role = authData.role;
+        console.log("loadAuthState에서 로드된 데이터:", authData);
       }
     },
 
     isLogin() {
       const authData = localStorage.getItem('auth');
-      const isLoggedIn = !!authData;
-      return isLoggedIn;
+      return !!authData;
     },
 
     async verifyPassword(password) {
