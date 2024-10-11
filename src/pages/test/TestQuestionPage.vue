@@ -43,7 +43,6 @@ const selectedAnswers = ref([]);
 const nextQuestion = (answerId, answerScore, questionType) => {
     selectedAnswers.value.push(answerId);
 
-    // 질문 유형에 따라 점수 추가 로직 실행
     if (questionType === 1) {
         testStore.incrementImpulseScore(answerScore);
         localStorage.setItem('impulseScore', testStore.impulseScore);

@@ -1,47 +1,3 @@
-<template>
-    <div class="survey-container gong-gothic-font">
-        <div class="question">
-            <label class="text-2xl">당신이 태어난 연도는?</label>
-            <div class="wheel-picker">
-                <div class="wheel" @scroll="onScroll" ref="wheel">
-                    <ul>
-                        <li class="spacer"></li>
-                        <li v-for="year in years" :key="year" :class="{ active: birthYear === year }">
-                            {{ year }}
-                        </li>
-                        <li class="spacer"></li>
-                        <li class="spacer"></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <br />
-        <div class="question gong-gothic-font">
-            <label class="text-2xl">당신의 성별은?</label>
-            <br />
-            <div class="gender-options">
-                <button
-                    class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
-                    v-for="(option, index) in genderOptions"
-                    :key="index"
-                    :class="{ selected: selectedGender === option }"
-                    @click="selectGender(option)"
-                >
-                    {{ option }}
-                </button>
-            </div>
-        </div>
-
-        <!-- 다음 버튼 -->
-        <button
-            class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
-            @click="goToQuestions"
-        >
-            다음
-        </button>
-    </div>
-</template>
-
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -78,7 +34,47 @@ const onScroll = (event) => {
     birthYear.value = years[index];
 };
 </script>
-
+<template>
+    <div class="survey-container gong-gothic-font">
+        <div class="question">
+            <label class="text-2xl">당신이 태어난 연도는?</label>
+            <div class="wheel-picker">
+                <div class="wheel" @scroll="onScroll" ref="wheel">
+                    <ul>
+                        <li class="spacer"></li>
+                        <li v-for="year in years" :key="year" :class="{ active: birthYear === year }">
+                            {{ year }}
+                        </li>
+                        <li class="spacer"></li>
+                        <li class="spacer"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="question gong-gothic-font">
+            <label class="text-2xl">당신의 성별은?</label>
+            <br />
+            <div class="gender-options">
+                <button
+                    class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
+                    v-for="(option, index) in genderOptions"
+                    :key="index"
+                    :class="{ selected: selectedGender === option }"
+                    @click="selectGender(option)"
+                >
+                    {{ option }}
+                </button>
+            </div>
+        </div>
+        <button
+            class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
+            @click="goToQuestions"
+        >
+            다음
+        </button>
+    </div>
+</template>
 <style>
 .survey-container {
     display: flex;
@@ -117,12 +113,12 @@ label {
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .wheel::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
 ul {
@@ -133,7 +129,7 @@ ul {
 }
 
 li {
-    height: 40px; /* 항목 높이 */
+    height: 40px;
     line-height: 40px;
     font-size: 18px;
     color: #999;

@@ -22,16 +22,17 @@ function shareURL() {
 </script>
 <template>
     <div class="flex justify-center gap-4 mt-4 w-[300px]">
-        <button class="bg-green-500 text-white font-bold py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사</button>
-        <button class="bg-green-500 text-white font-bold py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유</button>
+        <button class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사</button>
+        <button class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유</button>
     </div>
 </template>
+
 
 <style scoped>
 button {
     margin: 5px;
     padding: 10px;
-    background-color: #4caf50;
+    background-color: #FFD1E3;
     color: white;
     border: none;
     border-radius: 5px;
@@ -39,7 +40,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #FFEAE3;
 }
 
 @font-face {
@@ -51,5 +52,9 @@ button:hover {
 
 .gong-gothic-font {
     font-family: "GongGothicMedium", sans-serif;
+}
+
+.custom-shadow {
+    box-shadow: 0 4px 20px rgba(0, 0, 5, 0.5);
 }
 </style>
