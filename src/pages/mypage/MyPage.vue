@@ -291,7 +291,7 @@ const deleteImage = async (profileImage) => {
         <div>완성해보세요</div>
       </div>
 
-      <div class="px-10">
+      <div class="px-5">
       <div class="flex flex-col items-center space-y-4 mb-6">
           <img :src="profile.imageUrl" alt="P" class="w-32 h-32 rounded-full" />
           <div class="flex space-x-3">
@@ -308,8 +308,8 @@ const deleteImage = async (profileImage) => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/6 text-end mr-10">이름</div>
-        <div class="w-5/6">
+        <div class="w-1/4 text-end mr-10">이름</div>
+        <div class="w-3/4">
           <input v-model="profile.memberName" type="text"
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
             readonly />
@@ -317,8 +317,8 @@ const deleteImage = async (profileImage) => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/6 text-end mr-10">아이디</div>
-        <div class="w-5/6">
+        <div class="w-1/4 text-end mr-10">아이디</div>
+        <div class="w-3/4">
           <input v-model="profile.memberId" type="text"
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
             readonly />
@@ -326,8 +326,8 @@ const deleteImage = async (profileImage) => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/6 text-end mr-10">현재 비밀번호</div>
-        <div class="w-5/6 flex justify-between">
+        <div class="w-1/4 text-end mr-10">현재 비밀번호</div>
+        <div class="w-3/4 flex justify-between">
           <input v-model="password" type="password"
             class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
             :disabled="isSocialLogin" />
@@ -341,11 +341,11 @@ const deleteImage = async (profileImage) => {
 
       <div v-if="isPasswordVerified" >
         <div class="flex items-center mb-6">
-          <div class="w-1/6 text-end mr-10">
+          <div class="w-1/4 text-end mr-10">
             <div>새 비밀번호</div>
             <div>&nbsp;</div>
           </div>
-          <div class="w-5/6">
+          <div class="w-3/4">
             <div>
               <input v-model="newPassword" type="password" autocomplete="new-password" id="newPassword"
               class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
@@ -362,11 +362,11 @@ const deleteImage = async (profileImage) => {
         </div>
 
         <div class="flex items-center mb-6">
-          <div class="w-1/6 text-end mr-10">
+          <div class="w-1/4 text-end mr-10">
             <div>비밀번호 확인</div>
             <div v-if="isPasswordMatch || confirmNewPassword.length > 0">&nbsp;</div>
           </div>
-          <div class="w-5/6">
+          <div class="w-3/4">
             <div class="flex justify-between">
               <input v-model="confirmNewPassword" type="password" autocomplete="new-password" id="confirmNewPassword"
                 class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
@@ -385,8 +385,8 @@ const deleteImage = async (profileImage) => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/6 text-end mr-10">생년월일</div>
-        <div class="w-5/6">
+        <div class="w-1/4 text-end mr-10">생년월일</div>
+        <div class="w-3/4">
           <input :value="formattedBirthDay" type="date"
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
             readonly />
@@ -394,8 +394,8 @@ const deleteImage = async (profileImage) => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/6 text-end mr-10">이메일</div>
-        <div class="w-5/6 flex justify-between">
+        <div class="w-1/4 text-end mr-10">이메일</div>
+        <div class="w-3/4 flex justify-between">
           <input v-model="profile.email" type="text"
             class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
             placeholder="이메일" />
@@ -409,8 +409,8 @@ const deleteImage = async (profileImage) => {
 
       <div v-if="isVerificationCodeSent">
         <div class="flex items-center mb-6">
-          <div class="w-1/6 text-end mr-10">인증 코드</div>
-          <div class="w-5/6 flex justify-between">
+          <div class="w-1/4 text-end mr-10">인증 코드</div>
+          <div class="w-3/4 flex justify-between">
             <input v-model="inputCode" type="text" placeholder="인증 코드를 입력해 주세요"
               class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3" />
             <button @click="verifyCode"
