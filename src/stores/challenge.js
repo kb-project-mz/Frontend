@@ -20,7 +20,25 @@ export const useChallengeStore = defineStore('challenge', {
             Authorization: authStore.member.accessToken,
           },
         });
+
+        const statusPriority = { "진행":1, "예정":2, "종료":3 };
+        console.log(this.challengeList);
         this.challengeList = res.data.data;
+        this.challengeList = this.challengeList.sort((a, b) => {
+          if (statusPriority[a.challengeStatus] !== statusPriority[b.challengeStatus]) {
+            return statusPriority[a.challengeStatus] - statusPriority[b.challengeStatus];
+          }
+
+          if (a.challengeStatus === "진행") {
+            return new Date(b.challengeEndDate) - new Date(a.challengeEndDate);
+          }
+
+          if (a.challengeStatus === "예정") {
+            return new Date(b.challengeStartDate) - new Date(a.challengeStartDate);
+          }
+
+          return 0;
+        });
       } catch (error) {
         console.error('Error fetching challenges:', error);
         throw error;
