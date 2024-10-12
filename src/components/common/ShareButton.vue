@@ -22,8 +22,8 @@ function shareURL() {
 </script>
 <template>
     <div class="flex justify-center gap-4 mt-4 w-[300px]">
-        <button class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사</button>
-        <button class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유</button>
+        <button @click="copyURL" class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사</button>
+        <button @click="shareURL" class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유</button>
     </div>
 </template>
 

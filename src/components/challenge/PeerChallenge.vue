@@ -8,6 +8,10 @@ const memberIdx = authData.memberIdx;
 const challengeStore = useChallengeStore();
 const peerChallengeList = ref([]);
 
+const formatDate = (date) => {
+  return date.split("-").join(".");
+}
+
 onMounted(async () => {
   await challengeStore.getPeerChallengeList(memberIdx);
   console.log(challengeStore.peerChallengeList);
@@ -34,24 +38,30 @@ onMounted(async () => {
 });
 
 const liBackgroundClasses = ['bg-li-1', 'bg-li-2', 'bg-li-3','bg-li-4', 'bg-li-5'];
-
-const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'bg-div-5'];
 </script>
 
 <template>
   <div class="overflow-hidden">
-    <div class="text-xl font-bold mb-6">내 또래에게 현재 인기가 많은 챌린지예요</div> 
+    <div class="text-xl font-bold mb-6 text-center">또래가 등록한 신규 챌린지예요</div> 
     <div class="wrap flex flex-col overflow-hidden shrink-0">
       <div class="rolling-list">
         <ul class="flex flex-col">
-          <li class="h-fit py-9 my-7 px-10 border border-gray-200 rounded-3xl shadow-lg"
+          <li class="text-base text-start h-fit p-8 my-7 border border-gray-200 rounded-3xl shadow-lg"
             :class="liBackgroundClasses[index % liBackgroundClasses.length]"
             v-for="(challenge, index) in peerChallengeList" 
             :key="index">
-            <div class="text-gray-700 flex justify-between items-center">
-              <div class="text-lg font-bold">{{ challenge.detailedCategory }}</div>
-              <div class="rounded-full w-fit py-1 px-4 items-center text-center text-white" :class="divBackgroundClasses[index % divBackgroundClasses.length]">
-                {{ challenge.challengeCount }}명
+            <div class="text-gray-600 flex">
+              <div class="w-1/5 text-end mr-5 space-y-1">
+                <div>카테고리</div>
+                <div>이름</div>
+                <div>{{ challenge.challengeType === '횟수' ? '제한횟수' : '제한금액' }}</div>
+                <div>기간</div>
+              </div>
+              <div class="w-4/5 space-y-1">
+                <div class="font-bold">{{ challenge.detailedCategory }} ({{ challenge.categoryName }})</div>
+              <div>{{ challenge.challengeName }}</div>
+              <div>{{ challenge.challengeLimit.toLocaleString() }}{{ challenge.challengeType === '횟수' ? '회' : '원' }}</div>
+              <div>{{ formatDate(challenge.challengeStartDate) }} - {{ formatDate(challenge.challengeEndDate) }}</div>
               </div>
             </div>
           </li>
@@ -93,10 +103,10 @@ const divBackgroundClasses = ['bg-div-1', 'bg-div-2', 'bg-div-3', 'bg-div-4', 'b
   background-color: #DDA4FF;
 }
 .rolling-list.original {
-  animation: rollingup1 50s linear infinite;
+  animation: rollingup1 80s linear infinite;
 }
 .rolling-list.clone {
-  animation: rollingup2 50s linear infinite;
+  animation: rollingup2 80s linear infinite;
 }
 @keyframes rollingup1 {
   0% { transform: translateY(0); }
