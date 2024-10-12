@@ -145,7 +145,5 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
 </template>
 
 <style scoped>
-.bg-navy { 
-  background-color: #0B1573;
-}
+
 </style>

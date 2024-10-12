@@ -194,8 +194,8 @@ watch(
       <div class="font-medium">하루 평균 소비 금액</div>
       <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>
     </div>
-    <div class="py-12 px-10 bg-white mb-2">
-      <!-- <canvas :id="chartId"></canvas> -->
+    <div class="py-12 px-10 mb-2">
+      <canvas :id="chartId"></canvas>
     </div>
   </div>
 </template>

@@ -63,10 +63,10 @@ onMounted(async () => {
   <div v-if="isDataLoaded">
     <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
       <div class="flex items-end">
-        <div class="p-3 bg-navy text-white text-center rounded-lg w-fit">
+        <div class="p-3 bg-customBlue text-white text-center rounded-lg w-fit">
           <router-link to="/mypage/asset">자산 연결하러 가기</router-link>
         </div>
-        <div class="p-3 bg-navy text-white rounded-lg">
+        <div class="p-3 bg-customBlue text-white rounded-lg">
           <button @click="toggleCardFlip">과거 소비와 비교하기</button>
         </div>
       </div>
@@ -117,10 +117,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.bg-navy {
-  background-color: #0b1573;
-}
-
 .flip {
   perspective: 5000px;
 }
