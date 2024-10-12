@@ -2,16 +2,15 @@
 import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps({
-  labelLeft: String,     // 왼쪽 레이블
-  labelRight: String,    // 오른쪽 레이블
-  scoreLeft: Number,     // 왼쪽 변수 값
-  scoreRight: Number,    // 오른쪽 변수 값
+  labelLeft: String,    
+  labelRight: String,    
+  scoreLeft: Number,     
+  scoreRight: Number,    
 });
 
 const leftWidth  = ref('50%');
 const rightWidth  = ref('50%');
 
-// 막대그래프 비율 계산
 const calculateWidths = () => {
   const total = props.scoreLeft + props.scoreRight;
   if (total === 0) {
@@ -36,12 +35,20 @@ watch(() => [props.scoreLeft, props.scoreRight], calculateWidths);
 <template>
   <div class="my-4 rounded-lg">
     <div class="flex justify-between mb-2">
-      <span>{{ labelLeft }}</span>
-      <span>{{ labelRight }}</span>
+      <span :class="{ 
+        'font-bold text-xl text-indiepink-600': props.scoreLeft > props.scoreRight,
+        }">
+        {{ labelLeft }}
+      </span>
+      <span :class="{ 
+        'font-bold text-xl text-indiepink-600': props.scoreRight > props.scoreLeft,
+         }">
+        {{ labelRight }}
+      </span>
     </div>
-    <div class="relative flex">
-      <div class="h-8 bg-gray-200 rounded-l-md" :style="{ width: leftWidth }"></div>
-      <div class="h-8 bg-yellow-100 rounded-r-md" :style="{ width: rightWidth }"></div>
+    <div class="relative flex items-center h-10">
+      <div class="h-8 bg-indiepink-300 rounded-l-full" :style="{ width: leftWidth }"></div>
+      <div class="h-8 bg-indiepink-100 rounded-r-full" :style="{ width: rightWidth }"></div>
     </div>
   </div>
 </template>

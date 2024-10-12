@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useTestStore } from "@/stores/test";
 
@@ -7,23 +7,28 @@ const router = useRouter();
 const testStore = useTestStore();
 
 const birthYear = ref(null);
-const selectedGender = ref(null);
+const gender = ref(null);
+const region = ref(""); 
+const occupation = ref("");
 
 const years = Array.from({ length: 100 }, (v, i) => new Date().getFullYear() - i);
 const genderOptions = ["남성", "여성"];
 
 const selectGender = (option) => {
-    selectedGender.value = option;
+    gender.value = option;
 };
 
 const goToQuestions = () => {
-    if (selectedGender.value === "여성") {
-        selectedGender.value = "female";
+    if (gender.value === "여성") {
+        gender.value = "female";
     } else {
-        selectedGender.value = "male";
+        gender.value = "male";
     }
     testStore.setBirthYear(birthYear.value);
-    testStore.setGender(selectedGender.value);
+    testStore.setGender(gender.value);
+    testStore.setRegion(region.value); 
+    testStore.setOccupation(occupation.value); 
+
     router.push({ name: "testQuestion", params: { number: 1 } });
 };
 
@@ -33,10 +38,16 @@ const onScroll = (event) => {
     const index = Math.round(scrollPosition / itemHeight);
     birthYear.value = years[index];
 };
+
+onMounted(() => {
+    console.log('Birth Year:', testStore.birthYear);
+    console.log('Gender:', testStore.gender);
+});
+
 </script>
 <template>
     <div class="survey-container gong-gothic-font">
-        <div class="question">
+        <div class="question" v-if=!testStore.birthYear>
             <label class="text-2xl">당신이 태어난 연도는?</label>
             <div class="wheel-picker">
                 <div class="wheel" @scroll="onScroll" ref="wheel">
@@ -52,7 +63,7 @@ const onScroll = (event) => {
             </div>
         </div>
         <br />
-        <div class="question gong-gothic-font">
+        <div class="question gong-gothic-font" v-if=!testStore.gender>
             <label class="text-2xl">당신의 성별은?</label>
             <br />
             <div class="gender-options">
@@ -60,19 +71,39 @@ const onScroll = (event) => {
                     class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
                     v-for="(option, index) in genderOptions"
                     :key="index"
-                    :class="{ selected: selectedGender === option }"
+                    :class="{ selected: gender === option }"
                     @click="selectGender(option)"
                 >
                     {{ option }}
                 </button>
             </div>
         </div>
-        <button
-            class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
-            @click="goToQuestions"
-        >
+        <div class="question gong-gothic-font">
+            <label class="text-2xl">당신의 거주지는? ('구'까지 입력)</label>
+            <br />
+            <input
+                v-model="region"
+                type="text"
+                placeholder="거주지 입력"
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
+            />
+        </div>
+        <div class="question gong-gothic-font">
+            <label class="text-2xl">당신의 직업은?</label>
+            <br />
+            <input
+                v-model="occupation"
+                type="text"
+                placeholder="직업 입력"
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
+            />
+                </div>
+            <button
+                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
+                @click="goToQuestions"
+            >
             다음
-        </button>
+            </button>
     </div>
 </template>
 <style>
