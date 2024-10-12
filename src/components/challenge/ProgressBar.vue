@@ -26,8 +26,8 @@ onMounted(() => {
 <template>
   <div>
     <div class="relative">
-      <div class="rounded-full h-7 bg-gray-200">
-        <div class="h-full rounded-full bg-navy progress-bar" :style="{ width: progressWidth }"></div>
+      <div class="rounded-full h-5 bg-gray-200">
+        <div class="h-full rounded-full bg-customBlue progress-bar" :style="{ width: progressWidth }"></div>
       </div>
       <div class="absolute top-[-30px] transition-transform text-2xl" :style="{ left: `calc(${emojiPosition}% - 10px)` }">
         <span role="img" aria-label="emoji"><font-awesome-icon :icon="['fas', 'person-running']" /></span>
@@ -37,9 +37,6 @@ onMounted(() => {
 </template>
 
 <style>
-.bg-navy {
-  background-color: #0B1573;
-}
 .progress-bar {
   transition: width 1s ease;
 }

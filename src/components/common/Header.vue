@@ -45,7 +45,7 @@ watch(() => authStore.member.imageUrl, (newImageUrl) => {
         </router-link>
         <button
           @click="logout"
-          class="bg-navy py-1.5 px-2.5 text-white rounded-md text-xs"
+          class="bg-customBlue py-1.5 px-2.5 text-white rounded-md text-xs"
         >
           로그아웃
         </button>
@@ -63,7 +63,5 @@ watch(() => authStore.member.imageUrl, (newImageUrl) => {
 </template>
 
 <style scoped>
-.bg-navy {
-  background-color: #0b1573;
-}
+
 </style>

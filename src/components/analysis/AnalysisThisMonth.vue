@@ -72,10 +72,12 @@ onMounted(() => {
       />
       <div class="lg:col-span-1 flex flex-col justify-between gap-10">
         <TotalAmount
+          class="flex-1"
           :card-transaction-data="cardTransactionData"
           :account-transaction-data="accountTransactionData"
         />
         <AverageConsumption
+          class="flex-1"
           chart-id="thisMonth"
           :card-transaction-data="cardTransactionData"
           :account-transaction-data="accountTransactionData"

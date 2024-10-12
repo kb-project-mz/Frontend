@@ -170,11 +170,11 @@ const changeDetailedCategoryInputDirectly = () => {
                     :key="index" 
                     @click="selectDetailedCategory(category)" 
                     :class="['rounded-full px-3 py-2 text-sm mr-2 mb-2 cursor-pointer', 
-                              formData.detailedCategory === category ? 'bg-navy text-white' : 'bg-gray-200 hover:bg-gray-300']">
+                              formData.detailedCategory === category ? 'bg-customBlue text-white' : 'bg-gray-200 hover:bg-gray-300']">
                   {{ category }}
                 </div>
               </div>
-              <div v-if="formData.categoryIdx != 0" :class="['cursor-pointer w-fit px-3 py-2 text-sm bg-gray-200 rounded-full', isDetailedCategoryInputDirectly ? 'bg-navy text-white' : 'bg-gray-200']"
+              <div v-if="formData.categoryIdx != 0" :class="['cursor-pointer w-fit px-3 py-2 text-sm bg-gray-200 rounded-full', isDetailedCategoryInputDirectly ? 'bg-customBlue text-white' : 'bg-gray-200']"
                 @click="changeDetailedCategoryInputDirectly">
                 직접 입력
               </div>
@@ -194,7 +194,7 @@ const changeDetailedCategoryInputDirectly = () => {
               <div class="mt-1 text-center">
                 <input type="text"
                   v-model="formData.challengeLimit"
-                  class="w-16 text-center border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
+                  class="w-24 text-center border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
               </div>
             </div>
           </div>
@@ -203,7 +203,7 @@ const changeDetailedCategoryInputDirectly = () => {
             <div class="w-24 text-end mr-8">공개여부</div>
             <div class="flex space-x-2 w-full">
               <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
-                'bg-navy text-white': formData.isPublic === 1,
+                'bg-customBlue text-white': formData.isPublic === 1,
                 'bg-gray-200': formData.isPublic !== 1,
               }" @click="selectPublicStatus(1)">
                 공개
@@ -219,7 +219,7 @@ const changeDetailedCategoryInputDirectly = () => {
         </div>
 
         <div class="flex space-x-2 mt-12">
-          <button type="submit" class="flex-1 bg-navy text-white py-3 rounded-lg hover:bg-gray-700">등록</button>
+          <button type="submit" class="flex-1 bg-customBlue text-white py-3 rounded-lg hover:bg-gray-700">등록</button>
           <button type="button" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400"
             @click="closeModal">취소</button>
         </div>
@@ -229,7 +229,7 @@ const changeDetailedCategoryInputDirectly = () => {
 </template>
 
 <style scoped>
-.bg-navy {
+.bg-customBlue {
   background-color: #0B1573;
 }
 </style>

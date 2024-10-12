@@ -23,9 +23,9 @@ const memberName = authData.memberName;
 const chartInstance = ref(null);
 
 const now = new Date();
-const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30)); // 현재 날짜 기준 30일 전
+const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
 
-const today = new Date(); // 오늘 날짜
+const today = new Date();
 
 // 필터링된 계좌 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredAccountExpenses = computed(() => {
@@ -82,6 +82,8 @@ const dailyAverageExpense = computed(() => {
 const getDailyExpenses = () => {
   const dailyExpenses = Array(30).fill(0); // 30일 동안의 지출 데이터
 
+  console.log(filteredAccountExpenses.value);
+  console.log(filteredCardExpenses.value);
   // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
     const date = Math.floor(
@@ -121,7 +123,6 @@ const renderChart = () => {
   const canvasElement = document.getElementById(props.chartId);
 
   if (chartInstance.value) {
-    console.log("차트 존재");
     chartInstance.value.destroy();
   }
 
@@ -130,9 +131,6 @@ const renderChart = () => {
   }
 
   const ctx = canvasElement.getContext("2d");
-  if (!ctx) {
-    return;
-  }
 
   const dailyExpenses = getDailyExpenses();
   const dates = getLast30DaysDates(); // 30일간의 실제 날짜 배열
@@ -159,7 +157,7 @@ const renderChart = () => {
       },
       scales: {
         y: {
-          beginAtZero: true,
+          // beginAtZero: true,
         },
       },
     },
@@ -167,18 +165,15 @@ const renderChart = () => {
 };
 
 onMounted(() => {
-  if (
-    props.accountTransactionData?.length &&
-    props.cardTransactionData?.length
-  ) {
+  console.log(thirtyDaysAgo);
+  
+  if (props.accountTransactionData?.length && props.cardTransactionData?.length) {
     renderChart();
   }
 });
 
 // 데이터가 변경될 때 차트를 다시 렌더링
-watch(
-  [props.accountTransactionData, props.cardTransactionData],
-  ([newAccountData, newCardData]) => {
+watch([props.accountTransactionData, props.cardTransactionData], ([newAccountData, newCardData]) => {
     if (newAccountData?.length && newCardData?.length) {
       renderChart();
     }
@@ -187,16 +182,14 @@ watch(
 </script>
 
 <template>
-  <div
-    class="py-6 px-8 bg-gray-100 border border-gray-200 rounded-2xl shadow"
-  >
-    <div class="flex justify-between items-center mb-3">
+  <div class="py-8 px-8 bg-gray-100 border border-gray-200 rounded-2xl shadow flex flex-col justify-center">
+    <div class="flex justify-between items-center">
       <div class="font-medium">하루 평균 소비 금액</div>
       <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>
     </div>
-    <div class="py-12 px-10 bg-white mb-2">
-      <!-- <canvas :id="chartId"></canvas> -->
-    </div>
+    <!-- <div>
+      <canvas :id="chartId"></canvas>
+    </div> -->
   </div>
 </template>
 

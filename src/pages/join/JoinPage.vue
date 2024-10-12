@@ -394,7 +394,7 @@ const join = async () => {
             <input
               v-model="member.email"
               type="email"
-              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 p-4"
+              class="w-72 bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 p-4"
               id="email"
               placeholder="이메일"
               required

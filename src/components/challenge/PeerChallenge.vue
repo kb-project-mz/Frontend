@@ -51,13 +51,13 @@ const liBackgroundClasses = ['bg-li-1', 'bg-li-2', 'bg-li-3','bg-li-4', 'bg-li-5
             v-for="(challenge, index) in peerChallengeList" 
             :key="index">
             <div class="text-gray-600 flex">
-              <div class="w-1/5 text-end mr-5 space-y-1">
+              <div class="w-1/4 text-end mr-5 space-y-1">
                 <div>카테고리</div>
                 <div>이름</div>
                 <div>{{ challenge.challengeType === '횟수' ? '제한횟수' : '제한금액' }}</div>
                 <div>기간</div>
               </div>
-              <div class="w-4/5 space-y-1">
+              <div class="w-3/4 space-y-1">
                 <div class="font-bold">{{ challenge.detailedCategory }} ({{ challenge.categoryName }})</div>
               <div>{{ challenge.challengeName }}</div>
               <div>{{ challenge.challengeLimit.toLocaleString() }}{{ challenge.challengeType === '횟수' ? '회' : '원' }}</div>

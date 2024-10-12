@@ -86,7 +86,7 @@ onMounted(async () => {
           >
             <font-awesome-icon
               :icon="['fas', 'circle-plus']"
-              class="text-navy w-12 h-12 mr-4"
+              class="text-customBlue w-12 h-12 mr-4"
             />계좌 추가하기
           </div>
         </button>
@@ -97,7 +97,7 @@ onMounted(async () => {
         <div class="text-9xl font-black mt-6 mb-8 text-gray-600">텅</div>
         <button
           @click="openModal"
-          class="w-full py-4 bg-navy text-white text-lg rounded-lg"
+          class="w-full py-4 bg-customBlue text-white text-lg rounded-lg"
         >
           계좌 연결하러 가기
         </button>
@@ -113,10 +113,5 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.bg-navy {
-  background-color: #0b1573;
-}
-.text-navy {
-  color: #0b1573;
-}
+
 </style>
