@@ -1,11 +1,9 @@
 <script setup>
 import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
-import { setLocalStorage } from '@/util/token'; 
 
-const cr = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 
@@ -15,28 +13,32 @@ const member = reactive({
 });
 
 const error = ref("");
-const disableSubmit = computed(() => !(member.memberId && member.password));
 
 const login = async () => {
   if (!member.memberId || !member.password) {
     error.value = "아이디와 비밀번호를 모두 입력해주세요.";
-    console.error("입력 오류:", error.value);
     return;
   }
     try {
+        const isValidMemberId = await auth.checkMemberId(member.memberId);
+        if(!isValidMemberId){
+          error.value = '존재하지 않는 아이디 입니다.';
+          return;
+        }
         const response = await auth.login(member.memberId, member.password);
         console.log("로그인 응답:", response);
 
         if (response && response.memberId) {
+            alert('로그인 되었습니다.');
             console.log("로그인 성공:", response);
-						
+
             if (response.role === 'ROLE_ADMIN') {
                 router.push("/admin"); 
             } else {
             		router.push("/"); 
             }
-        } else {
-            error.value = response;
+        } else if (response === null) {
+            error.value = '아이디와 비밀번호가 올바르지 않습니다.'
             console.error("로그인 실패:", response);
         }
     } catch (err) {
@@ -52,7 +54,7 @@ const login = async () => {
       <img src="@/assets/logo.png" alt="로고" />
     </div>
 
-    <form class="w-1/2 xl:w-1/4" @submit.prevent="login">
+    <form class="w-1/2 xl:w-1/4 mt-8" @submit.prevent="login">
       <div class="relative mb-6">
         <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
           <font-awesome-icon :icon="['fas', 'user']" />
@@ -77,12 +79,12 @@ const login = async () => {
               <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-navy ml-2.5" />
               <div
                 class="tooltip hidden absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max bg-gray-800 text-white text-sm rounded py-1 px-2 whitespace-no-wrap">
-                비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합해 작성해주세요
+                비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합하여 8자리 이상 작성해주세요
               </div>
             </div>
           </div>
         </div>
-        <div v-if="error" class="text-red-500 font-semibold text-lg text-center">
+        <div v-if="error" class="text-red-500 font-semibold text-lg mt-4 text-center whitespace-nowrap">
           {{ error }}
         </div>
       </div>

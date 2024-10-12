@@ -8,7 +8,9 @@ const member = reactive({
 });
 
 const error = ref('');
-const successMessage = ref('');
+const successMessageId = ref('');
+const successMessageName = ref('');
+const successMessage = ref(false);
 const loading = ref(false);
 
 const checkEmailDuplicate = async (email) => {
@@ -53,7 +55,7 @@ const findMemberId = async () => {
 
   const isEmailExists = await checkEmailDuplicate(member.email);
   if (!isEmailExists) {
-    error.value = '존재하지 않는 이메일입니다. 회원가입을 진행해주세요.';
+    error.value = '존재하지 않는 이메일입니다.';
     return;
   }
 
@@ -65,12 +67,15 @@ const findMemberId = async () => {
 
   loading.value = true;
   error.value = '';
-  successMessage.value = '';
-
+  successMessageName.value = '';
+  successMessageId.value = '';
+  
   try {
     const response = await apiInstance.get(`/member/memberId/${encodeURIComponent(member.memberName)}/${encodeURIComponent(member.email)}`);
     
-    successMessage.value = `${member.memberName}님의 아이디는 ${response.data.data.memberId}입니다.`;
+    successMessageName.value = `${member.memberName}`;
+    successMessageId.value = `${response.data.data.memberId}`;
+    successMessage.value = true;
     
     member.memberName = '';
     member.email = '';
@@ -87,13 +92,15 @@ const findMemberId = async () => {
 };
 
 const resetMessages = () => {
-  successMessage.value = '';
+  successMessageName.value = '';
+  successMessageId.value = '';
   error.value = ''; 
+  successMessage.value = false;
 };
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-1/2 my-32">
+  <div class="flex flex-col items-center w-1/2 my-24">
       <form @submit.prevent="findMemberId" class="bg-white p-8 shadow-md rounded-lg w-full">
         <div class="mb-6">
           <input
@@ -113,17 +120,22 @@ const resetMessages = () => {
             placeholder="이메일"
           />
         </div>
-        <div v-if="successMessage" class="text-black-500 text-center mb-4">
-          <span class="font-semibold text-blue-700">{{ successMessage }}</span>
-        </div>
+        
         <button
           type="submit"
           class="w-full py-4 bg-navy text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           아이디 찾기
         </button>
-        <div class="text-center mt-4 text-gray-600">
-          <span v-if="error && error !== '존재하지 않는 사용자입니다.'">{{ error }} <a href="/join" class="text-blue-500">회원가입하러 가기</a></span>
+        <div v-if="successMessage" class="text-black-500 text-center mt-4">
+          <span class="font">
+            <span class="text-blue-500">{{ successMessageName }}</span>님의 아이디는 
+            <span class="text-blue-500">{{ successMessageId }}</span>입니다.
+          </span>
+        </div>
+        <div class="whitespace-nowrap text-center mt-4 mb-2 text-gray-600 ">
+          <span v-if="error && error !== '존재하지 않는 사용자입니다.' && successMessage == false">
+            {{ error }} <a href="/join" class="text-blue-500"><br>회원가입하러 가기</a></span>
         </div>
       </form>
     </div>

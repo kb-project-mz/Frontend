@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import FindMemberId from '@/components/login/FindMemberId.vue';
-import FindPassword from '@/components/login/FindPassword.vue';
+import FindMemberId from '@/components/Login/FindMemberId.vue';
+import FindPassword from '@/components/Login/FindPassword.vue';
 
 const menu = ref('memberId');
 
