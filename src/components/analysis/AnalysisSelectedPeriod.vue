@@ -134,8 +134,12 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <MostAndMaximumUsed class="lg:col-span-1" :start-date="startDate" :end-date="endDate" period="해당 기간" />
         <div class="lg:col-span-1 flex flex-col justify-between gap-10">
-          <TotalAmount :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
-          <AverageConsumption chart-id="selectedPeriod" :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
+          <TotalAmount
+            class="flex-1"
+            :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
+          <AverageConsumption
+            class="flex-1"
+            chart-id="selectedPeriod" :card-transaction-data="cardTransactionData" :account-transaction-data="accountTransactionData" />
         </div>
         <CategoryChart class="lg:col-span-1" chart-id="selectedPeriodCategory"
           :start-date="startDate" :end-date="endDate" period="해당 기간" />

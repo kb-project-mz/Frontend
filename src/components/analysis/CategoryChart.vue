@@ -74,9 +74,9 @@ watch(
   <div class="p-10 bg-white border border-gray-200 rounded-2xl shadow">
     <div v-if="isLoaded">
       <div v-if="period === '이번 달'">
-        <div v-if="categoryStore.categoryDataThisMonth.length > 0" class="flex flex-col justify-between">
+        <div v-if="categoryStore.categoryDataThisMonth.length > 0" class="flex flex-col justify-between items-center">
           <DoughnutChart :chart-id="chartId" :period="period" />
-          <div>{{ period }}은 <span class="text-red font-bold">{{ mostSpentCategory }}</span>에</div>
+          <div>{{ period }}은 <span class="text-red text-xl font-bold">{{ mostSpentCategory }}</span>에</div>
           <div>지출이 가장 많았어요.</div>
         </div>
         <div v-else class="flex justify-center items-center">
@@ -84,9 +84,9 @@ watch(
         </div>
       </div>
       <div v-else>
-        <div v-if="categoryStore.categoryDataSelectedPeriod.length > 0" class="flex flex-col justify-between">
+        <div v-if="categoryStore.categoryDataSelectedPeriod.length > 0" class="flex flex-col justify-between items-center">
           <DoughnutChart :chart-id="chartId" :period="period" />
-          <div>{{ period }}은 <span class="text-red font-bold">{{ mostSpentCategory }}</span>에</div>
+          <div>{{ period }}은 <span class="text-red text-xl font-bold">{{ mostSpentCategory }}</span>에</div>
           <div>지출이 가장 많았어요.</div>
         </div>
         <div v-else class="flex justify-center items-center">
