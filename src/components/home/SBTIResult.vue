@@ -16,9 +16,13 @@ const fetchSBTIResult = async (memberIdx) => {
   
   console.log('SBTIResult', SBTIResult);
   const _obj = toRaw(SBTIResult.value);
-  resultImage.value = _obj.typeImage;
-  console.log('원본 객체:', _obj);
-  resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${resultImage.value}`;
+
+	if (_obj && _obj.typeImage) { 
+    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${_obj.typeImage}`;
+  } else {
+		resultImage.value = null;
+	}
+	console.log('resultImage.value', resultImage.value);
 };
 
 onMounted(async () => {
@@ -27,7 +31,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="border border-gray-300 rounded-lg p-10 max-w-s mx-auto">
+  <div class="border border-gray-300 rounded-lg p-30 max-w-s mx-auto">
     <div v-if="resultImage!=null">
       <img :src="resultImage" alt="Result Image" />
     </div> 

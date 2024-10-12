@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from "vue";
+import { computed, watch, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
@@ -9,7 +9,9 @@ const router = useRouter();
 
 const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
-const imageUrl = ref(authStore.member.imageUrl);
+const imageUrl = computed(() => authStore.member.imageUrl);
+
+console.log("header imageUrl", imageUrl)
 
 const logout = async () => {
   await authStore.logout();

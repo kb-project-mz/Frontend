@@ -27,7 +27,8 @@ const startTest = async () => {
         const info = await testStore.getSurveyInfo(authStore.member.memberId);
         testStore.setBirthYear(info.birthYear);
         testStore.setGender(info.gender);
-        router.push({ name: "testQuestion", params: { number: 1 } }); 
+        router.push({ name: "testSurvey" }); 
+        //router.push({ name: "testQuestion", params: { number: 1 } }); 
     } else { 
         router.push({ name: "testSurvey" }); 
     }

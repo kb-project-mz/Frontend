@@ -96,15 +96,15 @@ const nextQuestion = (answerId, answerScore, questionType) => {
         </div>
 
         <div class="text-center">
-            <h1 class="text-3xl font-bold mb-4 gong-gothic-font">Q{{ questionId }}.</h1>
+            <h1 class="text-3xl font-bold mb-6 gong-gothic-font">Q{{ questionId }}.</h1>
             <p class="mb-8 gong-gothic-font text-xl" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
-            <div class="flex flex-col space-y-4">
+            <div class="flex flex-col space-y-7">
                 <button
                     v-if="answers.length > 0"
                     v-for="answer in answers"
                     :key="answer.optionIdx"
                     @click="nextQuestion(answer.optionIdx, answer.score, answer.typeIdx)"
-                    class="bg-white text-red-600 gong-gothic-font py-4 px-6 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
+                    class="bg-white text-blue-600 gong-gothic-font py-4 px-6 rounded-xl shadow-md transition duration-300 transform hover:scale-105"
                 >
                     {{ answer.optionText }}
                 </button>

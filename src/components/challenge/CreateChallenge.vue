@@ -19,7 +19,7 @@ const formData = ref({
   challengeName: "",
   challengeType: "횟수",
   challengeLimit: 0,
-  categoryIdx: 1,
+  categoryIdx: 0,
   detailedCategory: "",
   challengeStatus: "",
   challengeStartDate: "",
@@ -27,13 +27,15 @@ const formData = ref({
   isPublic: 1,
 });
 
+const isDetailedCategoryInputDirectly = ref(false);
+
 const closeModal = () => {
   formData.value = {
     memberIdx: memberIdx,
     challengeName: "",
     challengeType: "횟수",
     challengeLimit: 0,
-    categoryIdx: 1,
+    categoryIdx: 0,
     detailedCategory: "",
     challengeStatus: "",
     challengeStartDate: "",
@@ -43,6 +45,7 @@ const closeModal = () => {
   detailedCategories.value = [];
   limitMessage.value = "제한횟수";
   maxLimit.value = 100;
+  isDetailedCategoryInputDirectly.value = false;
   emit("close");
 };
 
@@ -78,20 +81,33 @@ const onConditionChange = () => {
 };
 
 const onCategoryChange = async () => {
-  await challengeStore.getDetailedCategory(
-    memberIdx,
-    formData.value.categoryIdx
-  );
-  detailedCategories.value = challengeStore.detailedCategories;
+  if (formData.value.categoryIdx != 0) {
+    await challengeStore.getDetailedCategory(
+      memberIdx,
+      formData.value.categoryIdx
+    );
+    detailedCategories.value = challengeStore.detailedCategories;
+  } else {
+    detailedCategories.value = [];
+  }
 };
 
 const selectDetailedCategory = (detailedCategory) => {
-  formData.value.detailedCategory = detailedCategory;
+  if (formData.value.detailedCategory === detailedCategory) {
+    formData.value.detailedCategory = '';
+  } else {
+    formData.value.detailedCategory = detailedCategory;  
+  }
 };
 
 const selectPublicStatus = (status) => {
   formData.value.isPublic = status;
 };
+
+const changeDetailedCategoryInputDirectly = () => {
+  isDetailedCategoryInputDirectly.value = !isDetailedCategoryInputDirectly.value;
+  formData.value.detailedCategory = '';
+}
 </script>
 
 <template>
@@ -131,6 +147,7 @@ const selectPublicStatus = (status) => {
             <div class="w-24 text-end mr-8">카테고리</div>
             <select v-model="formData.categoryIdx" @change="onCategoryChange"
               class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+              <option value="0">카테고리를 선택해주세요.</option>
               <option value="1">식비</option>
               <option value="2">카페/디저트</option>
               <option value="3">교통비</option>
@@ -146,9 +163,9 @@ const selectPublicStatus = (status) => {
           </div>
 
           <div class="flex min-h-12">
-            <div class="w-24 text-end mr-8 my-1">소분류</div>
+            <div class="w-24 text-end mr-8 my-2">소분류</div>
             <div class="w-full">
-              <div v-if="detailedCategories.length > 0" class="flex flex-wrap">
+              <div v-if="detailedCategories.length > 0 && !isDetailedCategoryInputDirectly" class="flex flex-wrap">
                 <div v-for="(category, index) in detailedCategories" 
                     :key="index" 
                     @click="selectDetailedCategory(category)" 
@@ -156,6 +173,15 @@ const selectPublicStatus = (status) => {
                               formData.detailedCategory === category ? 'bg-customBlue text-white' : 'bg-gray-200 hover:bg-gray-300']">
                   {{ category }}
                 </div>
+              </div>
+              <div v-if="formData.categoryIdx != 0" :class="['cursor-pointer w-fit px-3 py-2 text-sm bg-gray-200 rounded-full', isDetailedCategoryInputDirectly ? 'bg-navy text-white' : 'bg-gray-200']"
+                @click="changeDetailedCategoryInputDirectly">
+                직접 입력
+              </div>
+              <div v-if="isDetailedCategoryInputDirectly" class="my-3">
+                <input v-model="formData.detailedCategory" type="text"
+                  placeholder="세부 내역을 입력해주세요."
+                  class="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2">
               </div>
             </div>
           </div>
@@ -165,7 +191,11 @@ const selectPublicStatus = (status) => {
             <div class="w-full flex flex-col">
               <input type="range" v-model="formData.challengeLimit" :min="0" :max="maxLimit"
                 :step="formData.challengeType === '횟수' ? 1 : 100" class="cursor-pointer h-2 rounded-lg bg-gray-200" />
-              <div class="mt-1 text-center block">{{formData.challengeLimit}}</div>
+              <div class="mt-1 text-center">
+                <input type="text"
+                  v-model="formData.challengeLimit"
+                  class="w-16 text-center border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
+              </div>
             </div>
           </div>
 

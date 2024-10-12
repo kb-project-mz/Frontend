@@ -27,7 +27,6 @@ app.use(router);
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 const authStore = useAuthStore();
-// 새로고침 후에도 localStorage의 정보를 불러오기
 authStore.loadAuthState();
 
 
@@ -48,9 +47,6 @@ function initializeSocket() {
         localAuth.memberId !== socketAuthData.memberId ||
         localAuth.memberIdx !== socketAuthData.memberIdx)
     ) {
-      // 로그아웃
-      // localStorage.removeItem('auth');
-      // authStore.clearAuthState();
       router.push('/');
     }
   });

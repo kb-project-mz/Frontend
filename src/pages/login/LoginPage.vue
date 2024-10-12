@@ -52,7 +52,7 @@ const login = async () => {
       <img src="@/assets/logo.png" alt="로고" />
     </div>
 
-    <form class="w-1/4" @submit.prevent="login">
+    <form class="w-1/2 xl:w-1/4" @submit.prevent="login">
       <div class="relative mb-6">
         <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
           <font-awesome-icon :icon="['fas', 'user']" />

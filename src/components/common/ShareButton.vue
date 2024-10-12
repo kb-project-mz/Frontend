@@ -20,29 +20,24 @@ function shareURL() {
     }
 }
 </script>
+
 <template>
     <div class="flex justify-center gap-4 mt-4 w-[300px]">
-        <button class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사</button>
-        <button class="custom-shadow text-white gong-gothic-font py-2 px-4 rounded w-full"><font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유</button>
+        <button 
+            @click="copyURL"
+            class="custom-shadow text-gray-600 gong-gothic-font py-2 px-1 rounded-full w-full bg-[#e0f2fe] hover:bg-[#FFEAE3] transition-colors duration-200">
+            <font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사
+        </button>
+        <button 
+            @click="shareURL"
+            class="custom-shadow text-gray-600 gong-gothic-font py-1 px-2 rounded-full w-full bg-[#e0f2fe] hover:bg-[#FFEAE3] transition-colors duration-200">
+            <font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유
+        </button>
     </div>
 </template>
 
 
 <style scoped>
-button {
-    margin: 5px;
-    padding: 10px;
-    background-color: #FFD1E3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #FFEAE3;
-}
-
 @font-face {
     font-family: "GongGothicMedium";
     src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff") format("woff");
@@ -55,6 +50,6 @@ button:hover {
 }
 
 .custom-shadow {
-    box-shadow: 0 4px 20px rgba(0, 0, 5, 0.5);
+    @apply shadow-md; 
 }
 </style>
