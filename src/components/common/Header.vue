@@ -40,8 +40,9 @@ watch(() => authStore.member.imageUrl, (newImageUrl) => {
 
       <div v-if="memberId" class="flex items-center">
         <img class="w-8 h-8 rounded-full mr-2" :src="`https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${imageUrl}`" alt="Profile Image">
+        {{ memberName }}님&nbsp;&nbsp;&nbsp;
         <router-link v-if="memberId" to="/mypage" class="mr-2">
-          {{ memberName }}님
+          마이페이지
         </router-link>
         <button
           @click="logout"
