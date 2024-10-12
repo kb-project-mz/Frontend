@@ -44,7 +44,7 @@ onMounted(async () => {
         추가
       </button>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
       <ChallengeComponent
         v-for="(challenge, index) in challengeStore.challengeList"
         :key="index"

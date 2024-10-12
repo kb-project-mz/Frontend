@@ -174,7 +174,7 @@ const changeDetailedCategoryInputDirectly = () => {
                   {{ category }}
                 </div>
               </div>
-              <div v-if="formData.categoryIdx != 0" :class="['cursor-pointer w-fit px-3 py-2 text-sm bg-gray-200 rounded-full', isDetailedCategoryInputDirectly ? 'bg-navy text-white' : 'bg-gray-200']"
+              <div v-if="formData.categoryIdx != 0" :class="['cursor-pointer w-fit px-3 py-2 text-sm bg-gray-200 rounded-full', isDetailedCategoryInputDirectly ? 'bg-customBlue text-white' : 'bg-gray-200']"
                 @click="changeDetailedCategoryInputDirectly">
                 직접 입력
               </div>
@@ -194,7 +194,7 @@ const changeDetailedCategoryInputDirectly = () => {
               <div class="mt-1 text-center">
                 <input type="text"
                   v-model="formData.challengeLimit"
-                  class="w-16 text-center border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
+                  class="w-24 text-center border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
               </div>
             </div>
           </div>
@@ -229,5 +229,7 @@ const changeDetailedCategoryInputDirectly = () => {
 </template>
 
 <style scoped>
-
+.bg-customBlue {
+  background-color: #0B1573;
+}
 </style>
