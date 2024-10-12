@@ -17,13 +17,13 @@ onMounted(() => {
 
 <template>
   <div class="mx-[15%] grid grid-cols-1 lg:grid-cols-6 gap-20">
-    <PeerChallenge class="lg:col-span-2 max-h-160" />
+    <PeerChallenge class="lg:col-span-2 max-h-180" />
     <MyChallengeList class="lg:col-span-4" />
   </div>
 </template>
 
 <style scoped>
-.max-h-160 {
-  max-height: 40rem;
+.max-h-180 {
+  max-height: 45rem;
 }
 </style>
