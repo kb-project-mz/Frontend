@@ -1,9 +1,3 @@
-<template>
-  <div class="p-4">
-    <canvas id="dailyStatsChart"></canvas>
-  </div>
-</template>
-
 <script setup>
 import { onMounted, nextTick } from "vue";
 import apiInstance from '@/util/axios-instance';
@@ -53,40 +47,44 @@ const plotChart = (labels, signUpCounts, loginCounts, visitCounts, withdrawalCou
       {
         label: "Sign-ups",
         data: signUpCounts,
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        backgroundColor: 'rgba(255, 99, 132, 0.1)',   // 연한 핑크 배경
+        borderColor: 'rgba(255, 99, 132, 0.8)',       // 진한 핑크 테두리
         fill: true,
-        tension: 0.1,
+        tension: 0.3,                                 // 곡선 부드럽게
         yAxisID: 'y',
         type: 'line',
+        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
       },
       {
         label: "Logins",
         data: loginCounts,
-        borderColor: "rgb(54, 162, 235)",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        backgroundColor: 'rgba(54, 162, 235, 0.1)',   // 연한 파란 배경
+        borderColor: 'rgba(54, 162, 235, 0.8)',       // 진한 파란 테두리
         fill: true,
-        tension: 0.1,
+        tension: 0.3,
         yAxisID: 'y',
         type: 'line',
+        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
       },
       {
         label: "Visits",
         data: visitCounts,
-        borderColor: "rgb(255, 206, 86)",
-        backgroundColor: "rgba(255, 206, 86, 0.2)",
+        backgroundColor: 'rgba(255, 206, 86, 0.1)',   // 연한 노란 배경
+        borderColor: 'rgba(255, 206, 86, 0.8)',       // 진한 노란 테두리
         fill: true,
-        tension: 0.1,
+        tension: 0.3,
         yAxisID: 'y',
         type: 'line',
+        pointBackgroundColor: 'rgba(255, 206, 86, 1)',
       },
       {
         label: "Withdrawals",
         data: withdrawalCounts,
-        backgroundColor: "rgb(255, 99, 132)",
-        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: 'rgba(153, 102, 255, 0.3)',  // 연한 보라 배경
+        borderColor: 'rgba(153, 102, 255, 1)',        // 진한 보라 테두리
         yAxisID: 'y1',
         type: 'bar',
+        barThickness: 10,                             // 막대의 두께 조정
       },
     ],
   };
@@ -99,6 +97,9 @@ const plotChart = (labels, signUpCounts, loginCounts, visitCounts, withdrawalCou
       plugins: {
         legend: {
           position: "top",
+          labels: {
+            color: '#333', // 범례 글자 색
+          },
         },
       },
       scales: {
@@ -106,30 +107,45 @@ const plotChart = (labels, signUpCounts, loginCounts, visitCounts, withdrawalCou
           title: {
             display: true,
             text: "Counts",
+            color: '#666',  // y축 제목 색
           },
           beginAtZero: true,
           ticks: {
             stepSize: 100,
+            color: '#666',  // y축 눈금 색
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.1)',  // 그리드 라인 색
           },
         },
         y1: {
           title: {
             display: true,
             text: "Withdrawals",
+            color: '#666',  // y1축 제목 색
           },
           beginAtZero: true,
+          suggestedMax: 50,  // 50까지 보장, 값이 커지면 자동으로 늘어남
           position: 'right',
           ticks: {
+            color: '#666',  // y1축 눈금 색
             stepSize: 5,
           },
           grid: {
-            drawOnChartArea: false,
+            drawOnChartArea: false,  // y1축 그리드 라인 제거
           },
         },
         x: {
           title: {
             display: true,
             text: "Date",
+            color: '#666',  // x축 제목 색
+          },
+          ticks: {
+            color: '#666',  // x축 눈금 색
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.1)',  // 그리드 라인 색
           },
         },
       },
@@ -143,6 +159,12 @@ onMounted(async () => {
 });
 </script>
 
+<template>
+  <div class="p-4">
+    <canvas id="dailyStatsChart"></canvas>
+  </div>
+</template>
+
 <style scoped>
-/* Add custom styles if necessary */
+
 </style>
