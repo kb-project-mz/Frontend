@@ -99,6 +99,7 @@ const getResultContent = async () => {
         resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${resultImage.value}`;
         localStorage.setItem('resultName', resultText);
         localStorage.setItem('resultImage', resultImage.value); 
+        console.log('이미지 url',resultImage.value);
     }
     return resultText;
 };
@@ -117,10 +118,10 @@ const goToSignup = () => {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
-        <h1 class="text-2xl gong-gothic-font font-bold mb-4">당신의 결과는:</h1>
-        <img :src="resultImage" alt="Result Image" />
-        <p class="text-lg">{{ resultContent }}</p>
+    <div class="flex flex-col justify-center items-center h-full bg-gray-50">
+        <h1 class="text-2xl gong-gothic-font font-bold-md mb-0">당신의 결과는:</h1>
+        <img :src="resultImage" alt="Result Image" class="w-[390px] h-[614px] object-cover" />
+        <!-- <p class="text-lg">{{ resultContent }}</p> -->
 
         <div class="w-full max-w-lg">
             <ResultBar
@@ -146,13 +147,14 @@ const goToSignup = () => {
 
         <KakaoShareButton 
             class="mt-4" 
-            :title="resultContent" 
+            title="카카오톡으로 공유하기" 
             description="테스트 결과를 확인하세요!"
             imageUrl="https://your-image-url.com/image.jpg"
             :linkUrl="`http://localhost:8080/test/${resultId}`"
         />
-        <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">테스트 다시 하기</button>
-        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-yellow-400' : 'bg-green-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded']">
+        <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+            <font-awesome-icon :icon="['fas', 'repeat']" class="mr-2" />테스트 다시 하기</button>
+        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-yellow-400' : 'bg-green-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded', 'flex', 'items-center']">
             {{ authStore.isLogin() ? "홈 화면으로 가기" : "회원가입 하러 가기" }}
         </button>
     </div>

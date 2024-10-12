@@ -25,14 +25,14 @@ function shareURL() {
     <div class="flex justify-center gap-4 mt-4 w-[300px]">
         <button 
             @click="copyURL"
-            class="custom-shadow text-gray-600 gong-gothic-font py-2 px-1 rounded-full w-full bg-[#e0f2fe] hover:bg-[#FFEAE3] transition-colors duration-200">
+            class="custom-shadow text-gray-600 gong-gothic-font py-2 px-1 rounded-full w-1/2 bg-[#e0f2fe] hover:bg-[#FFEAE3] transition-colors duration-200">
             <font-awesome-icon icon="fa-regular fa-copy" /> 링크 복사
         </button>
-        <button 
+        <!-- <button 
             @click="shareURL"
             class="custom-shadow text-gray-600 gong-gothic-font py-1 px-2 rounded-full w-full bg-[#e0f2fe] hover:bg-[#FFEAE3] transition-colors duration-200">
             <font-awesome-icon icon="fa-solid fa-share-nodes" /> 링크 공유
-        </button>
+        </button> -->
     </div>
 </template>
 

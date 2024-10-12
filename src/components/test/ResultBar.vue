@@ -33,22 +33,36 @@ watch(() => [props.scoreLeft, props.scoreRight], calculateWidths);
 </script>
 
 <template>
-  <div class="my-4 rounded-lg">
-    <div class="flex justify-between mb-2">
+  <div class="my-4 rounded-lg max-w-xs mx-auto">
+    <div class="flex justify-between mb-2  gong-gothic-font ">
       <span :class="{ 
-        'font-bold text-xl text-indiepink-600': props.scoreLeft > props.scoreRight,
+        'font-bold-md text-xl text-black-600': props.scoreLeft > props.scoreRight,
         }">
         {{ labelLeft }}
       </span>
       <span :class="{ 
-        'font-bold text-xl text-indiepink-600': props.scoreRight > props.scoreLeft,
-         }">
+        'font-bold-md text-xl text-black-600': props.scoreRight > props.scoreLeft,
+        }">
         {{ labelRight }}
       </span>
     </div>
     <div class="relative flex items-center h-10">
-      <div class="h-8 bg-indiepink-300 rounded-l-full" :style="{ width: leftWidth }"></div>
-      <div class="h-8 bg-indiepink-100 rounded-r-full" :style="{ width: rightWidth }"></div>
+      <div
+        class="h-8 bg-yellow-100"
+        :class="{ 
+          'rounded-l-full': props.scoreLeft !== 3, 
+          'rounded-r-full rounded-l-full': props.scoreLeft === 3 
+        }"
+        :style="{ width: leftWidth }"
+      ></div>
+      <div
+        class="h-8 bg-green-100"
+        :class="{ 
+          'rounded-r-full': props.scoreRight !== 3, 
+          'rounded-l-full rounded-r-full': props.scoreRight === 3 
+        }"
+        :style="{ width: rightWidth }"
+      ></div>
     </div>
   </div>
 </template>
