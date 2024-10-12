@@ -288,7 +288,7 @@ const join = async () => {
 
 <template>
   <div class="flex justify-center">
-    <div class="w-1/3 px-16 py-10 bg-white border rounded-lg shadow">
+    <div class="mx-[20%] lg:mx-[32%] px-16 py-10 bg-white border rounded-lg shadow">
       <div class="mb-5 font-bold text-2xl text-blue">
         <div>회원가입을 위해</div>
         <div>정보를 입력해주세요</div>
@@ -394,26 +394,26 @@ const join = async () => {
             <input
               v-model="member.email"
               type="email"
-              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
+              class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 p-4"
               id="email"
               placeholder="이메일"
               required
             />
             <select v-model="selectedDomain" @change="handleDomainChange"
-              class="border border-gray-300 rounded-r-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 block p-3">
+              class="border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 p-3.5">
               <option value="">도메인 선택</option>
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
               <option value="직접입력">직접 입력</option>
             </select>
-            <button @click="sendVerificationCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
+            <button @click="sendVerificationCode" class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-navy text-white rounded-lg text-sm">
               인증 코드 전송
             </button>
           </div>
           <input 
             v-if="isDirectInput" 
-            type="text" 
-            class="mt-2 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            placeholder="직접 도메인을 입력해 주세요" 
+            type="text"
+            class="mt-2 border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+            placeholder="도메인을 입력해 주세요" 
             v-model="directEmail" 
             @input="updateDirectEmail" 
           />
@@ -432,170 +432,115 @@ const join = async () => {
           <div v-if="verificationFail" class="text-red-500">{{ verificationFail }}</div>
           <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
         </div>
+        
+        <div class="mt-10 mb-5 font-bold text-2xl text-blue">약관 동의</div>
+        <div class="p-5 mb-6 flex items-center bg-gray-100 rounded-md">
+          <input id="agreeAll" type="checkbox" class="mr-3 w-7 h-7" v-model="agreeAll" @change="toggleAll">
+          <div for="agreeAll" class="text-base font-bold">전체 동의</div>
+        </div>
 
-        <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
-  <h2 class="text-2xl font-bold mb-4">약관 동의</h2>
-  <hr class="border-2 border-gray-800 mb-6">
-
-  <!-- 전체 동의 -->
-  <div class="flex items-center mb-6">
-    <input id="agreeAll" type="checkbox" class="mr-2 h-5 w-5" v-model="agreeAll" @change="toggleAll">
-    <label for="agreeAll" class="text-base">회원가입 약관에 모두 동의합니다</label>
-  </div>
-
-  <!-- 이용 약관 동의 -->
-<div class="mb-6">
-  <div class="flex justify-between items-center mb-2">
-    <label for="terms" class="text-base font-semibold">이용약관 동의 <span class="text-red-500">(필수)</span></label>
-    <input id="terms" type="checkbox" class="ml-2 h-5 w-5" v-model="terms" @change="checkAgreeAll">
-  </div>
-  <div class="h-24 overflow-y-scroll border border-gray-300 p-3 rounded-lg text-sm">
-    <h1 class="font-bold text-base mb-2">이용 약관</h1>
-
-    <!-- 제1조(목적) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제1조(목적)</h2>
-      <p class="mb-2">본 약관은 당사와 이용자 간의 권리, 의무 및 책임 사항을 규정하며, 당사에서 제공하는 서비스 이용과 관련된 규칙을 명시합니다.</p>
-    </section>
-
-    <!-- 제2조(정의) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제2조(정의)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>“몰”이란 OO 회사가 운영하는 사이버 몰을 의미합니다.</li>
-        <li>“이용자”란 몰에 접속하여 약관에 동의하고 서비스를 이용하는 회원 및 비회원을 말합니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제3조(약관의 명시 및 변경) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제3조(약관의 명시 및 변경)</h2>
-      <p class="mb-2">당사는 약관을 몰 초기 화면에 명시하여 이용자가 쉽게 알 수 있도록 하며, 약관을 변경할 경우 최소 7일 전부터 공지합니다.</p>
-    </section>
-
-    <!-- 제4조(서비스 제공 및 변경) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제4조(서비스 제공 및 변경)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>재화 및 용역에 대한 정보 제공 및 구매 계약의 체결</li>
-        <li>구매 계약이 체결된 재화 및 용역의 배송</li>
-        <li>기타 당사가 정하는 업무</li>
-      </ul>
-    </section>
-
-    <!-- 제5조(서비스 목적) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제5조(서비스 목적)</h2>
-      <p class="mb-2">본 서비스는 자산 관리 및 소비 분석을 목적으로 하며, 사용자의 금융 자산 정보를 수집하여 소비 성향을 분석하고, 소비 패턴에 맞는 챌린지 및 맞춤형 서비스를 제공합니다.</p>
-    </section>
-
-    <!-- 제6조(사용자의 의무) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제6조(사용자의 의무)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>사용자는 정확한 정보를 제공해야 하며, 타인의 개인정보를 부정 사용하거나 본 서비스의 기능을 악용하지 않아야 합니다.</li>
-        <li>사용자는 서비스 이용 중 제공된 정보를 바탕으로 본인의 자산을 관리할 책임이 있습니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제7조(서비스 제공자의 의무) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제7조(서비스 제공자의 의무)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>당사는 사용자의 개인정보 및 자산 정보를 보호하고, 안정적인 서비스를 제공할 의무가 있습니다.</li>
-        <li>당사는 사용자의 금융 정보가 정확하게 처리되도록 노력하지만, 제3자 API(은행 API 등)의 문제로 인한 정보 오류에 대해서는 책임지지 않습니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제8조(로그 수집) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제8조(로그 수집)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>당사는 서비스 운영 및 보안을 강화하고, 서비스 최적화를 위해 IP 주소, 접속 시간, 브라우저 정보 등 사용자의 로그 데이터를 수집합니다.</li>
-        <li>로그 데이터는 서비스 안정성 및 보안 강화를 위해 사용되며, 오류 분석 및 문제 해결을 위한 데이터로 활용됩니다.</li>
-        <li>로그 데이터는 법적 요구에 따라 사법 당국에 제공될 수 있습니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제9조(책임의 한계) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제9조(책임의 한계)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>당사는 서비스 제공을 위해 노력하나, 사용자 개인의 재정적 결정에 대해 책임지지 않습니다.</li>
-        <li>금융 자산 정보는 제3자 제공(은행 API)에서 수집되며, 해당 정보의 오류나 지연에 대해 당사는 책임지지 않습니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제10조(개인정보 보호 및 권리) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제10조(개인정보 보호 및 권리)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>사용자는 언제든지 개인정보에 대한 열람, 정정, 삭제를 요청할 수 있습니다.</li>
-        <li>당사는 사용자의 동의 없이 개인정보를 제3자에게 제공하지 않습니다.</li>
-        <li>로그 정보에 대한 열람 및 삭제는 법적 요구에 따라 처리됩니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제11조(서비스 이용 중단 및 해지) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제11조(서비스 이용 중단 및 해지)</h2>
-      <ul class="list-disc list-inside mb-2">
-        <li>사용자는 언제든지 서비스 해지를 요청할 수 있으며, 서비스 해지 후에는 모든 금융 정보 연동이 종료됩니다.</li>
-      </ul>
-    </section>
-
-    <!-- 제12조(소비 분석 및 챌린지) -->
-    <section>
-      <h2 class="font-bold text-sm mb-1">제12조(소비 분석 및 챌린지)</h2>
-      <ul class="list-disc list-inside">
-        <li>사용자의 소비 패턴에 기반하여 다양한 소비 습관 개선 프로그램(챌린지)을 제공합니다.</li>
-        <li>제공된 데이터 분석을 바탕으로 소비 성향 테스트(MBTI와 유사)를 진행할 수 있습니다.</li>
-      </ul>
-    </section>
-  </div>
-</div>
-
-  <!-- 개인정보 수집 및 이용 동의 -->
-  <div class="mb-6">
-    <div class="flex justify-between items-center mb-2">
-      <label for="privacy" class="text-base font-semibold">개인정보 수집 및 이용 동의 <span class="text-red-500">(필수)</span></label>
-      <input id="privacy" type="checkbox" class="ml-2 h-5 w-5" v-model="privacy" @change="checkAgreeAll">
-    </div>
-    <div class="h-24 overflow-y-scroll border border-gray-300 p-3 rounded-lg text-sm">
-      <h1 class="font-bold text-base mb-2">개인정보 수집 및 이용 동의서</h1>
-      <section>
-        <h2 class="font-bold text-sm mb-1">제1조(목적)</h2>
-        <p class="mb-2">이 동의서는 본 서비스가 수집하는 개인정보의 범위, 목적, 보유 기간 등을 명시하며, 개인정보 처리와 관련하여 이용자의 권리 및 의무 사항을 규정하는 것을 목적으로 합니다.</p>
-      </section>
-      <section>
-        <h2 class="font-bold text-sm mb-1">제2조(수집하는 개인정보 항목)</h2>
-        <ul class="list-disc list-inside mb-2">
-          <li>이름, 이메일, 성별, 자산 정보 (은행 API 연동 시 금융 데이터)</li>
-          <li>IP 주소, 접속 시간, 브라우저 정보, 서비스 이용 기록 등</li>
-          <li>회원 가입 및 본인 인증을 위한 정보</li>
-        </ul>
-      </section>
-      <section>
-        <h2 class="font-bold text-sm mb-1">제3조(개인정보 수집 및 이용 목적)</h2>
-        <ul class="list-disc list-inside mb-2">
-          <li>서비스 이용자 식별 및 본인 확인</li>
-          <li>자산 관리 및 소비 분석</li>
-          <li>맞춤형 컨텐츠 제공 및 소비 성향 분석</li>
-          <li>서비스 최적화 및 보안 강화</li>
-          <li>법적 요구에 따른 기록 보관</li>
-        </ul>
-      </section>
-      <section>
-        <h2 class="font-bold text-sm mb-1">제4조(개인정보의 보유 및 이용 기간)</h2>
-        <p class="mb-2">수집된 개인정보는 서비스 이용 종료 후 회원 탈퇴 시 5년간 보관하며, 보관 기간 종료 후 즉시 파기됩니다.</p>
-      </section>
-      <section>
-        <h2 class="font-bold text-sm mb-1">제5조(제3자 제공 여부)</h2>
-        <p class="mb-2">개인정보는 법적 요구 사항 또는 서비스 제공을 위한 외부 서비스 제공 업체(예: 은행 API)와 연동될 수 있으며, 이 경우 이용자의 명시적 동의를 받아 처리됩니다. 동의를 거부할 권리가 있으며, 거부 시 서비스 이용에 제한이 있을 수 있습니다.</p>
-      </section>
-    </div>
-  </div>
-</div>
+        <div class="mb-6">
+          <div class="mb-3 flex itmes-center">
+            <input id="terms" type="checkbox" class="mr-2 w-6 h-6" v-model="terms" @change="checkAgreeAll">
+            <div for="terms" class="text-base font-semibold">이용약관 동의 <span class="text-red-500"> (필수)</span></div>
+          </div>
+          <div class="h-52 overflow-y-scroll border border-gray-300 p-4 rounded-lg text-sm space-y-3">
+            <section>
+              <div class="font-bold mb-1">제1조(목적)</div>
+              <div>본 약관은 당사와 이용자 간의 권리, 의무 및 책임 사항을 규정하며, 당사에서 제공하는 서비스 이용과 관련된 규칙을 명시합니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제2조(정의)</div>
+              <div>• “몰”이란 OO 회사가 운영하는 사이버 몰을 의미합니다.</div>
+              <div>• “이용자”란 몰에 접속하여 약관에 동의하고 서비스를 이용하는 회원 및 비회원을 말합니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제3조(약관의 명시 및 변경)</div>
+              <div>당사는 약관을 몰 초기 화면에 명시하여 이용자가 쉽게 알 수 있도록 하며, 약관을 변경할 경우 최소 7일 전부터 공지합니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제4조(서비스 제공 및 변경)</div>
+              <div>• 재화 및 용역에 대한 정보 제공 및 구매 계약의 체결</div>
+              <div>• 구매 계약이 체결된 재화 및 용역의 배송</div>
+              <div>• 기타 당사가 정하는 업무</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제5조(서비스 목적)</div>
+              <div>본 서비스는 자산 관리 및 소비 분석을 목적으로 하며, 사용자의 금융 자산 정보를 수집하여 소비 성향을 분석하고, 소비 패턴에 맞는 챌린지 및 맞춤형 서비스를 제공합니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제6조(사용자의 의무)</div>
+              <div>• 사용자는 정확한 정보를 제공해야 하며, 타인의 개인정보를 부정 사용하거나 본 서비스의 기능을 악용하지 않아야 합니다.</div>
+              <div>• 사용자는 서비스 이용 중 제공된 정보를 바탕으로 본인의 자산을 관리할 책임이 있습니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제7조(서비스 제공자의 의무)</div>
+              <div>• 당사는 사용자의 개인정보 및 자산 정보를 보호하고, 안정적인 서비스를 제공할 의무가 있습니다.</div>
+              <div>• 당사는 사용자의 금융 정보가 정확하게 처리되도록 노력하지만, 제3자 API(은행 API 등)의 문제로 인한 정보 오류에 대해서는 책임지지 않습니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제8조(로그 수집)</div>
+              <div>• 당사는 서비스 운영 및 보안을 강화하고, 서비스 최적화를 위해 IP 주소, 접속 시간, 브라우저 정보 등 사용자의 로그 데이터를 수집합니다.</div>
+              <div>• 로그 데이터는 서비스 안정성 및 보안 강화를 위해 사용되며, 오류 분석 및 문제 해결을 위한 데이터로 활용됩니다.</div>
+              <div>• 로그 데이터는 법적 요구에 따라 사법 당국에 제공될 수 있습니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제9조(책임의 한계)</div>
+              <div>• 당사는 서비스 제공을 위해 노력하나, 사용자 개인의 재정적 결정에 대해 책임지지 않습니다.</div>
+              <div>• 금융 자산 정보는 제3자 제공(은행 API)에서 수집되며, 해당 정보의 오류나 지연에 대해 당사는 책임지지 않습니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제10조(개인정보 보호 및 권리)</div>
+              <div>• 사용자는 언제든지 개인정보에 대한 열람, 정정, 삭제를 요청할 수 있습니다.</div>
+              <div>• 당사는 사용자의 동의 없이 개인정보를 제3자에게 제공하지 않습니다.</div>
+              <div>• 로그 정보에 대한 열람 및 삭제는 법적 요구에 따라 처리됩니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제11조(서비스 이용 중단 및 해지)</div>
+              <div>사용자는 언제든지 서비스 해지를 요청할 수 있으며, 서비스 해지 후에는 모든 금융 정보 연동이 종료됩니다.</div>
+            </section>
+            <section>
+              <div class="font-bold text-sm mb-1">제12조(소비 분석 및 챌린지)</div>
+              <div>• 사용자의 소비 패턴에 기반하여 다양한 소비 습관 개선 프로그램(챌린지)을 제공합니다.</div>
+              <div>• 제공된 데이터 분석을 바탕으로 소비 성향 테스트(MBTI와 유사)를 진행할 수 있습니다.</div>
+            </section>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <div class="mb-3 flex itmes-center">
+            <input id="privacy" type="checkbox" class="mr-2 w-6 h-6" v-model="privacy" @change="checkAgreeAll">
+            <div for="privacy" class="text-base font-semibold">개인정보 수집 및 이용 동의<span class="text-red-500"> (필수)</span></div>
+          </div>
+          <div class="h-52 overflow-y-scroll border border-gray-300 p-4 rounded-lg text-sm space-y-3">
+            <section>
+              <div class="font-bold mb-1">제1조(목적)</div>
+              <div>이 동의서는 본 서비스가 수집하는 개인정보의 범위, 목적, 보유 기간 등을 명시하며, 개인정보 처리와 관련하여 이용자의 권리 및 의무 사항을 규정하는 것을 목적으로 합니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제2조(수집하는 개인정보 항목)</div>
+              <div>• 이름, 이메일, 성별, 자산 정보 (은행 API 연동 시 금융 데이터)</div>
+              <div>• IP 주소, 접속 시간, 브라우저 정보, 서비스 이용 기록 등</div>
+              <div>• 회원 가입 및 본인 인증을 위한 정보</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제3조(개인정보 수집 및 이용 목적)</div>
+              <div>• 서비스 이용자 식별 및 본인 확인</div>
+              <div>• 자산 관리 및 소비 분석</div>
+              <div>• 맞춤형 컨텐츠 제공 및 소비 성향 분석</div>
+              <div>• 서비스 최적화 및 보안 강화</div>
+              <div>• 법적 요구에 따른 기록 보관</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제4조(개인정보의 보유 및 이용 기간)</div>
+              <div>수집된 개인정보는 서비스 이용 종료 후 회원 탈퇴 시 5년간 보관하며, 보관 기간 종료 후 즉시 파기됩니다.</div>
+            </section>
+            <section>
+              <div class="font-bold mb-1">제5조(제3자 제공 여부)</div>
+              <div>개인정보는 법적 요구 사항 또는 서비스 제공을 위한 외부 서비스 제공 업체(예: 은행 API)와 연동될 수 있으며, 이 경우 이용자의 명시적 동의를 받아 처리됩니다. 동의를 거부할 권리가 있으며, 거부 시 서비스 이용에 제한이 있을 수 있습니다.</div>
+            </section>
+          </div>
+        </div>
 
         <button
           type="submit"
@@ -609,6 +554,9 @@ const join = async () => {
 </template>
 
 <style scoped>
+[type="checkbox"] {
+  accent-color: #0B1573;
+}
 .spinner-border {
   width: 2rem;
   height: 2rem;
@@ -618,5 +566,8 @@ const join = async () => {
 }
 .bg-navy {
   background-color: #0B1573;
+}
+.border-navy {
+  border-color: #0B1573;
 }
 </style>
