@@ -46,8 +46,8 @@ const startTest = async () => {
                 @click="startTest"
                 class="custom-shadow gong-gothic-font bg-white text-gray-500 font-bold py-4 px-6 rounded-xl text-xl transition duration-300 transform hover:scale-105 w-[300px]"
             >
-                나의 소비 성향 테스트 <br />
-                <span class="text-blue-600 text-2xl gong-gothic-font">START!</span>
+                나의 소비핑 테스트 <br />
+                <span class="text-blue-600 text-2xl gong-gothic-font">시작하기</span>
             </button>
         </div>
         <br/>
