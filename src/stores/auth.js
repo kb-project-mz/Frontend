@@ -145,6 +145,7 @@ export const useAuthStore = defineStore("auth", {
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
+				console.log('zzzzzzzzzzzzzz',authData.memberName)
         this.member.accessToken = authData.accessToken;
         this.member.memberIdx = authData.memberIdx;
         this.member.imageUrl = authData.imageUrl || "";
@@ -154,6 +155,7 @@ export const useAuthStore = defineStore("auth", {
 
     isLogin() {
       const authData = localStorage.getItem('auth');
+			console.log("isLogin 실행", authData);
       return !!authData;
     },
 

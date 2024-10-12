@@ -16,9 +16,13 @@ const fetchSBTIResult = async (memberIdx) => {
   
   console.log('SBTIResult', SBTIResult);
   const _obj = toRaw(SBTIResult.value);
-  resultImage.value = _obj.typeImage;
-  console.log('원본 객체:', _obj);
-  resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${resultImage.value}`;
+
+	if (_obj && _obj.typeImage) { 
+    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${_obj.typeImage}`;
+  } else {
+		resultImage.value = null;
+	}
+	console.log('resultImage.value', resultImage.value);
 };
 
 onMounted(async () => {

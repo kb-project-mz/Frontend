@@ -33,6 +33,7 @@ export const useMemberStore = defineStore("memberStore", {
         throw error;
       }
     },
+
     async withdraw() {
       try {
         const authStore = useAuthStore();
@@ -47,6 +48,6 @@ export const useMemberStore = defineStore("memberStore", {
       } catch (error) {
         console.error('Failed to withdraw', error);
       }
-    }
+    },
   },  
 });
