@@ -46,6 +46,17 @@ const fetchAsset = async () => {
   isLoading.value = false;
 };
 
+const disconnectCard = async (cardIdx) => {
+  const card = connectedCardList.value.find(card => card.prdtId === cardIdx);
+  
+  const confirm = window.confirm(`${card.prdtName} 연동을 해제하시겠습니까?`);
+
+  if (confirm) {
+    await assetStore.disconnectCard(cardIdx);
+    await fetchAsset();
+  }
+};
+
 onMounted(async () => {
   await cardTransactionStore.getCardTransactionListByCardIdx();
   await fetchAsset();
@@ -78,18 +89,18 @@ onMounted(async () => {
       </div>
 
       <div v-else-if="connectedCardList.length > 0">
-        <div
-          v-for="(card, index) in connectedCardList"
-          :key="index"
-          class="py-3 pl-2 flex items-center"
-        >
-          <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
-          <div>
-            <div class="text-medium">{{ card.prdtName }}</div>
-            <div class="text-lg font-bold">
-              {{ card.totalAmount.toLocaleString() }}원
+        <div v-for="(card, index) in connectedCardList" :key="index" class="py-3 pl-2 flex items-center justify-between">
+          <div class="flex items-center">
+            <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
+            <div>
+              <div class="text-medium">{{ card.prdtName }}</div>
+              <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>
             </div>
           </div>
+          <button @click="disconnectCard(card.prdtId)" class="ml-4 text-gray-400">
+            삭제
+          </button>
+
         </div>
         <button @click="openModal" class="w-full">
           <div

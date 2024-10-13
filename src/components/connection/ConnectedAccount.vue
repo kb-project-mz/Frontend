@@ -32,6 +32,17 @@ const fetchAsset = async () => {
   isLoading.value = false;
 };
 
+const disconnectAccount = async (accountIdx) => {
+  const account = connectedAccountList.value.find(account => account.prdtId === accountIdx);
+  
+  const confirm = window.confirm(`${account.prdtName} 연동을 해제하시겠습니까?`);
+
+  if (confirm) {
+    await assetStore.disconnectAccount(accountIdx);
+    await fetchAsset();
+  }
+};
+
 onMounted(async () => {
   await fetchAsset();
 });
@@ -63,22 +74,17 @@ onMounted(async () => {
       </div>
 
       <div v-else-if="connectedAccountList.length > 0">
-        <div
-          v-for="(account, index) in connectedAccountList"
-          :key="index"
-          class="py-3 pl-2 flex items-center"
-        >
-          <img
-            :src="account.image"
-            alt="account"
-            class="w-12 h-12 mr-4 rounded-full"
-          />
-          <div>
-            <div class="text-medium">{{ account.prdtName }}</div>
-            <div class="text-lg font-bold">
-              {{ account.balance.toLocaleString() }}원
+        <div v-for="(account, index) in connectedAccountList" :key="index" class="py-3 pl-2 flex items-center justify-between">
+          <div class="flex items-center">
+            <img :src="account.image" alt="account" class="w-12 h-12 mr-4 rounded-full" />
+            <div>
+              <div class="text-medium">{{ account.prdtName }}</div>
+              <div class="text-lg font-bold">{{ account.balance.toLocaleString() }}원</div>
             </div>
           </div>
+          <button @click="disconnectAccount(account.prdtId)" class="ml-4 text-gray-400">
+            삭제
+          </button>
         </div>
         <button @click="openModal" class="w-full">
           <div
