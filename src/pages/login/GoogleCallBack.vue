@@ -17,16 +17,11 @@ const memberName = computed(() => route.query.member_name);
 
 const imageUrl = computed(() => {
   const authData = JSON.parse(localStorage.getItem('auth') || '{}');
-	console.log('authData', imageUrl);
   return authData.imageUrl || 'basic.jpg';
 });
 
-console.log("imageUrl: ",imageUrl);
-
 onMounted(async () => {
   if (googleAccessToken.value) {
-		console.log("imageUrl: ",imageUrl);
-
     try {
       authStore.$patch({
         member: {
@@ -61,7 +56,6 @@ onMounted(async () => {
       console.log("AuthStore의 로그인 상태 확인:", authStore.isLogin());
       
       authStore.loadAuthState();
-			console.log('Profile image URL:', imageUrl.value);
       router.push('/');
 
     } catch (error) {

@@ -34,7 +34,6 @@ const isEmailChanged = ref(false);
 
 onMounted(async () => {
   await fetchProfile();
-  console.log('onmounted',authStore.member.imageUrl);
 });
 
 // 프로필 정보를 API에서 불러오는 함수
@@ -174,7 +173,6 @@ const sendVerificationCode = async () => {
     isVerificationCodeSent.value = true;
     alert('인증 코드가 해당 이메일로 발송되었습니다. 인증 코드를 입력해 이메일 변경을 완료해주세요.');
   } catch (error) {
-    console.log('인증 코드 전송 중 오류 발생:', error);
     alert('인증 코드 전송 중 오류가 발생했습니다.');
   }
 };
@@ -230,7 +228,6 @@ const saveEmail = async () => {
 // 이미지
 const uploadImage = async (event) => {
   const file = event.target.files[0];
-  console.log('Selected Image:', file);
   if (!file) {
     alert('이미지를 선택해주세요.');
     return;
@@ -278,7 +275,6 @@ const deleteImage = async (profileImage) => {
           Authorization: authStore.member.accessToken,
         },
       });
-      console.log('Response Data:', response.data);
       if (response.data.success) {
         profile.imageUrl = 'basic.jpg';
         authStore.updateImageUrl("basic.jpg")
@@ -305,10 +301,6 @@ const withdraw = async () => {
     }
   }
 }
-
-onMounted(() => {
-  console.log(authStore.member.imageUrl);
-})
 </script>
 
 <template>

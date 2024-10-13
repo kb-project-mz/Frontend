@@ -56,7 +56,6 @@ function initializeSocket() {
 authStore.$subscribe((mutation, state) => {
 	console.log("is_login", authStore.isLogin());
   if (authStore.isLogin()) {
-    // 로그인해야만 socket 연결
     initializeSocket();
   }
 });

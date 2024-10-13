@@ -27,14 +27,14 @@ const login = async () => {
     }
     const response = await auth.login(member.memberId, member.password);
 
-    if (response && response.data) {
+    if (response.success) {
       if (response.data.role === 'ROLE_ADMIN') {
         router.push("/admin");
       } else {
         router.push("/");
       }
     } else {
-      error.value = response.message;
+      error.value = response.error.message;
     }
   } catch (err) {
     console.error("로그인 중 예외 발생:", err);
