@@ -63,10 +63,10 @@ onMounted(async () => {
   <div v-if="isDataLoaded">
     <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
       <div class="flex items-end">
-        <div class="p-3 bg-customBlue text-white text-center rounded-lg w-fit">
+        <div class="p-3 bg-customNavy text-white text-center rounded-lg w-fit">
           <router-link to="/mypage/asset">자산 연결하러 가기</router-link>
         </div>
-        <div class="p-3 bg-customBlue text-white rounded-lg">
+        <div class="p-3 bg-customNavy text-white rounded-lg">
           <button @click="toggleCardFlip">과거 소비와 비교하기</button>
         </div>
       </div>
@@ -82,8 +82,8 @@ onMounted(async () => {
         </div>
       </div>
       
-      <div class="grid grid-cols-1 lg:grid-cols-5 space-x-10">
-        <div class="h-full lg:col-span-2 space-y-10">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+        <div class="h-full lg:col-span-2 flex flex-col justify-between gap-10">
           <LineChart :card-transaction-this-month-data="cardTransactionThisMonthData"
                       :card-transaction-last-month-data="cardTransactionLastMonthData"
                       :account-transaction-this-month-data="accountTransactionThisMonthData" 
@@ -95,7 +95,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-7 space-x-10">
+      <div class="grid grid-cols-1 lg:grid-cols-7 gap-10">
         <div class="lg:col-span-4">
           <ConsumptionCalendar :account-transaction-data="accountTransactionData"
             :card-transaction-data="cardTransactionData" />

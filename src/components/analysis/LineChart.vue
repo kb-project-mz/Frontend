@@ -306,7 +306,7 @@ const chartOptions = ref({
 </script>
 
 <template>
-  <div class="py-5 px-8 bg-white border border-gray-200 rounded-2xl shadow">
+  <div class="py-6 px-8 bg-white border border-gray-200 rounded-xl shadow">
     <div class="flex items-center justify-between">
       <div>
         <div>지난 달보다</div>
@@ -314,7 +314,7 @@ const chartOptions = ref({
           <span
             :class="[
               'font-bold',
-              difference > 0 ? 'text-red' : difference < 0 ? 'text-blue' : '',
+              difference > 0 ? 'text-customRed' : difference < 0 ? 'text-customBlue' : '',
             ]"
           >
             {{ Math.abs(difference).toLocaleString() }} </span
@@ -332,11 +332,5 @@ const chartOptions = ref({
 </template>
 
 <style scoped>
-.text-red {
-  color: #f55151;
-}
-.text-blue {
-  color: #0e9cff;
-  background-color: rgba(244, 250, 255, 0.601);
-}
+
 </style>

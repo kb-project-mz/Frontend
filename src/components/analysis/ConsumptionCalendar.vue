@@ -179,34 +179,33 @@ watch([currentYear, currentMonth], generateCalendar);
 </script>
 
 <template>
-  <div class="border rounded-xl shadow">
-    <div class="calendar-header">
-      <button @click="prevMonth">◀</button>
-      <span class="calendar-title"
-        >{{ currentYear }}년 {{ currentMonth + 1 }}월</span
-      >
-      <button @click="nextMonth">▶</button>
+  <div class="py-6 w-full border rounded-xl shadow overflow-auto">
+    <div class="flex justify-center items-center text-lg">
+      <button class="px-3" @click="prevMonth"><font-awesome-icon :icon="['fas', 'chevron-left']" /></button>
+      <span class="font-bold text-center">{{ currentYear }}년 {{ currentMonth + 1 }}월</span>
+      <button class="px-3" @click="nextMonth"><font-awesome-icon :icon="['fas', 'chevron-right']" /></button>
     </div>
 
-    <table>
+    <table class="w-full table-fixed border-none">
       <thead>
         <tr>
-          <th class="weekdays" v-for="day in weekDays" :key="day">{{ day }}</th>
+          <th class="p-5 font-bold" v-for="day in weekDays" :key="day">{{ day }}</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(week, index) in daysInMonth" :key="index">
-          <td v-for="(day, dayIndex) in week" :key="dayIndex">
-            <div v-if="day !== 0">
-              <span>{{ day }}</span>
-              <div class="income" v-if="getIncome(getDateString(day))">
-                {{ getIncome(getDateString(day)) }}
-              </div>
-              <div class="expenses" v-if="getExpense(getDateString(day))">
-                {{ getExpense(getDateString(day)) }}
+          <td v-for="(day, dayIndex) in week" :key="dayIndex" class="text-center py-2">
+            <div v-if="day !== 0" class="mb-1">
+              <div class="font-bold mb-1">{{ day }}</div>
+              <div class="font-semibold">
+                <div class="text-customBlue text-xs mb-1">
+                  {{ getIncome(getDateString(day)) !== 0 ? getIncome(getDateString(day)) : "&nbsp;"}}
+                </div>
+                <div class="text-customRed text-xs">
+                  {{ getExpense(getDateString(day)) !== 0 ? getExpense(getDateString(day)) : "&nbsp;" }}
+                </div>
               </div>
             </div>
-            <span v-else>&nbsp;</span>
           </td>
         </tr>
       </tbody>
@@ -215,90 +214,5 @@ watch([currentYear, currentMonth], generateCalendar);
 </template>
 
 <style scoped>
-.calendar-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 12px;
-  margin-top: 20px;
-}
 
-button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  margin: 0 10px;
-}
-
-.calendar-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-th,
-td {
-  text-align: center;
-  padding: 10px;
-  border: none;
-  height: 60px;
-  width: 60px;
-}
-
-thead th {
-  font-weight: bold;
-  background-color: white;
-}
-
-tbody td {
-  font-weight: bold;
-}
-
-tbody td span {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.expenses,
-.income {
-  margin-top: 3px;
-  font-size: 0.7rem;
-}
-
-.expenses {
-  color: #f55151;
-}
-
-.income {
-  color: #0e9cff;
-}
-
-.weekdays {
-  text-align: center;
-  font-weight: normal;
-}
-
-td div {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100%;
-}
-
-/* 반응형을 위한 미디어 쿼리 */
-@media (max-width: 600px) {
-  th,
-  td {
-    height: 50px;
-    font-size: 0.8rem;
-  }
-}
 </style>

@@ -182,7 +182,7 @@ watch([props.accountTransactionData, props.cardTransactionData], ([newAccountDat
 </script>
 
 <template>
-  <div class="py-8 px-8 bg-gray-100 border border-gray-200 rounded-2xl shadow flex flex-col justify-center">
+  <div class="py-8 px-8 bg-gray-100 border border-gray-200 rounded-xl shadow flex flex-col justify-center">
     <div class="flex justify-between items-center">
       <div class="font-medium">하루 평균 소비 금액</div>
       <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>

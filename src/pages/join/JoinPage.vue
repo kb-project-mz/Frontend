@@ -289,7 +289,7 @@ const join = async () => {
 <template>
   <div class="flex justify-center">
     <div class="mx-[20%] lg:mx-[32%] px-16 py-10 bg-white border rounded-lg shadow">
-      <div class="mb-5 font-bold text-2xl text-blue">
+      <div class="mb-5 font-bold text-2xl text-customNavy">
         <div>회원가입을 위해</div>
         <div>정보를 입력해주세요</div>
       </div>
@@ -321,7 +321,7 @@ const join = async () => {
             required />
           <button
             type="button"
-            class="cursor-pointer w-24 ml-2 px-1 my-2 bg-navy text-white rounded-lg text-sm"
+            class="cursor-pointer w-24 ml-2 px-1 my-2 bg-customNavy text-white rounded-lg text-sm"
             @click="checkMemberId"
             :disabled="!member.memberId">
             중복 확인
@@ -405,7 +405,7 @@ const join = async () => {
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
               <option value="직접입력">직접 입력</option>
             </select>
-            <button @click="sendVerificationCode" class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-navy text-white rounded-lg text-sm">
+            <button @click="sendVerificationCode" class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-customNavy text-white rounded-lg text-sm">
               인증 코드 전송
             </button>
           </div>
@@ -426,14 +426,14 @@ const join = async () => {
             placeholder="인증 코드를 입력해 주세요"
             class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button @click="verifyCode" class="cursor-pointer ml-2 px-2 my-2 bg-navy text-white rounded-lg text-sm">
+          <button @click="verifyCode" class="cursor-pointer ml-2 px-2 my-2 bg-customNavy text-white rounded-lg text-sm">
             인증 코드 확인
           </button>
           <div v-if="verificationFail" class="text-red-500">{{ verificationFail }}</div>
           <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
         </div>
         
-        <div class="mt-10 mb-5 font-bold text-2xl text-blue">약관 동의</div>
+        <div class="mt-10 mb-5 font-bold text-2xl text-customNavy">약관 동의</div>
         <div class="p-5 mb-6 flex items-center bg-gray-100 rounded-md">
           <input id="agreeAll" type="checkbox" class="mr-3 w-7 h-7" v-model="agreeAll" @change="toggleAll">
           <div for="agreeAll" class="text-base font-bold">전체 동의</div>
@@ -544,7 +544,7 @@ const join = async () => {
 
         <button
           type="submit"
-          class="cursor-pointer w-full bg-navy text-white py-2 rounded-xl flex justify-center items-center py-5"
+          class="cursor-pointer w-full bg-customNavy text-white py-2 rounded-xl flex justify-center items-center py-5"
           :disabled="disableSubmit || isLoading || !isMemberIdChecked">
           <span class="ml-2">회원가입 하기</span>
         </button>
@@ -560,14 +560,5 @@ const join = async () => {
 .spinner-border {
   width: 2rem;
   height: 2rem;
-}
-.text-blue {
-  color: #0B1573;
-}
-.bg-navy {
-  background-color: #0B1573;
-}
-.border-navy {
-  border-color: #0B1573;
 }
 </style>

@@ -13,7 +13,7 @@ module.exports = {
       },
 
       colors: {
-        customBlue: "#0B1573",
+        customNavy: "#0B1573",
         customLime: "#d9f99d",
         customGray: "#e2e8f0",
         indiepink: {
@@ -27,6 +27,8 @@ module.exports = {
           800: '#902634',
           900: '#601922',
         },
+        customRed: "#f55151",
+        customBlue: "#0e9cff",
       },
     },
   },

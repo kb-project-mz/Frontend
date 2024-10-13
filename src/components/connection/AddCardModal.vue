@@ -118,7 +118,7 @@ watch(
       <button
         v-if="unconnectedCardList.length > 0"
         @click="addCard"
-        class="w-full mt-1 px-4 py-4 bg-customBlue text-white rounded-lg hover:bg-blue-600"
+        class="w-full mt-1 px-4 py-4 bg-customNavy text-white rounded-lg hover:bg-blue-600"
       >
         선택한 자산 연결하기
       </button>

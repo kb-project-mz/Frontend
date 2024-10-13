@@ -74,7 +74,7 @@ const login = async () => {
               placeholder="비밀번호를 입력해주세요." />
 
             <div class="tooltip-icon relative inline-block">
-              <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-customBlue ml-2.5" />
+              <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-customNavy ml-2.5" />
               <div
                 class="tooltip hidden absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max bg-gray-800 text-white text-sm rounded py-1 px-2 whitespace-no-wrap">
                 비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합해 작성해주세요
@@ -87,7 +87,7 @@ const login = async () => {
         </div>
       </div>
 
-      <button type="submit" class="cursor-pointer bg-customBlue text-white text-sm rounded-xl block w-full ps-10 p-5">
+      <button type="submit" class="cursor-pointer bg-customNavy text-white text-sm rounded-xl block w-full ps-10 p-5">
         <router-link to="">로그인</router-link>
       </button>
     </form>

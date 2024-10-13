@@ -131,7 +131,7 @@ onMounted(async () => {
 <template>
   <div
     v-if="isLoaded"
-    class="p-8 bg-white border border-gray-200 rounded-2xl shadow"
+    class="p-8 bg-white border border-gray-200 rounded-xl shadow"
   >
     <MostUsed
       class="mb-6 lg:mb-12"
