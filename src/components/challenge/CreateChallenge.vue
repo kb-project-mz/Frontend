@@ -186,17 +186,11 @@ const changeDetailedCategoryInputDirectly = () => {
             </div>
           </div>
 
-          <div class="flex min-h-12">
+          <div class="flex items-center h-12">
             <div class="w-24 text-end mr-8">{{ limitMessage }}</div>
-            <div class="w-full flex flex-col">
-              <input type="range" v-model="formData.challengeLimit" :min="0" :max="maxLimit"
-                :step="formData.challengeType === '횟수' ? 1 : 100" class="cursor-pointer h-2 rounded-lg bg-gray-200" />
-              <div class="mt-1 text-center">
-                <input type="text"
-                  v-model="formData.challengeLimit"
-                  class="w-24 text-center border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
-              </div>
-            </div>
+            <input type="number"
+              v-model="formData.challengeLimit"
+              class="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2">
           </div>
 
           <div class="flex items-center h-12">
