@@ -26,7 +26,6 @@ export const useMemberStore = defineStore("memberStore", {
           },
         });
         this.member = response.data.data;
-        console.log("response: ", response);
         return response.data.data;
       } catch (error) {
         console.error('Failed to profile data', error);
@@ -43,8 +42,6 @@ export const useMemberStore = defineStore("memberStore", {
             'Content-Type': 'application/json'
           },
         });
-        
-        console.log(response.data);
       } catch (error) {
         console.error('Failed to withdraw', error);
       }

@@ -82,8 +82,6 @@ const dailyAverageExpense = computed(() => {
 const getDailyExpenses = () => {
   const dailyExpenses = Array(30).fill(0); // 30일 동안의 지출 데이터
 
-  console.log(filteredAccountExpenses.value);
-  console.log(filteredCardExpenses.value);
   // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
     const date = Math.floor(
@@ -165,8 +163,6 @@ const renderChart = () => {
 };
 
 onMounted(() => {
-  console.log(thirtyDaysAgo);
-  
   if (props.accountTransactionData?.length && props.cardTransactionData?.length) {
     renderChart();
   }

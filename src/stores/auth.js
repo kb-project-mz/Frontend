@@ -21,16 +21,14 @@ export const useAuthStore = defineStore("auth", {
           memberId,
           password,
         });
-        const loginData = response.data.data;
-        if (!loginData || !loginData.accessToken) {
-          return null;
+
+        console.log(response);
+        if (response.data.success) {
+          const loginData = response.data.data;
+          setLocalStorage(loginData);
+          this.loadAuthState();
         }
-
-        setLocalStorage(loginData);
-        this.loadAuthState();
-
-        console.log(this.member.memberIdx);
-        return loginData;
+        return response.data;
       } catch (error) {
         throw error;
       }
@@ -63,10 +61,8 @@ export const useAuthStore = defineStore("auth", {
         });
 
         if (response && response.data) {
-          console.log("이메일 중복 확인 응답 데이터:", response.data);
           return response.data.exists;
         } else {
-          console.log("응답 데이터가 존재하지 않습니다.");
           return false;
         }
       } catch (error) {
@@ -110,7 +106,6 @@ export const useAuthStore = defineStore("auth", {
             Authorization: authStore.member.accessToken
           }
         });
-        console.log(response.data);
         clearTokens();
         localStorage.clear();
         this.clearAuthState();
@@ -130,7 +125,7 @@ export const useAuthStore = defineStore("auth", {
       this.member.imageUrl = null;
       localStorage.clear();
     },
-    
+
     updateImageUrl(imageUrl) {
       this.member.imageUrl = imageUrl;
       const authData = JSON.parse(localStorage.getItem('auth') || '{}');
@@ -143,7 +138,6 @@ export const useAuthStore = defineStore("auth", {
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
-				console.log('zzzzzzzzzzzzzz',authData.memberName)
         this.member.accessToken = authData.accessToken;
         this.member.memberIdx = authData.memberIdx;
         this.member.imageUrl = authData.imageUrl || "";
@@ -153,7 +147,7 @@ export const useAuthStore = defineStore("auth", {
 
     isLogin() {
       const authData = localStorage.getItem('auth');
-			console.log("isLogin 실행", authData);
+      console.log("isLogin 실행", authData);
       return !!authData;
     },
 

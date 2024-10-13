@@ -11,8 +11,6 @@ const memberId = computed(() => authStore.member.memberId);
 const memberName = computed(() => authStore.member.memberName);
 const imageUrl = computed(() => authStore.member.imageUrl);
 
-console.log("header imageUrl", imageUrl)
-
 const logout = async () => {
   await authStore.logout();
   authStore.clearAuthState();

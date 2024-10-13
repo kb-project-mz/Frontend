@@ -31,10 +31,7 @@ const fetchAsset = async () => {
     (card) => card.connectedStatus === 1
   );
 
-  console.log("connectedCardList: ", cardTransactionStore.cardAmountBycardIdx);
   connectedCardList.value.forEach((card) => {
-    console.log("card: ", card);
-
     const cardIdx = card.prdtId;
     if (cardTransactionStore.cardAmountBycardIdx[cardIdx]) {
       card.totalAmount = cardTransactionStore.cardAmountBycardIdx[cardIdx];

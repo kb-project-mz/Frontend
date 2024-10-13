@@ -13,8 +13,7 @@ const fetchSBTIResult = async (memberIdx) => {
   await testResultStore.getTestResult(memberIdx);
   
   SBTIResult.value = await testResultStore.TestResult;
-  
-  console.log('SBTIResult', SBTIResult);
+
   const _obj = toRaw(SBTIResult.value);
 
 	if (_obj && _obj.typeImage) { 
@@ -22,7 +21,6 @@ const fetchSBTIResult = async (memberIdx) => {
   } else {
 		resultImage.value = null;
 	}
-	console.log('resultImage.value', resultImage.value);
 };
 
 onMounted(async () => {

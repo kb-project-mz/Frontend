@@ -2,7 +2,7 @@
 import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
+import GoogleLoginComponent from "@/components/login/GoogleLoginComponent.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -19,31 +19,27 @@ const login = async () => {
     error.value = "아이디와 비밀번호를 모두 입력해주세요.";
     return;
   }
-    try {
-        const isValidMemberId = await auth.checkMemberId(member.memberId);
-        if(!isValidMemberId){
-          error.value = '존재하지 않는 아이디 입니다.';
-          return;
-        }
-        const response = await auth.login(member.memberId, member.password);
-        console.log("로그인 응답:", response);
-
-        if (response && response.memberId) {
-            console.log("로그인 성공:", response);
-
-            if (response.role === 'ROLE_ADMIN') {
-                router.push("/admin"); 
-            } else {
-            		router.push("/"); 
-            }
-        } else if (response === null) {
-            error.value = '아이디와 비밀번호가 올바르지 않습니다.'
-            console.error("로그인 실패:", response);
-        }
-    } catch (err) {
-        console.error("로그인 중 예외 발생:", err);
-        error.value = "로그인 중 오류가 발생했습니다.";
+  try {
+    const isValidMemberId = await auth.checkMemberId(member.memberId);
+    if (!isValidMemberId) {
+      error.value = '존재하지 않는 아이디 입니다.';
+      return;
     }
+    const response = await auth.login(member.memberId, member.password);
+
+    if (response && response.data) {
+      if (response.data.role === 'ROLE_ADMIN') {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    } else {
+      error.value = response.message;
+    }
+  } catch (err) {
+    console.error("로그인 중 예외 발생:", err);
+    error.value = "로그인 중 오류가 발생했습니다.";
+  }
 };
 </script>
 

@@ -14,7 +14,6 @@ const formatDate = (date) => {
 
 onMounted(async () => {
   await challengeStore.getPeerChallengeList(memberIdx);
-  console.log(challengeStore.peerChallengeList);
   peerChallengeList.value = challengeStore.peerChallengeList;
 
   let roller = document.querySelector('.rolling-list');

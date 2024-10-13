@@ -12,7 +12,7 @@ export const useChallengeTop3Store = defineStore("challengeTop3", {
         const response = await apiInstance.get(`/home/challenge/${memberIdx}`);
         this.ChallengeTop3List = response.data.data;
       } catch(error) {
-        console.log('Failed to fetch challenge top 3: ', error);
+        console.error('Failed to fetch challenge top 3: ', error);
         throw error;
       }
     },
@@ -22,7 +22,7 @@ export const useChallengeTop3Store = defineStore("challengeTop3", {
         const response = await apiInstance.get(`/home/peerChallenge/${memberIdx}`);
         this.PeerChallengeList = response.data.data;
       } catch(error) {
-        console.log('Failed to fetch peer challenge: ', error);
+        console.error('Failed to fetch peer challenge: ', error);
         throw error;
       }
     }

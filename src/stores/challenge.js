@@ -22,7 +22,6 @@ export const useChallengeStore = defineStore('challenge', {
         });
 
         const statusPriority = { "진행":1, "예정":2, "종료":3 };
-        console.log(this.challengeList);
         this.challengeList = res.data.data;
         this.challengeList = this.challengeList.sort((a, b) => {
           if (statusPriority[a.challengeStatus] !== statusPriority[b.challengeStatus]) {
