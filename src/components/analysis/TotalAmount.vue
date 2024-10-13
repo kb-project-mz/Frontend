@@ -29,7 +29,7 @@ const outcomePerDay = ref(0);
 
 const getTotalDays = () => {
   const diffTime = Math.abs(props.endDate - props.startDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
   return diffDays;
 }
 
@@ -77,7 +77,7 @@ watch(
 
 <template>
   <div>
-    <div class="flex flex-col h-full justify-between">
+    <div class="flex flex-col h-full justify-between gap-10">
       <div class="py-10 px-10 bg-gray-100 border border-gray-200 rounded-xl shadow flex flex items-center justify-between">
         <div class="font-medium">총 수입</div>
         <div class="font-bold text-lg text-customBlue">{{ totalIncome.toLocaleString() }}원</div>

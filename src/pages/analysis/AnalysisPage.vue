@@ -62,12 +62,15 @@ onMounted(async () => {
 <template>
   <div v-if="isDataLoaded">
     <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
-      <div class="flex items-end">
-        <div class="p-3 bg-customNavy text-white text-center rounded-lg w-fit">
-          <router-link to="/mypage/asset">자산 연결하러 가기</router-link>
+      <div class="flex justify-end gap-6">
+        <div class="py-2 px-3 bg-gray-200 text-gray-600 text-center rounded-lg w-fit">
+          <router-link to="/mypage/asset">연결된 자산 확인하기</router-link>
         </div>
-        <div class="p-3 bg-customNavy text-white rounded-lg">
-          <button @click="toggleCardFlip">과거 소비와 비교하기</button>
+        <div class="py-2 px-3 bg-customNavy text-white rounded-lg">
+          <button @click="toggleCardFlip">
+            <div v-if="!isFlipped">과거 소비와 비교하기</div>
+            <div v-else>이번 달 소비 분석하기</div>
+          </button>
         </div>
       </div>
       <div class="flip w-full inline-block relative">
