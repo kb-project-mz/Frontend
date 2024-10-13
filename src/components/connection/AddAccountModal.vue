@@ -67,11 +67,11 @@ watch(
 <template>
   <div
     v-if="visible"
-    class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    class="fixed inset-0 bg-black bg-opacity-20 flex justify-center items-center"
     @click="close"
   >
     <div
-      class="w-1/4 bg-white p-5 rounded-lg shadow-lg fixed box-border"
+      class="w-2/3 xl:w-1/4 bg-white p-5 rounded-lg shadow-lg fixed box-border"
       @click.stop
     >
       <div class="relative w-full mb-5">
