@@ -134,8 +134,13 @@ const resetMessages = () => {
           </span>
         </div>
         <div class="whitespace-nowrap text-center mt-4 mb-2 text-gray-600 ">
-          <span v-if="error && error !== '존재하지 않는 사용자입니다.' && successMessage == false">
-            {{ error }} <a href="/join" class="text-blue-500"><br>회원가입하러 가기</a></span>
+          <span v-if="error === '존재하지 않는 이메일입니다.' || error === '존재하지 않는 이름입니다.'">
+            {{ error }} 
+            <a href="/join" class="text-blue-500"><br>회원가입하러 가기</a>
+          </span>
+          <span v-else-if="error && error !== '존재하지 않는 사용자입니다.'">
+            {{ error }}
+          </span>
         </div>
       </form>
     </div>
