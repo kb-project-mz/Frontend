@@ -147,7 +147,7 @@ export const useAuthStore = defineStore("auth", {
 
     isLogin() {
       const authData = localStorage.getItem('auth');
-      console.log("isLogin 실행", authData);
+      // console.log("isLogin 실행", authData);
       return !!authData;
     },
 

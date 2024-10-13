@@ -1,8 +1,7 @@
 <script setup>
-import { computed, watch, onMounted } from "vue";
+import { computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -17,10 +16,6 @@ const logout = async () => {
   localStorage.clear(); 
   router.push('/');
 };
-
-watch(() => authStore.member.imageUrl, (newImageUrl) => {
-  imageUrl.value = newImageUrl;
-})
 </script>
 
 <template>

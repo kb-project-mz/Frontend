@@ -53,7 +53,6 @@ onMounted(async () => {
     console.log("goodForSatisfaction", testStore.goodForSatisfaction);
     console.log("material", testStore.material);
     console.log("experiential", testStore.experiential);
-
 });
 
 const getResultContent = async () => {
