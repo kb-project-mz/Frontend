@@ -31,15 +31,22 @@ const checkFieldsInDB = async () => {
       params: { email: member.email }
     });
     if (!emailResponse.data.exists) {
-      error.value = '존재하지 않는 이메일입니다. 회원가입을 진행해 주세요.';
+      error.value = '존재하지 않는 이메일입니다.';
       return false;
     }
-
     return true;
   } catch (err) {
     error.value = '서버 오류가 발생했습니다. 다시 시도해 주세요.';
     return false;
   }
+};
+
+const validateFields = () => {
+  if (!member.memberName || !member.memberId || !member.email) {
+    error.value = '이름, 아이디, 이메일을 모두 입력해 주세요.';
+    return false;
+  }
+  return true;
 };
 
 const sendNewPassword = async () => {
@@ -48,6 +55,7 @@ const sendNewPassword = async () => {
   successMessage.value = '';
 
   try {
+    alert('입력하신 이메일로 새 비밀번호가 전송되었습니다.');
     const response = await apiInstance.post(`/member/email/newpassword`, {
       memberName: member.memberName,
       memberId: member.memberId,
@@ -55,10 +63,10 @@ const sendNewPassword = async () => {
     });
 
     if (response.data.success) {
-      successMessage.value = '새 비밀번호가 이메일로 전송되었습니다. 이메일을 확인 후 로그인을 해 주세요.';
+      successMessage.value = '새 비밀번호가 이메일로 전송되었습니다. \n이메일을 확인 후 로그인을 진행해주세요.';
       isVerificationSent.value = true;
     } else {
-      error.value = '새 비밀번호 전송에 실패했습니다.';
+      error.value = '새 비밀번호 전송에 실패했습니다. 다시 시도해 주세요.';
     }
   } catch (err) {
     error.value = '비밀번호 전송 실패';
@@ -67,27 +75,25 @@ const sendNewPassword = async () => {
   }
 };
 
-const findPassword = async () => {
-  if (!member.memberName || !member.memberId || !member.email) {
-    error.value = '이름, 아이디, 이메일을 모두 입력해 주세요.';
-    successMessage.value = '';
-    return;
-  }
+  const findPassword = async () => {
+    if (!validateFields()) {
+      return;
+    }
 
-  loading.value = true;
-  const isValidUser = await checkFieldsInDB();
-  if (!isValidUser) {
-    loading.value = false;
-    return;
-  }
+    
+    const isValidUser = await checkFieldsInDB();
+    if (!isValidUser) {
+      return;
+    }
 
-  await sendNewPassword();
+    await sendNewPassword();
 };
+
 
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-1/2 my-32">
+  <div class="flex flex-col items-center w-1/2 my-24">
       <form @submit.prevent="findPassword" v-if="!isVerificationSent" class="bg-white p-8 shadow-md rounded-lg w-full">
         <div class="mb-6">
           <input
@@ -113,10 +119,7 @@ const findPassword = async () => {
             placeholder="이메일"
           />
         </div>
-
-        <div v-if="error" class="text-red-500 text-center mb-4">{{ error }}</div>
-        <div v-if="successMessage" class="text-green-500 text-center mb-4">{{ successMessage }}</div>
-
+        
         <button
           type="submit"
           class="w-full py-4 bg-customNavy text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -124,10 +127,12 @@ const findPassword = async () => {
         >
           새 비밀번호 받기
         </button>
+        <div v-if="error" class="whitespace-nowrap text-black-500 text-center mb-2 mt-4">{{ error }}</div>
+        <div v-if="successMessage" class="text-green-500 text-center mb-2 mt-4" style="white-space: pre-line;">{{ successMessage }}</div>
       </form>
 
       <div v-if="isVerificationSent" class="bg-white p-8 shadow-md rounded-lg w-full text-center">
-        <p class="text-lg text-green-500">{{ successMessage }}</p>
+        <p class="text-lg text-green-500" style="white-space: pre-line;">{{ successMessage }}</p>
       </div>
     </div>
 </template>

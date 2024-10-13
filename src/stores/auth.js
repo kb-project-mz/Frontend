@@ -22,8 +22,6 @@ export const useAuthStore = defineStore("auth", {
           password,
         });
         const loginData = response.data.data;
-
-        console.log("loginData: ", loginData);
         if (!loginData || !loginData.accessToken) {
           return null;
         }
