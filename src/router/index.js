@@ -15,6 +15,7 @@ import TestSurveyPage from "@/pages/test/TestSurveyPage.vue";
 import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
 import { useAuthStore } from '@/stores/auth';
 import Admin from "@/pages/admin/Admin.vue"
+import PageNotFound from "@/pages/common/PageNotFound.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -99,6 +100,15 @@ const router = createRouter({
       name: 'Admin',
       component: Admin,
     },
+    {
+      path: '/404',
+      name: 'notFound',
+      component: PageNotFound
+    },
+    {
+      path: "/:pathMatch(.*)",
+      redirect: '/404'
+    }
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 };
