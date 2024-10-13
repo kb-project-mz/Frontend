@@ -29,7 +29,6 @@ const login = async () => {
         console.log("로그인 응답:", response);
 
         if (response && response.memberId) {
-            alert('로그인 되었습니다.');
             console.log("로그인 성공:", response);
 
             if (response.role === 'ROLE_ADMIN') {
