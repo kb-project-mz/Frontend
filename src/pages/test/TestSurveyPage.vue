@@ -39,12 +39,22 @@ const onScroll = (event) => {
     birthYear.value = years[index];
 };
 
+const selectYear = (year, index) => {
+    birthYear.value = year;
+    const itemHeight = 40;
+    const wheel = document.querySelector(".wheel");
+    wheel.scrollTo({
+        top: index * itemHeight,
+        behavior: "smooth"
+    });
+};
+
 onMounted(() => {
     console.log('Birth Year:', testStore.birthYear);
     console.log('Gender:', testStore.gender);
 });
-
 </script>
+
 <template>
     <div class="survey-container gong-gothic-font">
         <div class="question" v-if=!testStore.birthYear>
@@ -53,10 +63,14 @@ onMounted(() => {
                 <div class="wheel" @scroll="onScroll" ref="wheel">
                     <ul>
                         <li class="spacer"></li>
-                        <li v-for="year in years" :key="year" :class="{ active: birthYear === year }">
+                        <li 
+                            v-for="(year, index) in years" 
+                            :key="year" 
+                            :class="{ active: birthYear === year }"
+                            @click="selectYear(year, index)"
+                        >
                             {{ year }}
                         </li>
-                        <li class="spacer"></li>
                         <li class="spacer"></li>
                     </ul>
                 </div>
@@ -78,9 +92,10 @@ onMounted(() => {
                 </button>
             </div>
         </div>
+        <br/>
         <div class="question gong-gothic-font">
             <label class="text-2xl">당신의 거주지는? ('구'까지 입력)</label>
-            <br />
+
             <input
                 v-model="region"
                 type="text"
@@ -88,31 +103,33 @@ onMounted(() => {
                 class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
             />
         </div>
+        <br/>
         <div class="question gong-gothic-font">
             <label class="text-2xl">당신의 직업은?</label>
-            <br />
+        
             <input
                 v-model="occupation"
                 type="text"
                 placeholder="직업 입력"
                 class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
             />
-                </div>
-            <button
-                class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
-                @click="goToQuestions"
-            >
+        </div>
+        <br/>
+        <button
+            class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[200px]"
+            @click="goToQuestions"
+        >
             다음
-            </button>
+        </button>
     </div>
 </template>
+
 <style>
 .survey-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* min-height: 100vh; */
     text-align: center;
     padding: 20px;
     font-family: Arial, sans-serif;
@@ -165,6 +182,7 @@ li {
     font-size: 18px;
     color: #999;
     scroll-snap-align: center;
+    cursor: pointer;
 }
 
 li.active {
@@ -219,3 +237,4 @@ li.active {
     font-family: "GongGothicMedium", sans-serif;
 }
 </style>
+
