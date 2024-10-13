@@ -16,6 +16,8 @@ import GoogleCallBack from "@/pages/login/GoogleCallBack.vue";
 import { useAuthStore } from '@/stores/auth';
 import Admin from "@/pages/admin/Admin.vue"
 import PageNotFound from "@/pages/common/PageNotFound.vue";
+import GuestAnalysis from "@/components/analysis/GuestAnalysis.vue";
+import GuestChallenge from "@/components/challenge/GuestChallenge.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -108,7 +110,17 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)",
       redirect: '/404'
-    }
+    },
+    {
+      path: "/analysis/guest",
+      name: "guestAnalysis",
+      component: GuestAnalysis
+    },
+    {
+      path: "/challenge/guest",
+      name: "guestChallenge",
+      component: GuestChallenge
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 };

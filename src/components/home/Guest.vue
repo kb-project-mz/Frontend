@@ -3,10 +3,6 @@ import Button from "@/components/home/Button.vue";
 import testImage from "@/assets/테스트.png";
 import chartImage from "@/assets/차트.png";
 import challengeImage from "@/assets/챌린지.png";
-
-const alertLogin = () => {
-  alert("로그인해야 이용할 수 있는 서비스입니다.");
-}
 </script>
 
 <template>
@@ -35,17 +31,15 @@ const alertLogin = () => {
         />
 
         <Button
-          @click="alertLogin"
           :img-src="chartImage"
-          :router-to="{ name: 'homePage' }"
+          :router-to="{ name: 'guestAnalysis' }"
           text-above="나의 소비"
           text-below="습관 분석"
         />
 
         <Button
-          @click="alertLogin"
           :img-src="challengeImage"
-          :router-to="{ name: 'homePage' }"
+          :router-to="{ name: 'guestChallenge' }"
           text-above="돈과의 전쟁"
           text-below="챌린지의 서막"
         />
