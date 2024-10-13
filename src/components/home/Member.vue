@@ -9,7 +9,7 @@ import { Navigation, Autoplay } from 'swiper/modules';
 
 const swiperBreakpoints = {
   1024: {
-    slidesPerView: 3,
+    slidesPerView: 1,
     spaceBetween: 20,
   },
 };
@@ -38,31 +38,41 @@ const swiperBreakpoints = {
       :modules="[Navigation, Autoplay]" 
       navigation 
       loop
-      :autoplay="{ delay: 1500 }"
+      :autoplay="{ delay: 2000 }"
     >
-      <SwiperSlide>
-        <div class="w-full items-center h-full flex justify-center font-jamsil">
-          <SBTIResult />
+    <SwiperSlide>
+        <div class="w-full flex justify-end font-jamsil">
+          <div class="w-1/3 mr-32">
+            <SBTIResult />
+          </div>
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div class="w-full flex justify-center">
-          <Challenge />
+        <div class="w-full flex justify-end">
+          <div class="w-1/3 mr-32">
+            <Challenge />
+          </div>
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div class="w-full flex justify-center">
-          <Account />
+        <div class="w-full flex justify-end">
+          <div class="w-1/3 mr-32">
+            <Account />
+          </div>
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div class="w-full flex justify-center font-jamsil">
-          <SBTIResult /> 
+        <div class="w-full flex justify-end font-jamsil">
+          <div class="w-1/3 mr-32">
+            <SBTIResult /> 
+          </div>
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div class="w-full flex justify-center">
-          <Challenge /> 
+        <div class="w-full flex justify-end">
+          <div class="w-1/3 mr-32">
+            <Challenge /> 
+          </div>
         </div>
       </SwiperSlide>
     </Swiper>
