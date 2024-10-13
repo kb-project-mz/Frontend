@@ -108,6 +108,9 @@ const changeDetailedCategoryInputDirectly = () => {
   isDetailedCategoryInputDirectly.value = !isDetailedCategoryInputDirectly.value;
   formData.value.detailedCategory = '';
 }
+
+const today = new Date();
+const availableDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 </script>
 
 <template>
@@ -126,10 +129,10 @@ const changeDetailedCategoryInputDirectly = () => {
           <div class="flex items-center h-12">
             <div class="w-24 text-end mr-8">기간</div>
             <div class="flex w-full py-2">
-              <input type="date" v-model="formData.challengeStartDate" class="form-input border-gray-300 rounded-md"
+              <input type="date" :min="availableDay" v-model="formData.challengeStartDate" class="form-input border-gray-300 rounded-md"
                 required />
               <span class="self-center">-</span>
-              <input type="date" v-model="formData.challengeEndDate" class="form-input border-gray-300 rounded-md"
+              <input type="date" :min="availableDay" v-model="formData.challengeEndDate" class="form-input border-gray-300 rounded-md"
                 required />
             </div>
           </div>
