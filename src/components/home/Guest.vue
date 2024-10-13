@@ -15,10 +15,11 @@ const alertLogin = () => {
     <div class="max-w-7.5xl mx-auto flex">
       <div class="text-left">
         <p class="text-7xl font-black text-transparent blue mt-10 mb-6">
-          MZ 세대인
+          MZ 세대인 당신,
         </p>
-        <span class="text-7xl font-black text-transparent stroke">당신, </span>
-        <span class="text-7xl font-bold blue mb-6">지금 당신의 자산은</span>
+        <span class="text-7xl font-bold blue mb-6"></span>
+        <span class="text-7xl font-bold blue mb-6">&nbsp;&nbsp;&nbsp;지금 당신의 </span>
+        <span class="text-7xl font-black text-transparent stroke">자산</span>
         <p class="text-7xl font-bold blue ml-48 mt-6 mb-52">안녕하신가요?</p>
       </div>
     </div>
@@ -35,7 +36,7 @@ const alertLogin = () => {
       <Button
         @click="alertLogin"
         :img-src="chartImage"
-        :router-to="{ name: 'analysis' }"
+        :router-to="{ name: 'homePage' }"
         text-above="나의 소비"
         text-below="습관 분석"
       />
@@ -43,12 +44,11 @@ const alertLogin = () => {
       <Button
         @click="alertLogin"
         :img-src="challengeImage"
-        :router-to="{ name: 'challenge' }"
+        :router-to="{ name: 'homePage' }"
         text-above="돈과의 전쟁"
         text-below="챌린지의 서막"
       />
 
-      <!-- 버튼 우측 글자 -->
       <span class="flex-grow text-right">
         <div class="text-5xl font-bold blue mb-4">즐겁게</div>
         <div class="text-5xl font-bold blue mb-4">똑똑하게</div>
