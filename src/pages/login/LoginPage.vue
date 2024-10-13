@@ -2,7 +2,7 @@
 import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
+import GoogleLoginComponent from "@/components/login/GoogleLoginComponent.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
