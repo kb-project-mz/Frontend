@@ -1,6 +1,5 @@
 <script setup>
 import { defineProps } from "vue";
-import DoughnutChart from "./DoughnutChart.vue";
 import ProgressBar from "./ProgressBar.vue";
 import { useChallengeStore } from "@/stores/challenge";
 
@@ -27,16 +26,23 @@ const deleteChallenge = async (challengeIdx) => {
 </script>
 
 <template>
-  <div
-    :class="[
-      'bg-white rounded-lg shadow p-4',
-      challenge.challengeStatus === '성공'
-        ? 'bg-green-100 text-green-800'
-        : challenge.challengeStatus === '실패'
-        ? 'bg-red-100 text-red-800'
-        : '',
-    ]"
-  >
+  <div class="rounded-lg border shadow py-3 px-4">
+    <div class="flex justify-between p-1">
+      <div :class="['rounded-full shadow w-fit py-1 px-3 mb-3 text-xs text-white font-bold',
+      challenge.challengeStatus === '진행' ? 'bg-sky-300 text-white' : 
+      challenge.challengeStatus === '예정' ? 'bg-rose-400' : 
+      'bg-gray-500'
+    ]">
+      {{ challenge.challengeStatus }}
+    </div>
+      <button
+            class="rounded-full text-sm ml-4"
+            @click="deleteChallenge(challenge.challengeIdx)"
+          >
+            <font-awesome-icon :icon="['fas', 'xmark']" />
+          </button>
+    </div>
+    
     <div class="flex space-x-5">
       <div class="flex flex-col text-end text-gray-600 space-y-2">
         <div>이름</div>
@@ -48,16 +54,7 @@ const deleteChallenge = async (challengeIdx) => {
         <div>기간</div>
       </div>
       <div class="flex-grow space-y-2">
-        <div class="flex justify-between items-center">
-          <span class="font-bold">{{ challenge.challengeName }}</span>
-          <button
-            class="rounded-full text-sm ml-4"
-            @click="deleteChallenge(challenge.challengeIdx)"
-          >
-            <font-awesome-icon :icon="['fas', 'xmark']" />
-          </button>
-        </div>
-
+        <div class="font-bold">{{ challenge.challengeName }}</div>
         <div>{{ challenge.categoryName }}</div>
         <div>{{ challenge.detailedCategory }}</div>
         <div>
@@ -76,11 +73,6 @@ const deleteChallenge = async (challengeIdx) => {
       :limit="chartData.challengeLimit"
       :completed="chartData.cardHistoryCount"
     />
-    <!-- <DoughnutChart
-      v-if="chartData"
-      :limit="chartData.challengeLimit"
-      :completed="chartData.cardHistoryCount"
-    /> -->
   </div>
 </template>
 

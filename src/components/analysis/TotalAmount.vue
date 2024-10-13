@@ -59,15 +59,17 @@ watch(
 </script>
 
 <template>
-  <div class="py-5 px-10 bg-gray-100 border border-gray-200 rounded-2xl shadow">
-    <div class="flex items-center justify-between">
-      <div class="font-medium">총 수입</div>
-      <div class="font-bold text-lg">{{ totalIncome.toLocaleString() }}원</div>
-    </div>
-    <div class="flex items-center justify-between">
-      <div class="font-medium">총 지출</div>
-      <div div class="font-bold text-lg text-red">
-        {{ totalOutcome.toLocaleString() }}원
+  <div>
+    <div class="flex flex-col space-y-10">
+      <div class="py-8 px-10 bg-gray-100 border border-gray-200 rounded-2xl shadow flex flex items-center justify-between">
+        <div class="font-medium">총 수입</div>
+        <div class="font-bold text-lg">{{ totalIncome.toLocaleString() }}원</div>
+      </div>
+      <div class="py-8 px-10 bg-gray-100 border border-gray-200 rounded-2xl shadow flex flex items-center justify-between">
+        <div class="font-medium">총 지출</div>
+        <div div class="font-bold text-lg text-red">
+          {{ totalOutcome.toLocaleString() }}원
+        </div>
       </div>
     </div>
   </div>

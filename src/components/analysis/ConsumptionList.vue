@@ -105,29 +105,23 @@ const formatTime = (time) => {
     <div class="mt-3 flex justify-center space-x-2">
       <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
         :class="['px-2 py-1 mx-1 rounded cursor-pointer', currentPage === 1 ? 'opacity-50' : 'hover:bg-gray-200']">
-        <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-navy" />
+        <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-customBlue" />
       </button>
 
       <button v-for="page in paginatedPageNumbers" :key="page" @click="goToPage(page)"
-        :class="['px-3 rounded cursor-pointer hover:bg-gray-200', { 'bg-navy text-white': page === currentPage, 'bg-white': page !== currentPage }]">
+        :class="['px-3 rounded cursor-pointer hover:bg-gray-200', { 'bg-customBlue text-white': page === currentPage, 'bg-white': page !== currentPage }]">
         {{ page }}
       </button>
 
       <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
         class="px-2 py-1 mx-1 rounded cursor-pointer hover:bg-gray-200">
-        <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-navy" />
+        <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-customBlue" />
       </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.bg-navy {
-  background-color: #0b1573;
-}
-.text-navy {
-  color: #0b1573;
-}
 .text-red {
   color: #F55151;
 }

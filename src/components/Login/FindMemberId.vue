@@ -123,7 +123,7 @@ const resetMessages = () => {
         
         <button
           type="submit"
-          class="w-full py-4 bg-navy text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full py-4 bg-customBlue text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           아이디 찾기
         </button>
@@ -142,10 +142,5 @@ const resetMessages = () => {
 </template>
 
 <style scoped>
-.text-navy {
-  color: #0B1573;
-}
-.bg-navy {
-  background-color: #0B1573;
-}
+
 </style>

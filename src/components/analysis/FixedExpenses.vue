@@ -19,7 +19,7 @@ onMounted(async () => {
     <div class="font-bold mb-3">나의 고정 지출 키워드는?</div>
     <div v-if="fixedExpenses.length > 0">
       <div class="flex flex-wrap gap-y-2 gap-x-3 mt-2">
-        <div v-for="expense in fixedExpenses" :key="expense" class="py-2 px-3 w-fit rounded-full text-white bg-navy text-xs">
+        <div v-for="expense in fixedExpenses" :key="expense" class="py-2 px-3 w-fit rounded-full text-white bg-customBlue text-xs">
           #{{ expense }}
         </div>
       </div>
@@ -31,7 +31,5 @@ onMounted(async () => {
 </template>
 
 <style>
-.bg-navy {
-  background-color: #0b1573;
-}
+
 </style>

@@ -6,8 +6,10 @@
       <nav>
         <ul>
           <li><router-link to="/admin">Dashboard</router-link></li>
-          <li><router-link to="/">Users</router-link></li>
-          <li><router-link to="/">Settings</router-link></li>
+          <li>Users</li>
+          <li>Settings</li>
+          <!-- <li><router-link to="/">Users</router-link></li>
+          <li><router-link to="/">Settings</router-link></li> -->
         </ul>
       </nav>
     </header>
