@@ -155,27 +155,22 @@ const sendVerificationCode = async () => {
 
   try {
     isLoading.value = true;
-    // 이메일 중복 확인
-    const isEmailExists = await auth.checkEmailDuplicate(member.email);
 
-    // 이메일이 존재하면 코드 발송 중단
+    const isEmailExists = await auth.checkEmailDuplicate(member.email);
     if (isEmailExists) {
       alert('이미 존재하는 이메일입니다.');
       isLoading.value = false;
-      return; // 중복 확인되면 코드 발송 중단
+      return;
     }
 
-    // 중복되지 않은 경우 인증 코드 발송
-    console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
+    alert('인증 코드가 발송되었습니다. 이메일을 확인하고 인증 코드를 입력해 주세요.');
+    isVerificationCodeSent.value = true;
+
     const result = await auth.sendEmailVerification(member.email);
     console.log('인증 코드 발송 성공:', result);
-    
-    isVerificationCodeSent.value = true;
-    alert('인증 코드가 발송되었습니다. 이메일을 확인하고 인증 코드를 입력해 주세요.');
   } catch (error) {
     alert('인증 코드 전송 중 오류가 발생했습니다.');
   } finally {
-    console.log('인증 코드 발송 프로세스 종료.');
     isLoading.value = false;
   }
 };
@@ -188,7 +183,7 @@ const verifyCode = async () => {
   try {
     isLoading.value = true;
     const result = await auth.verifyEmailCode(member.email, inputCode.value);
-    
+
     if (result) {
       verificationSuccess.value = '이메일 인증이 완료되었습니다.';
       verificationFail.value = '';
@@ -239,22 +234,13 @@ const join = async () => {
     return alert('약관에 동의해야 합니다.');
   }
 
-	if (
-    member.gender !== '1' &&
-    member.gender !== '2' &&
-    member.gender !== '3' &&
-    member.gender !== '4'
-  ) {
+  if (member.gender !== '1' && member.gender !== '2' && member.gender !== '3' && member.gender !== '4') {
     return alert('주민번호 뒷자리 첫째 자리를 정확하게 입력해주세요.');
   }
 
   try {
-		isLoading.value = true;
-    if (member.gender === '1' || member.gender === '3') {
-      member.gender = 'male';
-    } else {
-      member.gender = 'female';
-    }
+    isLoading.value = true;
+    (member.gender === '1' || member.gender === '3') ? member.gender = 'male' : member.gender = 'female';
 
     isLoading.value = true;
     const createResponse = await auth.create(member);
@@ -263,13 +249,11 @@ const join = async () => {
 
     const loginResponse = await auth.login(member.memberId, member.password);
 
-    if (loginResponse && loginResponse.memberId) {
-      console.log('로그인 성공:', loginResponse);
-      router.push({ name: 'homePage' });
+    if (loginResponse.success) {
+        router.push("/");
     }
   } catch (error) {
     alert('회원가입 중 오류가 발생했습니다.');
-    console.error('회원가입 중 오류:', error);
   } finally {
     isLoading.value = false;
   }
@@ -283,37 +267,26 @@ const join = async () => {
         <div>회원가입을 위해</div>
         <div>정보를 입력해주세요</div>
       </div>
-    
+
       <form @submit.prevent="join">
         <div class="relative mb-6">
           <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
             <font-awesome-icon :icon="['fas', 'user']" />
           </div>
-          <input
-            v-model="member.memberName"
-            type="text"
-            id="memberName"
+          <input v-model="member.memberName" type="text" id="memberName"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
-            placeholder="이름"
-            required />
+            placeholder="이름" required />
         </div>
-        
+
         <div class="relative flex">
           <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
             <font-awesome-icon :icon="['fas', 'user']" />
           </div>
-          <input
-            v-model="member.memberId"
-            type="text"
-            id="memberId"
+          <input v-model="member.memberId" type="text" id="memberId"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
-            placeholder="아이디"
-            required />
-          <button
-            type="button"
-            class="cursor-pointer w-24 ml-2 px-1 my-2 bg-customNavy text-white rounded-lg text-sm"
-            @click="checkMemberId"
-            :disabled="!member.memberId">
+            placeholder="아이디" required />
+          <button type="button" class="cursor-pointer w-24 ml-2 px-1 my-2 bg-customNavy text-white rounded-lg text-sm"
+            @click="checkMemberId" :disabled="!member.memberId">
             중복 확인
           </button>
         </div>
@@ -326,14 +299,9 @@ const join = async () => {
           <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
             <font-awesome-icon :icon="['fas', 'lock']" />
           </div>
-          <input
-            v-model="member.password"
-            type="password"
-            id="password"
+          <input v-model="member.password" type="password" id="password"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
-            placeholder="비밀번호"
-            @input="checkPasswordStrength"
-            required />
+            placeholder="비밀번호" @input="checkPasswordStrength" required />
         </div>
         <div :class="['text-sm', 'mt-1', 'mb-6', isStrong ? 'text-green-500' : 'text-red-500']">
           {{ passwordStrengthMessage }}
@@ -343,14 +311,9 @@ const join = async () => {
           <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
             <font-awesome-icon :icon="['fas', 'lock']" />
           </div>
-          <input
-            v-model="member.checkPassword"
-            type="password"
-            id="checkPassword"
+          <input v-model="member.checkPassword" type="password" id="checkPassword"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
-            placeholder="비밀번호를 다시 입력해주세요."
-            @input="checkPasswordsMatch"
-            required />
+            placeholder="비밀번호를 다시 입력해주세요." @input="checkPasswordsMatch" required />
         </div>
         <div :class="['mb-6', 'text-sm', passwordsMatch ? 'text-green-500' : 'text-red-500']">
           {{ passwordsMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.' }}
@@ -358,71 +321,48 @@ const join = async () => {
 
         <div class="mb-6">
           <div class="flex items-center">
-            <input 
-              v-model="member.birthday" 
-              type="text" 
+            <input v-model="member.birthday" type="text"
               class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-4"
-              id="birthday" 
-              placeholder="생년월일 6자리" 
-              maxlength="6" 
-              required />
+              id="birthday" placeholder="생년월일 6자리" maxlength="6" required />
             <span class="px-2">-</span>
-            <input 
-              v-model="member.gender"
-              type="text" 
+            <input v-model="member.gender" type="text"
               class="w-11 bg-gray border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-4"
-              id="gender" 
-              maxlength="1"
-              @input="handleBirthdayInput"
-              required />
+              id="gender" maxlength="1" @input="handleBirthdayInput" required />
             <span class="px-2">●●●●●●</span>
           </div>
         </div>
 
         <div class="mb-4 flex flex-col">
           <div class="flex items-center">
-            <input
-              v-model="member.email"
-              type="email"
+            <input v-model="member.email" type="email"
               class="w-72 bg-gray border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 p-4"
-              id="email"
-              placeholder="이메일"
-              required
-            />
+              id="email" placeholder="이메일" required />
             <select v-model="selectedDomain" @change="handleDomainChange"
               class="border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500 p-3.5">
               <option value="">도메인 선택</option>
               <option v-for="domain in allowedDomains" :key="domain" :value="domain">{{ domain }}</option>
               <option value="직접입력">직접 입력</option>
             </select>
-            <button @click="sendVerificationCode" class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-customNavy text-white rounded-lg text-sm">
+            <button @click="sendVerificationCode" type="button"
+              class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-customNavy text-white rounded-lg text-sm">
               인증 코드 전송
             </button>
           </div>
-          <input 
-            v-if="isDirectInput" 
-            type="text"
-            class="mt-2 border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            placeholder="도메인을 입력해 주세요" 
-            v-model="directEmail" 
-            @input="updateDirectEmail" 
-          />
+          <input v-if="isDirectInput" type="text"
+            class="mt-2 border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="도메인을 입력해 주세요" v-model="directEmail" @input="updateDirectEmail" />
         </div>
 
         <div v-if="isVerificationCodeSent" class="mt-2">
-          <input
-            v-model="inputCode"
-            type="text"
-            placeholder="인증 코드를 입력해 주세요"
-            class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button @click="verifyCode" class="cursor-pointer ml-2 px-2 my-2 bg-customNavy text-white rounded-lg text-sm">
+          <input v-model="inputCode" type="text" placeholder="인증 코드를 입력해 주세요"
+            class="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <button @click="verifyCode" type="button" class="cursor-pointer ml-2 my-2 p-3 bg-customNavy text-white rounded-lg text-sm">
             인증 코드 확인
           </button>
-          <div v-if="verificationFail" class="text-red-500">{{ verificationFail }}</div>
-          <div v-if="verificationSuccess" class="text-green-500">{{ verificationSuccess }}</div>
+          <div v-if="verificationFail" class="text-red-500 text-sm">{{ verificationFail }}</div>
+          <div v-if="verificationSuccess" class="text-green-500 text-sm">{{ verificationSuccess }}</div>
         </div>
-        
+
         <div class="mt-10 mb-5 font-bold text-2xl text-customNavy">약관 동의</div>
         <div class="p-5 mb-6 flex items-center bg-gray-100 rounded-md">
           <input id="agreeAll" type="checkbox" class="mr-3 w-7 h-7" v-model="agreeAll" @change="toggleAll">
@@ -496,16 +436,18 @@ const join = async () => {
             </section>
           </div>
         </div>
-        
+
         <div class="mb-6">
           <div class="mb-3 flex itmes-center">
             <input id="privacy" type="checkbox" class="mr-2 w-6 h-6" v-model="privacy" @change="checkAgreeAll">
-            <div for="privacy" class="text-base font-semibold">개인정보 수집 및 이용 동의<span class="text-red-500"> (필수)</span></div>
+            <div for="privacy" class="text-base font-semibold">개인정보 수집 및 이용 동의<span class="text-red-500"> (필수)</span>
+            </div>
           </div>
           <div class="h-52 overflow-y-scroll border border-gray-300 p-4 rounded-lg text-sm space-y-3">
             <section>
               <div class="font-bold mb-1">제1조(목적)</div>
-              <div>이 동의서는 본 서비스가 수집하는 개인정보의 범위, 목적, 보유 기간 등을 명시하며, 개인정보 처리와 관련하여 이용자의 권리 및 의무 사항을 규정하는 것을 목적으로 합니다.</div>
+              <div>이 동의서는 본 서비스가 수집하는 개인정보의 범위, 목적, 보유 기간 등을 명시하며, 개인정보 처리와 관련하여 이용자의 권리 및 의무 사항을 규정하는 것을 목적으로 합니다.
+              </div>
             </section>
             <section>
               <div class="font-bold mb-1">제2조(수집하는 개인정보 항목)</div>
@@ -527,13 +469,13 @@ const join = async () => {
             </section>
             <section>
               <div class="font-bold mb-1">제5조(제3자 제공 여부)</div>
-              <div>개인정보는 법적 요구 사항 또는 서비스 제공을 위한 외부 서비스 제공 업체(예: 은행 API)와 연동될 수 있으며, 이 경우 이용자의 명시적 동의를 받아 처리됩니다. 동의를 거부할 권리가 있으며, 거부 시 서비스 이용에 제한이 있을 수 있습니다.</div>
+              <div>개인정보는 법적 요구 사항 또는 서비스 제공을 위한 외부 서비스 제공 업체(예: 은행 API)와 연동될 수 있으며, 이 경우 이용자의 명시적 동의를 받아 처리됩니다. 동의를 거부할
+                권리가 있으며, 거부 시 서비스 이용에 제한이 있을 수 있습니다.</div>
             </section>
           </div>
         </div>
 
-        <button
-          type="submit"
+        <button type="submit"
           class="cursor-pointer w-full bg-customNavy text-white py-2 rounded-xl flex justify-center items-center py-5"
           :disabled="disableSubmit || isLoading || !isMemberIdChecked">
           <span class="ml-2">회원가입 하기</span>
@@ -547,6 +489,7 @@ const join = async () => {
 [type="checkbox"] {
   accent-color: #0B1573;
 }
+
 .spinner-border {
   width: 2rem;
   height: 2rem;
