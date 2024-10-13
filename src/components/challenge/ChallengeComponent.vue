@@ -68,7 +68,7 @@ const deleteChallenge = async (challengeIdx) => {
       </div>
     </div>
     <ProgressBar
-      class="mt-8"
+      class="mt-8 mb-5"
       v-if="chartData"
       :limit="chartData.challengeLimit"
       :completed="chartData.cardHistoryCount"

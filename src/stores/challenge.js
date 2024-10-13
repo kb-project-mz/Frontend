@@ -112,6 +112,13 @@ export const useChallengeStore = defineStore('challenge', {
           },
         });
         this.chartData = res.data.data;
+        if (this.challengeList.length > 0) {
+          const challengeOrder = this.challengeList.map(challenge => challenge.challengeIdx);
+    
+          this.chartData = this.chartData.sort((a, b) => {
+            return challengeOrder.indexOf(a.challengeIdx) - challengeOrder.indexOf(b.challengeIdx);
+          });
+        }
       } catch (error) {
         console.error('Error fetching chart data:', error);
       }
