@@ -11,21 +11,20 @@ const alertLogin = () => {
 
 <template>
   <div>
-    <!-- 상단 글자 -->
-    <div class="max-w-7.5xl mx-auto flex">
+    <div class="max-w-7.5xl mx-auto flex font-jamsil">
       <div class="text-left">
-        <p class="text-7xl font-black text-transparent blue mt-10 mb-6">
+        <p class="text-7xl font-black text-transparent blue mt-10 mb-6 font-jamsil">
           MZ 세대인 당신,
         </p>
         <span class="text-7xl font-bold blue mb-6"></span>
         <span class="text-7xl font-bold blue mb-6">&nbsp;&nbsp;&nbsp;지금 당신의 </span>
         <span class="text-7xl font-black text-transparent stroke">자산</span>
-        <p class="text-7xl font-bold blue ml-48 mt-6 mb-52">안녕하신가요?</p>
+        <p class="text-7xl font-bold blue ml-48 mt-6 mb-52 font-jamsil">안녕하신가요?</p>
       </div>
     </div>
 
     <!-- 버튼 -->
-    <div class="max-w-7.5xl mx-auto space-x-12 flex">
+    <div class="max-w-7.5xl mx-auto space-x-12 flex font-jamsil">
       <Button
         :img-src="testImage"
         :router-to="{ name: 'testStart' }"
@@ -58,4 +57,14 @@ const alertLogin = () => {
   </div>
 </template>
 
-<style setup></style>
+<style setup>
+@font-face {
+    font-family: 'TheJamsil5Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+.font-jamsil {
+    font-family: 'TheJamsil5Bold', sans-serif; /* sans-serif 대체 폰트 추가 */
+}
+</style>
