@@ -31,7 +31,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="border border-gray-300 rounded-lg p-30 max-w-s mx-auto">
+  <div class="border border-gray-200 rounded-lg p-30 max-w-s mx-auto">
     <div v-if="resultImage!=null">
       <img :src="resultImage" alt="Result Image" />
     </div> 
