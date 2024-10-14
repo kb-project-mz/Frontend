@@ -18,7 +18,6 @@ const swiperBreakpoints = {
 
 <template>
   <div class="w-full">
-
     <div class="max-w-7.5xl mx-auto flex font-jamsil">
       <div class="text-left">
         <p class="text-7xl font-black text-transparent blue mt-10 mb-6">
@@ -27,56 +26,33 @@ const swiperBreakpoints = {
         <span class="text-7xl text-customNavy mb-6"></span>
         <span class="text-7xl text-customNavy mb-6">&nbsp;&nbsp;&nbsp;지금 당신의 </span>
         <span class="text-7xl text-customNavy"><span class="text-transparent stroke">자산</span>은</span>
-        <p class="text-7xl font-bold blue ml-48 mt-6 mb-40">안녕하신가요?</p>
+        <p class="text-7xl font-bold blue ml-48 mt-6 pb-12">안녕하신가요?</p>
       </div>
     </div>
-    
-    <Swiper
-      :spaceBetween="50"  
-      :slidesPerView="1"
-      :breakpoints="swiperBreakpoints"
-      :modules="[Navigation, Autoplay]" 
-      navigation 
-      loop
-      :autoplay="{ delay: 2000 }"
-    >
-    <SwiperSlide>
-        <div class="w-full flex justify-end font-jamsil">
-          <div class="w-1/3 mr-32">
-            <SBTIResult />
-          </div>
+
+    <Swiper class="slider w-2/3" :spaceBetween="50" :slidesPerView="1" :breakpoints="swiperBreakpoints" :modules="[Navigation, Autoplay]"
+      navigation loop :autoplay="{ delay: 6000 }">
+      <SwiperSlide>
+        <div class="h-full bg-white flex items-center">
+          <SBTIResult />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div class="w-full flex justify-end">
-          <div class="w-1/3 mr-32">
-            <Challenge />
-          </div>
+        <div class="h-full bg-white flex items-center">
+          <Challenge />
         </div>
       </SwiperSlide>
       <SwiperSlide>
-        <div class="w-full flex justify-end">
-          <div class="w-1/3 mr-32">
-            <Account />
-          </div>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide>
-        <div class="w-full flex justify-end font-jamsil">
-          <div class="w-1/3 mr-32">
-            <SBTIResult /> 
-          </div>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide>
-        <div class="w-full flex justify-end">
-          <div class="w-1/3 mr-32">
-            <Challenge /> 
-          </div>
+        <div class="h-full bg-white flex items-center">
+          <Account />
         </div>
       </SwiperSlide>
     </Swiper>
   </div>
 </template>
 
-<style setup></style>
+<style setup>
+.slider {
+  height: 600px;
+}
+</style>

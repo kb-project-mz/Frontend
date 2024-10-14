@@ -31,13 +31,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="border border-gray-200 rounded-lg p-30 w-3/4 mx-auto">
-    <div v-if="GoTest">
-      <img :src="resultImage" alt="Result Image" />
+  <div class="flex justify-center h-full border border-gray-200 rounded-lg p-30 w-3/4 mx-auto">
+    <div v-if="GoTest" class="h-full">
+      <img :src="resultImage" alt="Result Image" class="h-full" />
       <RouterLink to="/test/start"> 소비 테스트 하러가기! </RouterLink>
     </div> 
-    <div v-else>
-      <img :src="resultImage" alt="Result Image" />
+    <div v-else class="h-full">
+      <img :src="resultImage" alt="Result Image" class="h-full" />
     </div>
   </div>
 </template>

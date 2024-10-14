@@ -32,9 +32,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    class="border border-gray-200 rounded-lg p-4 bg-gray-50 w-3/4 mx-auto"
-  >
+  <div class="border border-gray-200 rounded-lg p-12 bg-gray-50 w-3/4 mx-auto">
     <div v-if="challengeTop3ByMember.length === 0">
       <div class="mb-4 text-center font-bold text-sm">
         {{ memberName }}님은 진행 중인 챌린지가 없어요..
@@ -42,11 +40,8 @@ onMounted(async () => {
       <div class="mb-4 text-center font-bold text-md">
         {{ memberName }}님의 또래는 어떤 챌린지를 진행 중 일까요?
       </div>
-      <div
-        v-for="(peer, index) in peerChallenge"
-        :key="index"
-        class="w-full border border-gray-300 rounded-lg p-4 mb-4 shadow font-semibold"
-      >
+      <div v-for="(peer, index) in peerChallenge" :key="index"
+        class="w-full border border-gray-300 rounded-lg p-4 mb-4 shadow font-semibold">
         {{ peer.challengeName }} ({{ peer.detailedCategory }})<br />
         {{ formatDate(peer.challengeStartDate) }} ~
         {{ formatDate(peer.challengeEndDate) }}
@@ -56,24 +51,14 @@ onMounted(async () => {
       <div class="mb-4 text-center font-bold text-xl">
         {{ memberName }}님의 챌린지 달성률 check!
       </div>
-      <div
-        v-for="challenge in challengeTop3ByMember"
-        :key="challenge.challengeIdx"
-        class="w-full border border-gray-300 rounded-lg p-4 mb-4 shadow font-semibold"
-      >
+      <div v-for="challenge in challengeTop3ByMember" :key="challenge.challengeIdx"
+        class="w-full border border-gray-300 rounded-lg p-4 mb-4 shadow font-semibold">
         <h1>{{ challenge.challengeName }}</h1>
-        <ProgressBar
-          class="mt-6"
-          v-if="challenge"
-          :limit="challenge.challengeLimit"
-          :completed="challenge.cardHistoryCount"
-        />
+        <ProgressBar class="mt-6" v-if="challenge" :limit="challenge.challengeLimit"
+          :completed="challenge.cardHistoryCount" />
       </div>
     </div>
-    <RouterLink
-      to="/challenge"
-      class="text-right block text-xs underline text-gray-500"
-    >
+    <RouterLink to="/challenge" class="text-right block text-xs underline text-gray-500">
       챌린지 보러 가기!
     </RouterLink>
   </div>

@@ -4,7 +4,7 @@ import { onMounted } from "vue";
 
 // TODO : 현재 경로 하드 코딩
 const route = useRoute();
-const baseUrl = "https://localhost:5173"; // 로컬 환경 URL
+const baseUrl = "http://localhost:5173"; // 로컬 환경 URL
 const linkUrl = `${baseUrl}${route.fullPath}`;
 const imageUrl = "https://raw.githubusercontent.com/kb-project-mz/FingerTips/main/test.png";
 
