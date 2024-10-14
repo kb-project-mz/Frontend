@@ -14,7 +14,6 @@ const formatDate = (date) => {
 
 onMounted(async () => {
   await challengeStore.getPeerChallengeList(memberIdx);
-  console.log(challengeStore.peerChallengeList);
   peerChallengeList.value = challengeStore.peerChallengeList;
 
   let roller = document.querySelector('.rolling-list');
@@ -69,6 +68,14 @@ const liBackgroundClasses = ['bg-li-1', 'bg-li-2', 'bg-li-3','bg-li-4', 'bg-li-5
       </div>
     </div>
   </div>
+  <!-- <div v-else>
+    <div class="flex flex-col items-center">
+      <div class="text-9xl font-black mt-6 mb-8 text-gray-600">텅</div>
+      <div class="text-xl text-center">
+        <div>새로 등록된 또래 챌린지가 없어요</div>
+      </div>
+    </div>
+  </div> -->
 </template>
 
 <style scoped>

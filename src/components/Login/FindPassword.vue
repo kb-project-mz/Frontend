@@ -88,8 +88,6 @@ const sendNewPassword = async () => {
 
     await sendNewPassword();
 };
-
-
 </script>
 
 <template>
@@ -122,7 +120,7 @@ const sendNewPassword = async () => {
         
         <button
           type="submit"
-          class="w-full py-4 bg-customBlue text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full py-4 bg-customNavy text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           :disabled="loading"
         >
           새 비밀번호 받기

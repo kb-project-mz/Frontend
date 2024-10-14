@@ -34,7 +34,6 @@ const isEmailChanged = ref(false);
 
 onMounted(async () => {
   await fetchProfile();
-  console.log('onmounted',authStore.member.imageUrl);
 });
 
 // 프로필 정보를 API에서 불러오는 함수
@@ -53,7 +52,7 @@ const fetchProfile = async () => {
       isSocialLogin.value = true;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     alert('프로필 정보를 불러오는 중 오류가 발생했습니다.');
   }
 };
@@ -174,7 +173,6 @@ const sendVerificationCode = async () => {
     isVerificationCodeSent.value = true;
     alert('인증 코드가 해당 이메일로 발송되었습니다. 인증 코드를 입력해 이메일 변경을 완료해주세요.');
   } catch (error) {
-    console.log('인증 코드 전송 중 오류 발생:', error);
     alert('인증 코드 전송 중 오류가 발생했습니다.');
   }
 };
@@ -230,7 +228,6 @@ const saveEmail = async () => {
 // 이미지
 const uploadImage = async (event) => {
   const file = event.target.files[0];
-  console.log('Selected Image:', file);
   if (!file) {
     alert('이미지를 선택해주세요.');
     return;
@@ -278,7 +275,6 @@ const deleteImage = async (profileImage) => {
           Authorization: authStore.member.accessToken,
         },
       });
-      console.log('Response Data:', response.data);
       if (response.data.success) {
         profile.imageUrl = 'basic.jpg';
         authStore.updateImageUrl("basic.jpg")
@@ -305,16 +301,12 @@ const withdraw = async () => {
     }
   }
 }
-
-onMounted(() => {
-  console.log(authStore.member.imageUrl);
-})
 </script>
 
 <template>
   <div class="mx-[20%] lg:mx-[32%]">
     <div class="p-10 bg-white border rounded-xl shadow">
-      <div class="mb-5 font-bold text-2xl text-blue">
+      <div class="mb-5 font-bold text-2xl text-customNavy">
         <div>나만의 프로필을</div>
         <div>완성해보세요</div>
       </div>
@@ -323,7 +315,7 @@ onMounted(() => {
       <div class="flex flex-col items-center space-y-4 mb-6">
           <img :src="profile.imageUrl" alt="P" class="w-32 h-32 rounded-full" />
           <div class="flex space-x-3">
-            <button class="bg-customBlue text-white text-xs py-2 px-3 rounded-lg" @click="() => $refs.profileImageInput.click()">
+            <button class="bg-customNavy text-white text-xs py-2 px-3 rounded-lg" @click="() => $refs.profileImageInput.click()">
               변경
             </button>
             <button class="bg-gray-300 text-xs py-2 px-3 rounded-lg" @click="deleteImage(profile.imageUrl)"
@@ -360,7 +352,7 @@ onMounted(() => {
             class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
             :disabled="isSocialLogin" />
           <button @click.prevent="verifyPassword"
-            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customBlue text-white rounded-xl text-sm"
+            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm"
             :disabled="isSocialLogin">
             확인
           </button>
@@ -399,7 +391,7 @@ onMounted(() => {
               <input v-model="confirmNewPassword" type="password" autocomplete="new-password" id="confirmNewPassword"
                 class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
                 placeholder="새 비밀번호를 다시 입력해주세요." @input="checkPasswordConfirmation" />
-              <button @click="changePassword" class="w-16 min-w-16 text-center items-center my-1 py-3 px-4 bg-customBlue text-white rounded-xl text-sm"
+              <button @click="changePassword" class="w-16 min-w-16 text-center items-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm"
                 :disabled="!isPasswordStrong || newPassword !== confirmNewPassword">
                 변경
               </button>
@@ -428,7 +420,7 @@ onMounted(() => {
             class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
             placeholder="이메일" />
           <button @click.prevent="sendVerificationCode"
-            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customBlue text-white rounded-xl text-sm"
+            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm"
             :disabled="isSocialLogin">
             변경
           </button>
@@ -442,7 +434,7 @@ onMounted(() => {
             <input v-model="inputCode" type="text" placeholder="인증 코드를 입력해 주세요"
               class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3" />
             <button @click="verifyCode"
-              class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customBlue text-white rounded-xl text-sm"
+              class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm"
               :disabled="isVerifiedEmail">
               확인
             </button>
@@ -453,7 +445,7 @@ onMounted(() => {
     </div>
 
     <div class="mx-auto text-center mt-4">
-      <div class="p-3 bg-customBlue text-white rounded-lg">
+      <div class="p-3 bg-customNavy text-white rounded-lg">
         <router-link to="/mypage/asset">연결된 자산 보기</router-link>
       </div>
       <button @click="withdraw" class="my-5 underline text-gray-500">탈퇴하기</button>

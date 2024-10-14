@@ -49,7 +49,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="pt-5 pb-8 px-8 bg-white border border-gray-200 rounded-2xl shadow"
+    class="pt-5 pb-8 px-8 bg-white border border-gray-200 rounded-xl shadow"
   >
     <div class="mb-5 text-2xl font-bold">내 지갑 속 AI</div>
     <div class="mb-8 flex items-center justify-end">

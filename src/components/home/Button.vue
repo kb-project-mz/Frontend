@@ -20,7 +20,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <RouterLink class="bg-transparent hover:bg-customBlue blue font-bold hover:text-white py-14 border shadow-lg hover:border-transparent rounded whitespace-normal w-52 h-50 flex flex-col items-center justify-center"
+  <RouterLink class="bg-transparent hover:bg-customNavy blue font-bold hover:text-white py-14 border shadow-lg hover:border-transparent rounded whitespace-normal w-52 h-50 flex flex-col items-center justify-center"
               :to=routerTo>
     <div>{{ textAbove }}</div>
     <div>{{ textBelow }}</div>

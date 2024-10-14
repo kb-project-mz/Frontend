@@ -70,18 +70,20 @@ onMounted(() => {
         :start-date="startDate"
         :end-date="endDate"
       />
-      <div class="lg:col-span-1 flex flex-col justify-between gap-10">
+      <div class="lg:col-span-1 flex flex-col justify-between gap-10 h-full">
         <TotalAmount
           class="flex-1"
           :card-transaction-data="cardTransactionData"
           :account-transaction-data="accountTransactionData"
+          :start-date="startDate"
+          :end-date="endDate"
         />
-        <AverageConsumption
+        <!-- <AverageConsumption
           class="flex-1"
           chart-id="thisMonth"
           :card-transaction-data="cardTransactionData"
           :account-transaction-data="accountTransactionData"
-        />
+        /> -->
       </div>
       <CategoryChart class="lg:col-span-1" chart-id="thisMonthCategory"
         :start-date="startDate" :end-date="endDate" period="이번 달"/>

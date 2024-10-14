@@ -78,7 +78,7 @@ const formatTime = (time) => {
 </script>
 
 <template>
-  <div class="py-4 bg-white border border-gray-200 rounded-2xl">
+  <div class="py-4 bg-white border border-gray-200 rounded-xl shadow">
     <div class="mx-5 my-2 font-bold text-lg list-header text-center">이번 달 자산 흐름</div>
     <div class="mx-3">
       <div v-for="(transaction, index) in paginatedData" :key="index">
@@ -91,7 +91,7 @@ const formatTime = (time) => {
             </div>
             <div>
               <div>
-                <span class="text-xl" :class="transaction.amount < 0 ? 'text-red' : 'text-blue'">
+                <span class="text-xl font-bold" :class="transaction.amount < 0 ? 'text-customRed' : 'text-customBlue'">
                   {{ Math.abs(transaction.amount).toLocaleString() }}</span>원
               </div>
             </div>
@@ -105,27 +105,22 @@ const formatTime = (time) => {
     <div class="mt-3 flex justify-center space-x-2">
       <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
         :class="['px-2 py-1 mx-1 rounded cursor-pointer', currentPage === 1 ? 'opacity-50' : 'hover:bg-gray-200']">
-        <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-customBlue" />
+        <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-customNavy" />
       </button>
 
       <button v-for="page in paginatedPageNumbers" :key="page" @click="goToPage(page)"
-        :class="['px-3 rounded cursor-pointer hover:bg-gray-200', { 'bg-customBlue text-white': page === currentPage, 'bg-white': page !== currentPage }]">
+        :class="['px-3 rounded cursor-pointer hover:bg-gray-200', { 'bg-customNavy text-white': page === currentPage, 'bg-white': page !== currentPage }]">
         {{ page }}
       </button>
 
       <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
         class="px-2 py-1 mx-1 rounded cursor-pointer hover:bg-gray-200">
-        <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-customBlue" />
+        <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-customNavy" />
       </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.text-red {
-  color: #F55151;
-}
-.text-blue {
-  color: #0E9CFF;
-}
+
 </style>

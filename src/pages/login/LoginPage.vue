@@ -19,32 +19,27 @@ const login = async () => {
     error.value = "아이디와 비밀번호를 모두 입력해주세요.";
     return;
   }
-    try {
-        const isValidMemberId = await auth.checkMemberId(member.memberId);
-        if(!isValidMemberId){
-          error.value = '존재하지 않는 아이디 입니다.';
-          return;
-        }
-        const response = await auth.login(member.memberId, member.password);
-        console.log("로그인 응답:", response);
-
-        if (response && response.memberId) {
-            alert('로그인 되었습니다.');
-            console.log("로그인 성공:", response);
-
-            if (response.role === 'ROLE_ADMIN') {
-                router.push("/admin"); 
-            } else {
-            		router.push("/"); 
-            }
-        } else if (response === null) {
-            error.value = '아이디와 비밀번호가 올바르지 않습니다.'
-            console.error("로그인 실패:", response);
-        }
-    } catch (err) {
-        console.error("로그인 중 예외 발생:", err);
-        error.value = "로그인 중 오류가 발생했습니다.";
+  try {
+    const isValidMemberId = await auth.checkMemberId(member.memberId);
+    if (!isValidMemberId) {
+      error.value = '존재하지 않는 아이디 입니다.';
+      return;
     }
+    const response = await auth.login(member.memberId, member.password);
+
+    if (response.success) {
+      if (response.data.role === 'ROLE_ADMIN') {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    } else {
+      error.value = response.error.message;
+    }
+  } catch (err) {
+    console.error("로그인 중 예외 발생:", err);
+    error.value = "로그인 중 오류가 발생했습니다.";
+  }
 };
 </script>
 
@@ -76,7 +71,7 @@ const login = async () => {
               placeholder="비밀번호를 입력해주세요." />
 
             <div class="tooltip-icon relative inline-block">
-              <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-customBlue ml-2.5" />
+              <font-awesome-icon :icon="['fas', 'circle-question']" class="text-2xl text-customNavy ml-2.5" />
               <div
                 class="tooltip hidden absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max bg-gray-800 text-white text-sm rounded py-1 px-2 whitespace-no-wrap">
                 비밀번호는 영어 대소문자, 숫자, 특수문자를 혼합하여 8자리 이상 작성해주세요
@@ -89,7 +84,7 @@ const login = async () => {
         </div>
       </div>
 
-      <button type="submit" class="cursor-pointer bg-customBlue text-white text-sm rounded-xl block w-full ps-10 p-5">
+      <button type="submit" class="cursor-pointer bg-customNavy text-white text-sm rounded-xl block w-full ps-10 p-5">
         <router-link to="">로그인</router-link>
       </button>
     </form>

@@ -60,7 +60,6 @@ const renderChart = () => {
 
 onMounted(() => {
   if (props.period === '이번 달') {
-    console.log("이번달");
     const uniqueCategories = [...new Set(categoryTransactionStore.categoryDataThisMonth.map((item) => item.categoryName))];
 
     chartData.value.labels = uniqueCategories;
@@ -69,7 +68,6 @@ onMounted(() => {
       return categoryData.percentage.toFixed(1);
   });
   } else {
-    console.log("해당 기간");
     const uniqueCategories = [...new Set(categoryTransactionStore.categoryDataSelectedPeriod.map((item) => item.categoryName))];
 
     chartData.value.labels = uniqueCategories;

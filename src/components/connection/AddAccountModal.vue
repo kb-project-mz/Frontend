@@ -67,11 +67,11 @@ watch(
 <template>
   <div
     v-if="visible"
-    class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    class="fixed inset-0 bg-black bg-opacity-20 flex justify-center items-center"
     @click="close"
   >
     <div
-      class="w-1/4 bg-white p-5 rounded-lg shadow-lg fixed box-border"
+      class="w-2/3 xl:w-1/4 bg-white p-5 rounded-lg shadow-lg fixed box-border"
       @click.stop
     >
       <div class="relative w-full mb-5">
@@ -124,7 +124,7 @@ watch(
       <button
         v-if="unconnectedAccountList.length > 0"
         @click="addAccount"
-        class="w-full mt-1 px-4 py-4 bg-customBlue text-white rounded-lg hover:bg-blue-600"
+        class="w-full mt-1 px-4 py-4 bg-customNavy text-white rounded-lg hover:bg-blue-600"
       >
         선택한 자산 연결하기
       </button>

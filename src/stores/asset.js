@@ -79,5 +79,45 @@ export const useAssetStore = defineStore('asset', {
         throw error;
       }
     },
+
+    async disconnectCard(cardIdx) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.post(
+          `/asset/card/disconnect/${cardIdx}`,
+          {},
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
+          }
+        );
+        
+        this.connectedCardList = this.connectedCardList.filter(card => card.cardIdx !== cardIdx);
+      } catch (error) {
+        console.error('Failed to update card status:', error);
+        throw error;
+      }
+    },
+
+    async disconnectAccount(accountIdx) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.post(
+          `/asset/account/disconnect/${accountIdx}`,
+          {},
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
+          }
+        );
+        this.connectedAccountList = this.connectedAccountList.filter(account => account.cardIdx !== accountIdx);
+        return response.data;
+      } catch (error) {
+        console.error('Failed to update account status:', error);
+        throw error;
+      }
+    },
   },
 });

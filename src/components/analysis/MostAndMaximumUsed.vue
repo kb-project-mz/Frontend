@@ -52,27 +52,25 @@ const fetchTransactionAnalysis = async (
 };
 
 const formatMostUsed = (data) => {
-  const parts = data.split("2. ");
-  const mostUsedData = parts[0].match(/\[.*\]/)[0];
-  const maximumAmountData = parts[1].match(/\[.*\]/)[0];
+  const [mostUsedStr, maximumAmountStr] = data.split('], ');
 
-  mostUsed.value = mostUsedData
-    .replace(/[\[\]]/g, "")
-    .split(", ")
-    .reduce((obj, item) => {
-      const [key, value] = item.split(": ");
-      obj[key] = parseInt(value);
-      return obj;
-    }, {});
+  const mostUsedArr = mostUsedStr.replace(/[\[\]]/g, '').split(', ');
+  const maximumAmountArr = maximumAmountStr.replace(/[\[\]]/g, '').split(', ');
 
-  maximumAmount.value = maximumAmountData
-    .replace(/[\[\]]/g, "")
-    .split(", ")
-    .reduce((obj, item) => {
-      const [key, value] = item.split(": ");
-      obj[key] = parseInt(value);
-      return obj;
-    }, {});
+  const mosUsedObj = {};
+  mostUsedArr.forEach(item => {
+    const [key, value] = item.split(':');
+    mosUsedObj[key.trim()] = parseInt(value.trim());
+  });
+
+  const maximumAmountObj = {};
+  maximumAmountArr.forEach(item => {
+    const [key, value] = item.split(':');
+    maximumAmountObj[key.trim()] = parseInt(value.trim());
+  });
+
+  mostUsed.value = mosUsedObj;
+  maximumAmount.value = maximumAmountObj;
 };
 
 const getMedal = (index) => {
@@ -133,7 +131,7 @@ onMounted(async () => {
 <template>
   <div
     v-if="isLoaded"
-    class="p-8 bg-white border border-gray-200 rounded-2xl shadow"
+    class="p-8 bg-white border border-gray-200 rounded-xl shadow"
   >
     <MostUsed
       class="mb-6 lg:mb-12"

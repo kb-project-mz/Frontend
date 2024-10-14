@@ -31,10 +31,7 @@ const fetchAsset = async () => {
     (card) => card.connectedStatus === 1
   );
 
-  console.log("connectedCardList: ", cardTransactionStore.cardAmountBycardIdx);
   connectedCardList.value.forEach((card) => {
-    console.log("card: ", card);
-
     const cardIdx = card.prdtId;
     if (cardTransactionStore.cardAmountBycardIdx[cardIdx]) {
       card.totalAmount = cardTransactionStore.cardAmountBycardIdx[cardIdx];
@@ -44,6 +41,17 @@ const fetchAsset = async () => {
   });
 
   isLoading.value = false;
+};
+
+const disconnectCard = async (cardIdx) => {
+  const card = connectedCardList.value.find(card => card.prdtId === cardIdx);
+  
+  const confirm = window.confirm(`${card.prdtName} 연동을 해제하시겠습니까?`);
+
+  if (confirm) {
+    await assetStore.disconnectCard(cardIdx);
+    await fetchAsset();
+  }
 };
 
 onMounted(async () => {
@@ -78,18 +86,18 @@ onMounted(async () => {
       </div>
 
       <div v-else-if="connectedCardList.length > 0">
-        <div
-          v-for="(card, index) in connectedCardList"
-          :key="index"
-          class="py-3 pl-2 flex items-center"
-        >
-          <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
-          <div>
-            <div class="text-medium">{{ card.prdtName }}</div>
-            <div class="text-lg font-bold">
-              {{ card.totalAmount.toLocaleString() }}원
+        <div v-for="(card, index) in connectedCardList" :key="index" class="py-3 pl-2 flex items-center justify-between">
+          <div class="flex items-center">
+            <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
+            <div>
+              <div class="text-medium">{{ card.prdtName }}</div>
+              <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>
             </div>
           </div>
+          <button @click="disconnectCard(card.prdtId)" class="ml-4 text-gray-400">
+            삭제
+          </button>
+
         </div>
         <button @click="openModal" class="w-full">
           <div
@@ -97,7 +105,7 @@ onMounted(async () => {
           >
             <font-awesome-icon
               :icon="['fas', 'circle-plus']"
-              class="text-customBlue w-12 h-12 mr-4"
+              class="text-customNavy w-12 h-12 mr-4"
             />카드 추가하기
           </div>
         </button>
@@ -108,7 +116,7 @@ onMounted(async () => {
         <div class="text-9xl font-black mt-6 mb-8 text-gray-600">텅</div>
         <button
           @click="openModal"
-          class="w-full py-4 bg-customBlue text-white text-lg rounded-lg"
+          class="w-full py-4 bg-customNavy text-white text-lg rounded-lg"
         >
           카드 연결하러 가기
         </button>

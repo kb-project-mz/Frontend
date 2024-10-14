@@ -14,7 +14,6 @@ const formatDate = (timestamp) => {
 const fetchAllMetrics = async () => {
   try {
     const response = await apiInstance.get('/admin/daily-metrics');
-    console.log("API 전체 응답:", response);
     
     // 배열의 각 항목에 접근
     const data = response.data.data;

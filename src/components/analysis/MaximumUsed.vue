@@ -19,7 +19,7 @@ const props = defineProps({
 <template>
   <div>
     <div class="text-md mb-2">
-      <div>{{ period }} <span class="text-blue font-semibold">가장 많은 지출</span>은</div>
+      <div>{{ period }} <span class="text-customBlue font-semibold">가장 많은 지출</span>은</div>
       <div>바로 이 곳에서 사용했어요</div>
     </div>
     <span class="mb-3 font-normal text-gray-700">
@@ -34,9 +34,7 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.text-blue {
-  color: #0E9CFF;
-}
+
 img {
   width: 1.3rem;
   height: 1.3rem;

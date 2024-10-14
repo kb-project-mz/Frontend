@@ -22,7 +22,6 @@ export const useChallengeStore = defineStore('challenge', {
         });
 
         const statusPriority = { "진행":1, "예정":2, "종료":3 };
-        console.log(this.challengeList);
         this.challengeList = res.data.data;
         this.challengeList = this.challengeList.sort((a, b) => {
           if (statusPriority[a.challengeStatus] !== statusPriority[b.challengeStatus]) {
@@ -112,6 +111,13 @@ export const useChallengeStore = defineStore('challenge', {
           },
         });
         this.chartData = res.data.data;
+        if (this.challengeList.length > 0) {
+          const challengeOrder = this.challengeList.map(challenge => challenge.challengeIdx);
+    
+          this.chartData = this.chartData.sort((a, b) => {
+            return challengeOrder.indexOf(a.challengeIdx) - challengeOrder.indexOf(b.challengeIdx);
+          });
+        }
       } catch (error) {
         console.error('Error fetching chart data:', error);
       }

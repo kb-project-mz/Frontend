@@ -71,7 +71,7 @@ watch(
 </script>
 
 <template>
-  <div class="p-10 bg-white border border-gray-200 rounded-2xl shadow">
+  <div class="p-10 bg-white border border-gray-200 rounded-xl shadow">
     <div v-if="isLoaded">
       <div v-if="period === '이번 달'">
         <div v-if="categoryStore.categoryDataThisMonth.length > 0" class="flex flex-col items-center">

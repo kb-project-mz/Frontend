@@ -43,21 +43,17 @@ export const useCategoryTransactionStore = defineStore("categoryTransaction", {
           if (new Date(startYear, startMonth, startDay).getTime() == start.getTime() && new Date(endYear, endMonth, endDay).getTime() == last.getTime()) {
             this.categoryDataThisMonth = res.data.data;
             this.mostSpentCategoryThisMonth = res.data.data[0].categoryName;
-            console.log(this.categoryDataThisMonth);
           } else {
             this.categoryDataSelectedPeriod = res.data.data;
             this.mostSpentCategorySelectedPeriod = res.data.data[0].categoryName;
-            console.log(this.categoryDataSelectedPeriod);
           }
         } else if (res.data.data) {
           if (new Date(startYear, startMonth, startDay).getTime() == start.getTime() && new Date(endYear, endMonth, endDay).getTime() == last.getTime()) {
             this.categoryDataThisMonth = [];
             this.mostSpentCategoryThisMonth = "";
-            console.log(this.categoryDataThisMonth);
           } else {
             this.categoryDataSelectedPeriod = [];
             this.mostSpentCategorySelectedPeriod = "";
-            console.log(this.categoryDataSelectedPeriod);
           }
         }
       } catch (error) {

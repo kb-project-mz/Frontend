@@ -14,8 +14,7 @@ const fetchSBTIResult = async (memberIdx) => {
   await testResultStore.getTestResult(memberIdx);
   
   SBTIResult.value = await testResultStore.TestResult;
-  
-  console.log('SBTIResult', SBTIResult);
+
   const _obj = toRaw(SBTIResult.value);
 
 	if (_obj && _obj.typeImage) { 
@@ -24,7 +23,6 @@ const fetchSBTIResult = async (memberIdx) => {
 		resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/before-test.png`;
     GoTest.value = true;
 	}
-	console.log('resultImage.value', resultImage.value);
 };
 
 onMounted(async () => {

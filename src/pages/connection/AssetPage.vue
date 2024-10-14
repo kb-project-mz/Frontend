@@ -4,19 +4,19 @@ import ConnectedCard from '@/components/connection/ConnectedCard.vue';
 </script>
 
 <template>
-  <div class="mx-[20%] min-h-128 flex space-x-12">
-    <div class="w-1/2">
+  <div class="mx-[20%] grid grid-cols-1 lg:grid-cols-2 gap-16 min-h-160">
+    <div class="">
       <ConnectedAccount />
     </div>
-    <div class="w-1/2">
+    <div class="">
       <ConnectedCard />
     </div>
   </div>
 </template>
 
 <style scoped>
-.min-h-128 {
-  min-height: 32rem;
+.min-h-160 {
+  min-height: 40rem;
 }
 </style>
 

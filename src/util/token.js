@@ -49,13 +49,10 @@ export function setLocalStorage(loginData) {
     console.error("memberId가 null입니다. 로그인 데이터:", loginData);
   }
 
-	console.log(loginData.accessToken);
-	console.log(loginData.refreshToken);
   loginData.accessToken = `Bearer ${loginData.accessToken}`;
   loginData.refreshToken = `Bearer ${loginData.refreshToken}`;
   
   setTokens(loginData.accessToken, loginData.refreshToken);
 
   localStorage.setItem("auth", JSON.stringify(loginData));
-	console.log("세팅 완료",localStorage.getItem("auth"));
 }

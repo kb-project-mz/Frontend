@@ -27,10 +27,19 @@ onMounted(() => {
   <div>
     <div class="relative">
       <div class="rounded-full h-5 bg-gray-200">
-        <div class="h-full rounded-full bg-customBlue progress-bar" :style="{ width: progressWidth }"></div>
+        <div class="h-full rounded-full bg-red-600 progress-bar" :style="{ width: progressWidth }"></div>
       </div>
-      <div class="absolute top-[-30px] transition-transform text-2xl" :style="{ left: `calc(${emojiPosition}% - 10px)` }">
-        <span role="img" aria-label="emoji"><font-awesome-icon :icon="['fas', 'person-running']" /></span>
+      
+      <div class="absolute top-[-25px] transition-transform text-2xl" :style="{ left: `calc(${emojiPosition}% - 10px)` }">
+        <span role="img" aria-label="emoji"><img class="w-6" src="@/assets/siren.png" /></span>
+      </div>
+
+      <div class="absolute top-[20px] text-xs transition-transform" :style="{ left: `calc(${emojiPosition}% - 10px)` }">
+        {{ completed.toLocaleString() }}
+      </div>
+
+      <div class="absolute top-[20px] right-0 text-xs">
+        {{ limit.toLocaleString() }}
       </div>
     </div>
   </div>
