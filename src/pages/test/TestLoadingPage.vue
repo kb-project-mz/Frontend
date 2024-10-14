@@ -47,7 +47,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
+  <div class="flex flex-col justify-center items-center py-52 bg-gray-50">
     <h1 class="text-2xl gong-gothic-font font-bold mb-4">결과를 계산 중입니다...</h1>
     <div class="loader"></div>
   </div>

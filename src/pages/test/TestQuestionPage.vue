@@ -66,7 +66,7 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
+  <div class="flex flex-col justify-center items-center py-52 bg-gray-50">
     <div class="relative w-1/2 bg-gray-200 rounded-full h-2 mb-6">
       <div class="h-2 rounded-full" :style="{
         width: `${progress}%`,
@@ -82,7 +82,7 @@ const nextQuestion = (answerId, answerScore, questionType) => {
     </div>
 
     <div class="text-center">
-      <h1 class="text-3xl font-bold mb-6 gong-gothic-font">Q{{ questionId }}.</h1>
+      <h1 class="text-3xl font-bold my-6 gong-gothic-font">Q{{ questionId }}.</h1>
       <p class="mb-8 gong-gothic-font text-xl" v-if="currentQuestion">{{ currentQuestion.questionText }}</p>
       <div class="flex flex-col space-y-7">
         <button v-if="answers.length > 0" v-for="answer in answers" :key="answer.optionIdx"
