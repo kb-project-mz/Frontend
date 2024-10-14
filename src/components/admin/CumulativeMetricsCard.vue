@@ -1,9 +1,24 @@
+<script setup>
+import { onMounted } from 'vue';
+import { useAdminMetricsStore } from '@/stores/adminMetrics';
+
+const adminMetricsStore = useAdminMetricsStore();
+
+onMounted(() => {
+  adminMetricsStore.fetchCumulativeSignUpCount();
+  adminMetricsStore.fetchCumulativeLoginCount();
+  adminMetricsStore.fetchCumulativeVisitCount();
+  adminMetricsStore.fetchCumulativeWithdrawalCount();
+  adminMetricsStore.fetchGrowthMetrics();
+});
+</script>
+
 <template>
   <div class="flex">
     <div class="flex-1 p-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <!-- signUp 카드 -->
-        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between">
+
+        <div class="card bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition-transform transform hover:scale-105">
           <div>
             <p class="text-gray-500 text-sm font-semibold mb-2 flex items-center">
               <i class="fas fa-user text-pink-500 mr-2"></i> SignUp
@@ -13,8 +28,7 @@
           </div>
         </div>
 
-        <!-- visit 카드 -->
-        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between">
+        <div class="card bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition-transform transform hover:scale-105">
           <div>
             <p class="text-gray-500 text-sm font-semibold mb-2 flex items-center">
               <i class="fas fa-eye text-blue-500 mr-2"></i> Visit
@@ -24,8 +38,7 @@
           </div>
         </div>
 
-        <!-- login 카드 -->
-        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between">
+        <div class="card bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition-transform transform hover:scale-105">
           <div>
             <p class="text-gray-500 text-sm font-semibold mb-2 flex items-center">
               <i class="fas fa-sign-in-alt text-purple-500 mr-2"></i> Login
@@ -34,9 +47,8 @@
             <p class="text-sm text-green-500 mt-1">{{ adminMetricsStore.growthMetrics.loginGrowth.toFixed(1) }}%</p>
           </div>
         </div>
-
-        <!-- Withdrawal 카드 -->
-        <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between">
+				
+        <div class="card bg-white border border-gray-200 rounded-lg shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition-transform transform hover:scale-105">
           <div>
             <p class="text-gray-500 text-sm font-semibold mb-2 flex items-center">
               <i class="fas fa-user-minus text-yellow-500 mr-2"></i> Withdrawal
@@ -49,23 +61,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { onMounted } from 'vue';
-import { useAdminMetricsStore } from '@/stores/adminMetrics';
-
-// Pinia 스토어 사용
-const adminMetricsStore = useAdminMetricsStore();
-
-// 컴포넌트 마운트 시 데이터를 불러옴
-onMounted(() => {
-  adminMetricsStore.fetchCumulativeSignUpCount();
-  adminMetricsStore.fetchCumulativeLoginCount();
-  adminMetricsStore.fetchCumulativeVisitCount();
-  adminMetricsStore.fetchCumulativeWithdrawalCount();
-  adminMetricsStore.fetchGrowthMetrics(); // 증가율 데이터 불러오기
-});
-</script>
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
@@ -80,7 +75,7 @@ body {
 
 .card:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .grid {
