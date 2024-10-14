@@ -65,6 +65,7 @@ const plotChart = (labels, signUpCounts, loginCounts, visitCounts, withdrawalCou
         yAxisID: 'y',
         type: 'line',
         pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+        hidden: true,  // 기본적으로 숨기기
       },
       {
         label: "Visits",
@@ -76,6 +77,7 @@ const plotChart = (labels, signUpCounts, loginCounts, visitCounts, withdrawalCou
         yAxisID: 'y',
         type: 'line',
         pointBackgroundColor: 'rgba(255, 206, 86, 1)',
+        hidden: true,  // 기본적으로 숨기기
       },
       {
         label: "Withdrawals",
@@ -85,6 +87,7 @@ const plotChart = (labels, signUpCounts, loginCounts, visitCounts, withdrawalCou
         yAxisID: 'y1',
         type: 'bar',
         barThickness: 10,                             // 막대의 두께 조정
+        hidden: true,  // 기본적으로 숨기기
       },
     ],
   };
@@ -161,7 +164,9 @@ onMounted(async () => {
 
 <template>
   <div class="p-4">
-    <canvas id="dailyStatsChart"></canvas>
+    <div style="width: 100%; max-width: 900px; margin: 0 auto;">
+      <canvas id="dailyStatsChart"></canvas>
+    </div>
   </div>
 </template>
 

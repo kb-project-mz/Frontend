@@ -73,9 +73,8 @@ window.addEventListener('storage', (event) => {
       oldAuthData &&
       oldAuthData.memberIdx !== newAuthData.memberIdx
     ) {
-      // localStorage.removeItem('auth');
-      // authStore.clearAuthState();
-      router.push('/');
+      localStorage.removeItem('auth');
+      authStore.clearAuthState();
     }
   }
 });
