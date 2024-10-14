@@ -29,7 +29,7 @@ export const useChallengeStore = defineStore('challenge', {
           }
 
           if (a.challengeStatus === "진행") {
-            return new Date(b.challengeEndDate) - new Date(a.challengeEndDate);
+            return new Date(a.challengeEndDate) - new Date(b.challengeEndDate);
           }
 
           if (a.challengeStatus === "예정") {
