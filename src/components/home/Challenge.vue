@@ -33,7 +33,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="border border-gray-200 rounded-lg p-4 bg-gray-50 max-w-lg mx-auto"
+    class="border border-gray-200 rounded-lg p-4 bg-gray-50 w-3/4 mx-auto"
   >
     <div v-if="challengeTop3ByMember.length === 0">
       <div class="mb-4 text-center font-bold text-sm">

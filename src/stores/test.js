@@ -59,7 +59,7 @@ export const useTestStore = defineStore("testStore", {
                 console.error("데이터 전송 실패", error.message);
             }
         },
-        
+    
         async saveResult(result) {
             const authStore = useAuthStore(); 
             const memberIdx = authStore.member.memberIdx || null; 
@@ -97,6 +97,22 @@ export const useTestStore = defineStore("testStore", {
             }
         },
 
+        async getAdditionalSurveyInfo(memberIdx) {
+            try {
+              const response = await apiInstance.get(`/test/survey/${memberIdx}/additional-info`);
+              if (response.data.success) {
+                this.additionalSurveyInfo = response.data.data;
+                return this.additionalSurveyInfo;
+              } else {
+                console.error("정보를 가져오는 데 실패했습니다.", response.data.error);
+                this.error = response.data.error;
+              }
+            } catch (error) {
+              console.error("정보를 가져오는 중 오류가 발생했습니다:", error.message);
+              this.error = error.message;
+            }
+        },
+
         setRegion(region) {
             this.region = region; 
         },
@@ -105,6 +121,9 @@ export const useTestStore = defineStore("testStore", {
         },
         setBirthYear(year) {
             this.birthYear = year;
+        },
+        getBirthYear(year) {
+           return this.birthYear = year;
         },
         setGender(gender) {
             this.gender = gender;

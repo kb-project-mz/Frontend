@@ -53,7 +53,7 @@ const prevAccount = () => {
 
 <template>
   <div
-    class="border border-gray-200 rounded-lg p-6 bg-yellow-400 max-w-s mx-auto"
+    class="border border-gray-200 rounded-lg p-6 bg-yellow-300 w-3/4 mx-auto"
   >
     <div v-if="balanceByMember.length === 0">
       <RouterLink to="/mypage/asset">계좌연동하러가기 </RouterLink>

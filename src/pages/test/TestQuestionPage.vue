@@ -73,7 +73,7 @@ const nextQuestion = (answerId, answerScore, questionType) => {
 
 <template>
     <div class="flex flex-col justify-center items-center h-screen bg-gray-50">
-        <div class="relative w-1/2 bg-gray-200 rounded-full h-2 mb-6">
+        <div class="relative w-1/2 bg-gray-200 rounded-full h-2 mb-16">
             <div
                 class="h-2 rounded-full"
                 :style="{
@@ -104,7 +104,7 @@ const nextQuestion = (answerId, answerScore, questionType) => {
                     v-for="answer in answers"
                     :key="answer.optionIdx"
                     @click="nextQuestion(answer.optionIdx, answer.score, answer.typeIdx)"
-                    class="bg-white text-blue-600 gong-gothic-font py-4 px-6 rounded-xl shadow-md transition duration-300 transform hover:scale-105"
+                    class="bg-white text-indiepink-400 gong-gothic-font py-4 px-6 rounded-xl shadow-md transition duration-300 transform hover:scale-105"
                 >
                     {{ answer.optionText }}
                 </button>
