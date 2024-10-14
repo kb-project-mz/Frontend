@@ -322,7 +322,7 @@ const join = async () => {
           <input v-model="member.memberId" type="text" id="memberId"
             class="bg-gray border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4"
             placeholder="아이디" required />
-          <button type="button" class="cursor-pointer w-24 ml-2 px-1 my-2 bg-customNavy text-white rounded-lg text-sm"
+          <button type="button" class="cursor-pointer w-24 ml-2 px-1 my-2 bg-customNavy text-white rounded-lg text-sm hover:bg-customHover"
             @click="checkMemberId" :disabled="!member.memberId">
             중복 확인
           </button>
@@ -424,7 +424,7 @@ const join = async () => {
               <option value="직접입력">직접 입력</option>
             </select>
             <button @click="sendVerificationCode" type="button"
-              class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-customNavy text-white rounded-lg text-sm">
+              class="cursor-pointer w-28 ml-2 px-1 my-2 py-3 bg-customNavy text-white rounded-lg text-sm hover:bg-customHover">
               인증 코드 전송
             </button>
           </div>
@@ -436,7 +436,7 @@ const join = async () => {
         <div v-if="isVerificationCodeSent" class="mt-2">
           <input v-model="inputCode" type="text" placeholder="인증 코드를 입력해 주세요"
             class="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-          <button @click="verifyCode" type="button" class="cursor-pointer ml-2 my-2 p-3 bg-customNavy text-white rounded-lg text-sm">
+          <button @click="verifyCode" type="button" class="cursor-pointer ml-2 my-2 p-3 bg-customNavy text-white rounded-lg text-sm hover:bg-customHover">
             인증 코드 확인
           </button>
           <div v-if="verificationFail" class="text-red-500 text-sm">{{ verificationFail }}</div>
@@ -645,7 +645,7 @@ const join = async () => {
         </div>
 
         <button type="submit"
-          class="cursor-pointer w-full bg-customNavy text-white py-2 rounded-xl flex justify-center items-center py-5"
+          class="cursor-pointer w-full bg-customNavy text-white py-2 rounded-xl flex justify-center items-center py-5 hover:bg-customHover"
           :disabled="disableSubmit || isLoading || !isMemberIdChecked">
           <span class="ml-2">회원가입 하기</span>
         </button>

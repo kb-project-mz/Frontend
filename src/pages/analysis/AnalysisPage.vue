@@ -63,10 +63,10 @@ onMounted(async () => {
   <div v-if="isDataLoaded" class="font-pretendard-regular">
     <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
       <div class="flex justify-end gap-6">
-        <div class="py-2 px-3 bg-gray-200 text-gray-600 text-center rounded-lg w-fit">
+        <div class="py-2 px-3 bg-gray-200 text-gray-600 text-center rounded-lg w-fit hover:bg-gray-400">
           <router-link to="/mypage/asset">연결된 자산 확인하기</router-link>
         </div>
-        <div class="py-2 px-3 bg-customNavy text-white rounded-lg">
+        <div class="py-2 px-3 bg-customNavy text-white rounded-lg hover:bg-customHover">
           <button @click="toggleCardFlip">
             <div v-if="!isFlipped">과거 소비와 비교하기</div>
             <div v-else>이번 달 소비 분석하기</div>

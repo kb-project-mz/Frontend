@@ -216,7 +216,7 @@ const availableDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.get
         </div>
 
         <div class="flex space-x-2 mt-12">
-          <button type="submit" class="flex-1 bg-customNavy text-white py-3 rounded-lg hover:bg-gray-700">등록</button>
+          <button type="submit" class="flex-1 bg-customNavy text-white py-3 rounded-lg  hover:bg-customHover">등록</button>
           <button type="button" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400"
             @click="closeModal">취소</button>
         </div>
@@ -225,8 +225,4 @@ const availableDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.get
   </div>
 </template>
 
-<style scoped>
-.bg-customNavy {
-  background-color: #0B1573;
-}
-</style>
+<style scoped></style>
