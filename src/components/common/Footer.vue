@@ -3,8 +3,8 @@
 </script>
 
 <template>
-  <div class="footer flex flex-col justify-center items-center mt-16 min-h-72 text-gray-500 text-sm">
-    <div class="flex space-x-5 mb-5">
+  <div class="footer flex flex-col justify-center items-center mt-16 min-h-72 text-gray-500 text-sm font-pretendard-regular">
+    <div class="flex space-x-3 mb-5">
       <img src="/src/assets/notion.png" />
       <img src="/src/assets/slack.png" />
       <img src="/src/assets/github.png" />
@@ -29,8 +29,8 @@
 
 <style scoped>
 img {
-  width: 2rem;
-  height: 2rem;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 .footer {
   background-color: #F5F6F7;

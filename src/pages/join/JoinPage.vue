@@ -294,9 +294,9 @@ const join = async () => {
 </script>
 
 <template>
-  <div class="flex justify-center">
+  <div class="flex justify-center font-pretendard-regular">
     <div class="mx-[20%] lg:mx-[32%] px-16 py-10 bg-white border rounded-lg shadow">
-      <div class="mb-5 font-bold text-2xl text-customNavy">
+      <div class="mb-5 font-bold text-2xl text-customNavy font-jamsil">
         <div>회원가입을 위해</div>
         <div>정보를 입력해주세요</div>
       </div>

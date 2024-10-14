@@ -60,7 +60,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="isDataLoaded">
+  <div v-if="isDataLoaded" class="font-pretendard-regular">
     <div v-if="cardTransactionData.length > 0 || accountTransactionData.length > 0" class="mx-[20%] grid grid-cols-1 gap-10">
       <div class="flex justify-end gap-6">
         <div class="py-2 px-3 bg-gray-200 text-gray-600 text-center rounded-lg w-fit">

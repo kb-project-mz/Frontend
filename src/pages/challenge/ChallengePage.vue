@@ -16,7 +16,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-[15%] grid grid-cols-1 lg:grid-cols-6 gap-20">
+  <div class="mx-[15%] grid grid-cols-1 lg:grid-cols-6 gap-20 font-pretendard-regular">
     <PeerChallenge class="lg:col-span-2 max-h-180" />
     <MyChallengeList class="lg:col-span-4" />
   </div>

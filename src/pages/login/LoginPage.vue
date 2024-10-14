@@ -44,7 +44,7 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center font-pretendard-regular">
     <div class="mb-10">
       <img src="@/assets/logo.png" alt="로고" />
     </div>

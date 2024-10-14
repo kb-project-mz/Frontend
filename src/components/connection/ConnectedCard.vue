@@ -113,7 +113,7 @@ onMounted(async () => {
 
       <div v-else class="flex flex-col items-center">
         <div class="text-xl">연결된 카드가 없어요</div>
-        <div class="text-9xl font-black mt-6 mb-8 text-gray-600">텅</div>
+        <div class="text-9xl font-black mt-6 mb-8 text-gray-600 font-jamsil">텅</div>
         <button
           @click="openModal"
           class="w-full py-4 bg-customNavy text-white text-lg rounded-lg"

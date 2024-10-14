@@ -11,7 +11,7 @@ const selectMenu = (value) => {
 </script>
 
 <template>
-  <div class="mx-[20%] flex flex-col justify-center items-center">
+  <div class="mx-[20%] flex flex-col justify-center items-center font-pretendard-regular">
     <div class="grid grid-cols-2 w-full">
       <div class="col-span-1">
         <button :class="['w-full text-2xl font-bold', menu === 'memberId' ? 'text-customNavy' : 'text-gray-400']" type="button" @click="selectMenu('memberId')">
