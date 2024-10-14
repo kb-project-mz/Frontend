@@ -304,9 +304,9 @@ const withdraw = async () => {
 </script>
 
 <template>
-  <div class="mx-[20%] lg:mx-[32%]">
+  <div class="mx-[20%] lg:mx-[32%] font-pretendard-regular">
     <div class="p-10 bg-white border rounded-xl shadow">
-      <div class="mb-5 font-bold text-2xl text-customNavy">
+      <div class="mb-5 font-bold text-2xl text-customNavy font-jamsil">
         <div>나만의 프로필을</div>
         <div>완성해보세요</div>
       </div>

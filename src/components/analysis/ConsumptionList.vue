@@ -85,8 +85,8 @@ const formatTime = (time) => {
         <div class="mx-5">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-sm">{{ formatDate(transaction.date) }} {{ formatTime(transaction.time) }}</div>
-              <div class="text-l my-1 font-bold">{{ transaction.description }}</div>
+              <div class="text-xs">{{ formatDate(transaction.date) }} {{ formatTime(transaction.time) }}</div>
+              <div class="text-lg my-1">{{ transaction.description }}</div>
               <div class="text-sm">{{ transaction.name }}</div>
             </div>
             <div>

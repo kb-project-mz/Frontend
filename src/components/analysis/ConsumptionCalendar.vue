@@ -189,15 +189,15 @@ watch([currentYear, currentMonth], generateCalendar);
     <table class="w-full table-fixed border-none">
       <thead>
         <tr>
-          <th class="p-5 font-bold" v-for="day in weekDays" :key="day">{{ day }}</th>
+          <th class="p-5" v-for="day in weekDays" :key="day">{{ day }}</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(week, index) in daysInMonth" :key="index">
           <td v-for="(day, dayIndex) in week" :key="dayIndex" class="text-center py-2">
             <div v-if="day !== 0" class="mb-1">
-              <div class="font-bold mb-1">{{ day }}</div>
-              <div class="font-semibold">
+              <div class="mb-1">{{ day }}</div>
+              <div>
                 <div class="text-customBlue text-xs mb-1">
                   {{ getIncome(getDateString(day)) !== 0 ? getIncome(getDateString(day)) : "&nbsp;"}}
                 </div>

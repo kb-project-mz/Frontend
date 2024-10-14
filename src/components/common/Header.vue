@@ -19,15 +19,17 @@ const logout = async () => {
 </script>
 
 <template>
-  <nav class="bg-white shadow-md py-4 px-8 rounded-xl max-w-9xl mt-4 mx-auto mb-16">
+  <nav class="bg-white shadow-md py-4 px-8 rounded-xl max-w-9xl mt-4 mx-auto mb-16 font-pretendard-regular">
     <div class="mx-auto flex justify-between items-center">
       <router-link to="/" class="flex items-center">
         <img src="/src/assets/logo.png" alt="Company Logo" class="w-14" />
       </router-link>
 
-      <div v-if="memberId" class="flex space-x-8">
+      <div v-if="memberId" class="flex space-x-4">
         <router-link to="/test/start">소비 테스트</router-link>
+        <span>|</span>
         <router-link to="/analysis">소비 분석</router-link>
+        <span>|</span>
         <router-link to="/challenge">돈과의 전쟁</router-link>
       </div>
 

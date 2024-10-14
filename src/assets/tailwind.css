@@ -15,3 +15,44 @@
   -webkit-text-stroke: 2px #0b1573;
   color: transparent;
 }
+
+@font-face {
+  font-family: 'TheJamsil5Bold';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PretendardLight';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PretendardRegular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PretendardBold';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+  font-style: normal;
+}
+
+.font-jamsil {
+  font-family: 'TheJamsil5Bold', sans-serif;
+}
+
+.font-pretendard-light {
+  font-family: 'PretendardLight', sans-serif;
+}
+
+.font-pretendard-regular {
+  font-family: 'PretendardRegular', sans-serif;
+}
+
+.font-pretendard-bold {
+  font-family: 'PretendardBold', sans-serif;
+}
