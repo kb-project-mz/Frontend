@@ -198,19 +198,23 @@ const availableDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.get
 
           <div class="flex items-center h-12">
             <div class="w-24 text-end mr-8">공개여부</div>
-            <div class="flex space-x-2 w-full">
-              <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
-                'bg-customNavy text-white': formData.isPublic === 1,
-                'bg-gray-200': formData.isPublic !== 1,
-              }" @click="selectPublicStatus(1)">
-                공개
-              </div>
-              <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
-                'bg-red-500 text-white': formData.isPublic === 0,
-                'bg-gray-200': formData.isPublic !== 0,
-              }" @click="selectPublicStatus(0)">
-                비공개
-              </div>
+              <div class="w-full mt-5">
+                <div class="flex space-x-2">
+                  <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
+                    'bg-customNavy text-white': formData.isPublic === 1,
+                    'bg-gray-200': formData.isPublic !== 1,
+                  }" @click="selectPublicStatus(1)">
+                    공개
+                  </div>
+                  <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
+                    'bg-red-500 text-white': formData.isPublic === 0,
+                    'bg-gray-200': formData.isPublic !== 0,
+                  }" @click="selectPublicStatus(0)">
+                    비공개
+                  </div>
+                </div>
+              <div v-if="formData.isPublic === 1" class="text-sm text-customNavy">공개로 설정하면 또래에게 내 챌린지가 공개돼요.</div>
+              <div v-else class="text-sm text-red-500">비공개로 설정하면 또래에게 내 챌린지가 공개되지 않아요.</div>
             </div>
           </div>
         </div>
