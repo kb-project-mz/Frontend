@@ -117,8 +117,8 @@ const goToSignup = () => {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center h-full bg-gray-50">
-        <h1 class="text-2xl gong-gothic-font font-bold-md mb-0">당신의 결과는:</h1>
+    <div class="flex flex-col justify-center items-center h-full">
+        <h1 class="text-2xl gong-gothic-font font-bold-md mb-10">당신의 결과는:</h1>
         <img :src="resultImage" alt="Result Image" class="w-[390px] h-[614px] object-cover" />
         <!-- <p class="text-lg">{{ resultContent }}</p> -->
 
@@ -151,11 +151,16 @@ const goToSignup = () => {
             imageUrl="https://your-image-url.com/image.jpg"
             :linkUrl="`http://localhost:8080/test/${resultId}`"
         />
-        <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-            <font-awesome-icon :icon="['fas', 'repeat']" class="mr-2" />테스트 다시 하기</button>
-        <button @click="goToSignup" :class="[authStore.isLogin() ? 'bg-yellow-400' : 'bg-green-500', 'mt-2', 'px-4', 'py-2', 'text-white', 'rounded', 'flex', 'items-center']">
-            {{ authStore.isLogin() ? "홈 화면으로 가기" : "회원가입 하러 가기" }}
-        </button>
+        <div class="flex gong-gothic-font">
+            <button @click="restartTest" class="mt-4 px-4 py-2 bg-blue-200 text-gray-600 rounded mr-2 rounded-full">
+                <font-awesome-icon :icon="['fas', 'repeat']" class="mr-2" />다시 하기
+            </button>
+            <button 
+                @click="goToSignup" 
+                :class="[authStore.isLogin() ? 'bg-yellow-200' : 'bg-green-100', 'mt-4', 'ml-2', 'px-4', 'py-2', 'text-gray-600', 'rounded-full', 'flex', 'items-center']">
+                {{ authStore.isLogin() ? "홈 화면으로" : "회원가입 하러 가기" }}
+            </button>
+        </div>
     </div>
 </template>
 

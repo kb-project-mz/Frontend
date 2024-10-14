@@ -27,8 +27,11 @@ const startTest = async () => {
     const info = await testStore.getSurveyInfo(authStore.member.memberId);
     testStore.setBirthYear(info.birthYear);
     testStore.setGender(info.gender);
-    router.push({ name: "testSurvey" });
-    //router.push({ name: "testQuestion", params: { number: 1 } }); 
+    if (testStore.getAdditionalSurveyInfo()) {
+      router.push({ name: "testQuestion", params: { number: 1 } });
+    } else {
+      router.push({ name: "testSurvey" });
+    }
   } else {
     router.push({ name: "testSurvey" });
   }
@@ -43,7 +46,7 @@ const startTest = async () => {
 
     <div class="flex justify-center">
       <button @click="startTest"
-        class="custom-shadow gong-gothic-font bg-white text-gray-500 font-bold py-4 px-6 rounded-xl text-xl transition duration-300 transform hover:scale-105 w-[300px]">
+        class="custom-shadow gong-gothic-font bg-white text-gray-500 font-bold py-5 px-6 rounded-xl text-xl transition duration-300 transform hover:scale-105 w-[300px]">
         나의 소비핑 테스트 <br />
         <span class="text-blue-600 text-2xl gong-gothic-font">시작하기</span>
       </button>
