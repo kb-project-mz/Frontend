@@ -341,6 +341,7 @@ const withdraw = async () => {
         <div class="w-3/4">
           <input v-model="profile.memberId" type="text"
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            :disabled="isSocialLogin"
             readonly />
         </div>
       </div>
@@ -349,10 +350,10 @@ const withdraw = async () => {
         <div class="w-1/4 text-end mr-10">현재 비밀번호</div>
         <div class="w-3/4 flex justify-between">
           <input v-model="password" type="password"
-            class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
+            class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3 disabled:bg-gray-100"
             :disabled="isSocialLogin" />
           <button @click.prevent="verifyPassword"
-            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm"
+            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm disabled:bg-gray-300"
             :disabled="isSocialLogin">
             확인
           </button>
@@ -417,10 +418,11 @@ const withdraw = async () => {
         <div class="w-1/4 text-end mr-10">이메일</div>
         <div class="w-3/4 flex justify-between">
           <input v-model="profile.email" type="text"
-            class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3"
+            class="border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-4 w-full mr-3 disabled:bg-gray-100"
+            :disabled="isSocialLogin"
             placeholder="이메일" />
           <button @click.prevent="sendVerificationCode"
-            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm"
+            class="w-16 min-w-16 text-center my-1 py-3 px-4 bg-customNavy text-white rounded-xl text-sm disabled:bg-gray-300"
             :disabled="isSocialLogin">
             변경
           </button>
