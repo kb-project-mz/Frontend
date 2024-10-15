@@ -11,7 +11,7 @@ const emojiPosition = ref(0);
 
 const moveEmoji = () => {
   const percentage = (props.completed / props.limit) * 100;
-  emojiPosition.value = Math.min(percentage, 100);
+  emojiPosition.value = Math.min(percentage, 96);
 };
 
 onMounted(() => {
@@ -34,11 +34,12 @@ onMounted(() => {
         <span role="img" aria-label="emoji"><img class="w-6" src="@/assets/siren.png" /></span>
       </div>
 
-      <div class="absolute top-[20px] text-xs transition-transform" :style="{ left: `calc(${emojiPosition}% - 10px)` }">
+      <div class="absolute top-[20px] text-xs transition-transform"
+        :style="[completed < limit ? { left: `calc(${emojiPosition}% - 10px)` } : {right : 0}]">
         {{ completed.toLocaleString() }}
       </div>
 
-      <div class="absolute top-[20px] right-0 text-xs">
+      <div v-if="completed < limit" class="absolute top-[20px] right-0 text-xs">
         {{ limit.toLocaleString() }}
       </div>
     </div>

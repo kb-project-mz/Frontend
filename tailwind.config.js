@@ -29,6 +29,7 @@ module.exports = {
         },
         customRed: "#f55151",
         customBlue: "#0e9cff",
+        customHover: "#4c4e6b",
       },
     },
   },

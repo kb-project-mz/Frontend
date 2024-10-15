@@ -84,7 +84,7 @@ const login = async () => {
         </div>
       </div>
 
-      <button type="submit" class="cursor-pointer bg-customNavy text-white text-sm rounded-xl block w-full ps-10 p-5">
+      <button type="submit" class="cursor-pointer bg-customNavy text-white text-sm rounded-xl block w-full ps-10 p-5 hover:bg-customHover">
         <router-link to="">로그인</router-link>
       </button>
     </form>

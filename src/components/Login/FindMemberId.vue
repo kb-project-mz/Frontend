@@ -124,7 +124,7 @@ const resetMessages = () => {
       </div>
 
       <button type="submit"
-        class="w-full py-4 bg-customNavy text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        class="w-full py-4 bg-customNavy text-white font-semibold rounded-lg hover:bg-customHover">
         아이디 찾기
       </button>
 

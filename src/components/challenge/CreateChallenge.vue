@@ -198,25 +198,29 @@ const availableDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.get
 
           <div class="flex items-center h-12">
             <div class="w-24 text-end mr-8">공개여부</div>
-            <div class="flex space-x-2 w-full">
-              <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
-                'bg-customNavy text-white': formData.isPublic === 1,
-                'bg-gray-200': formData.isPublic !== 1,
-              }" @click="selectPublicStatus(1)">
-                공개
-              </div>
-              <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
-                'bg-red-500 text-white': formData.isPublic === 0,
-                'bg-gray-200': formData.isPublic !== 0,
-              }" @click="selectPublicStatus(0)">
-                비공개
-              </div>
+              <div class="w-full mt-5">
+                <div class="flex space-x-2">
+                  <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
+                    'bg-customNavy text-white': formData.isPublic === 1,
+                    'bg-gray-200': formData.isPublic !== 1,
+                  }" @click="selectPublicStatus(1)">
+                    공개
+                  </div>
+                  <div class="cursor-pointer text-center py-2 px-5 rounded-lg" :class="{
+                    'bg-red-500 text-white': formData.isPublic === 0,
+                    'bg-gray-200': formData.isPublic !== 0,
+                  }" @click="selectPublicStatus(0)">
+                    비공개
+                  </div>
+                </div>
+              <div v-if="formData.isPublic === 1" class="text-sm text-customNavy">공개로 설정하면 또래에게 내 챌린지가 공개돼요.</div>
+              <div v-else class="text-sm text-red-500">비공개로 설정하면 또래에게 내 챌린지가 공개되지 않아요.</div>
             </div>
           </div>
         </div>
 
         <div class="flex space-x-2 mt-12">
-          <button type="submit" class="flex-1 bg-customNavy text-white py-3 rounded-lg hover:bg-gray-700">등록</button>
+          <button type="submit" class="flex-1 bg-customNavy text-white py-3 rounded-lg  hover:bg-customHover">등록</button>
           <button type="button" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-400"
             @click="closeModal">취소</button>
         </div>
@@ -225,8 +229,4 @@ const availableDay = `${today.getFullYear()}-${today.getMonth() + 1}-${today.get
   </div>
 </template>
 
-<style scoped>
-.bg-customNavy {
-  background-color: #0B1573;
-}
-</style>
+<style scoped></style>

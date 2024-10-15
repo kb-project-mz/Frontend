@@ -30,7 +30,7 @@ const logout = async () => {
         <span>|</span>
         <router-link to="/analysis">소비 분석</router-link>
         <span>|</span>
-        <router-link to="/challenge">돈과의 전쟁</router-link>
+        <router-link to="/challenge">마이 챌린지</router-link>
       </div>
 
       <div v-if="memberId" class="flex">

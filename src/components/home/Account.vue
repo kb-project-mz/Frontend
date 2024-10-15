@@ -52,11 +52,9 @@ const prevAccount = () => {
 </script>
 
 <template>
-  <div
-    class="border border-gray-200 rounded-lg p-6 bg-yellow-300 w-3/4 mx-auto"
-  >
-    <div v-if="balanceByMember.length === 0">
-      <RouterLink to="/mypage/asset">계좌연동하러가기 </RouterLink>
+  <div class="border border-gray-200 rounded-lg p-6 bg-yellow-300 w-1/2 lg:w-1/3 mx-auto">
+    <div v-if="balanceByMember.length === 0" class="py-10 flex justify-center text-lg underline">
+      <RouterLink to="/mypage/asset">계좌연동하러가기</RouterLink>
     </div>
     <div v-else>
       <!-- Header 부분 -->
@@ -64,11 +62,9 @@ const prevAccount = () => {
         <div class="flex items-center text-sm text-gray-500">
           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <!-- 별 모양 -->
-            <path
-              d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-            />
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
           </svg>
-          <RouterLink to="/mypage/asset">내 계좌 보러가기 </RouterLink>
+          <RouterLink to="/mypage/asset">내 계좌 보러가기</RouterLink>
         </div>
         <button class="flex items-center text-sm text-gray-500">
           <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
@@ -88,20 +84,14 @@ const prevAccount = () => {
         </p>
       </div>
       <!-- 버튼 -->
-      <div class="flex justify-between mb-6">
-        <button
-          @click="prevAccount"
-          :disabled="currentAccountIndex === 0"
-          class="w-6 h-6 text-sm bg-gray-300 text-white rounded flex justify-center items-center"
-        >
-          <
+      <div class="flex justify-between mb-6 font-black">
+        <button @click="prevAccount" :disabled="currentAccountIndex === 0"
+          class="w-6 h-6 text-sm rounded flex justify-center items-center">
+          <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-customNavy" />
         </button>
-        <button
-          @click="nextAccount"
-          :disabled="currentAccountIndex === balanceByMember.length - 1"
-          class="w-6 h-6 text-sm bg-gray-300 text-white rounded flex justify-center items-center"
-        >
-          >
+        <button @click="nextAccount" :disabled="currentAccountIndex === balanceByMember.length - 1"
+          class="w-6 h-6 text-sm rounded flex justify-center items-center">
+          <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-customNavy" />
         </button>
       </div>
 

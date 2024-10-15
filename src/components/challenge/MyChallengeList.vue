@@ -38,7 +38,7 @@ onMounted(async () => {
         나의 챌린지 목록
       </div>
       <button
-        class="px-4 py-2 rounded-full bg-customNavy text-white text-xs"
+        class="px-4 py-2 rounded-full bg-customNavy text-white text-xs hover:bg-customHover"
         @click="openCreateChallengeModal"
       >
         추가

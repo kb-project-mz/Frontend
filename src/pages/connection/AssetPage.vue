@@ -4,7 +4,7 @@ import ConnectedCard from '@/components/connection/ConnectedCard.vue';
 </script>
 
 <template>
-  <div class="mx-[20%] grid grid-cols-1 lg:grid-cols-2 gap-16 min-h-160">
+  <div class="mx-[20%] grid grid-cols-1 lg:grid-cols-2 gap-16 min-h-160 font-pretendard-regular">
     <div class="">
       <ConnectedAccount />
     </div>
