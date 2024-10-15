@@ -20,7 +20,7 @@ const fetchSBTIResult = async (memberIdx) => {
 	if (_obj && _obj.typeImage) { 
     resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${_obj.typeImage}`;
   } else {
-		resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/before-test.png`;
+		resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/before_test.png`;
     GoTest.value = true;
 	}
 };
@@ -31,10 +31,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex justify-center h-full border border-gray-200 rounded-lg p-30 w-3/4 mx-auto">
-    <div v-if="GoTest" class="h-full">
-      <img :src="resultImage" alt="Result Image" class="h-full" />
-      <RouterLink to="/test/start"> 소비 테스트 하러가기! </RouterLink>
+  <div class="border border-gray-200 rounded-lg p-30 w-3/4 mx-auto">
+    <div v-if="GoTest">
+      <RouterLink to="/test/start">
+        <img :src="resultImage" alt="Result Image" />
+      </RouterLink>
     </div> 
     <div v-else class="h-full">
       <img :src="resultImage" alt="Result Image" class="h-full" />
