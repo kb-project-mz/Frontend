@@ -30,7 +30,7 @@ const swiperBreakpoints = {
       </div>
     </div>
 
-    <Swiper class="slider w-2/3" :spaceBetween="50" :slidesPerView="1" :breakpoints="swiperBreakpoints" :modules="[Navigation, Autoplay]"
+    <Swiper class="font-pretendard-regular slider w-3/4 lg:w-2/3" :spaceBetween="50" :slidesPerView="1" :breakpoints="swiperBreakpoints" :modules="[Navigation, Autoplay]"
       navigation loop :autoplay="{ delay: 6000 }">
       <SwiperSlide>
         <div class="h-full bg-white flex items-center">
@@ -53,6 +53,11 @@ const swiperBreakpoints = {
 
 <style setup>
 .slider {
-  height: 600px;
+  height: 500px;
+}
+.swiper-button-prev,
+.swiper-button-next {
+  color: rgb(209, 209, 209);
+  font-weight: 200;
 }
 </style>
