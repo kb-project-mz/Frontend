@@ -26,7 +26,7 @@ const deleteChallenge = async (challengeIdx) => {
 </script>
 
 <template>
-  <div class="rounded-lg border shadow py-3 px-4">
+  <div :class="['rounded-lg border shadow py-3 px-4', challenge.challengeStatus !== '종료' ? '' : chartData && chartData.challengeLimit < chartData.cardHistoryCount ? 'bg-rose-200' : 'bg-blue-200', challenge.challengeStatus == '진행' && chartData && chartData.challengeLimit < chartData.cardHistoryCount ? 'bg-rose-200' : '']">
     <div class="flex justify-between p-1">
       <div :class="['rounded-full shadow w-fit py-1 px-3 mb-3 text-xs text-white font-bold',
       challenge.challengeStatus === '진행' ? 'bg-sky-300 text-white' : 

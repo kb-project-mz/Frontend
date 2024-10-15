@@ -13,6 +13,7 @@ export const useChallengeStore = defineStore('challenge', {
 
   actions: {
     async getChallengeList(memberIdx) {
+      console.log("???");
       try {
         const authStore = useAuthStore();
         const res = await apiInstance.get(`/challenge/${memberIdx}`, {
@@ -33,11 +34,12 @@ export const useChallengeStore = defineStore('challenge', {
           }
 
           if (a.challengeStatus === "예정") {
-            return new Date(b.challengeStartDate) - new Date(a.challengeStartDate);
+            return new Date(a.challengeStartDate) - new Date(b.challengeStartDate);
           }
 
           return 0;
         });
+        console.log(this.challengeList);
       } catch (error) {
         console.error('Error fetching challenges:', error);
         throw error;
