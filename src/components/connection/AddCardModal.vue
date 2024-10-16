@@ -26,7 +26,7 @@ const toggleCardSelection = (card) => {
   if (index === -1) {
     selectedCards.value.push(card);
   } else {
-    selectedCards.value.splice(index, 1); // 이미 선택된 계좌를 해제
+    selectedCards.value.splice(index, 1);
   }
   message.value = "";
 };

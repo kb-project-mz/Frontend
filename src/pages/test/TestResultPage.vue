@@ -45,14 +45,6 @@ onMounted(async () => {
     impulseVsPlanned.value = { left: testStore.impulseScore, right: testStore.plannedScore };
     costEffectiveVsSatisfaction.value = { left: testStore.costEffective, right: testStore.goodForSatisfaction };
     materialVsExperiential.value = { left: testStore.material, right: testStore.experiential };
-
-    console.log("결과==============================");
-    console.log("inpulse", testStore.impulseScore);
-    console.log("plannedScore", testStore.plannedScore);
-    console.log("costEffective", testStore.costEffective);
-    console.log("goodForSatisfaction", testStore.goodForSatisfaction);
-    console.log("material", testStore.material);
-    console.log("experiential", testStore.experiential);
 });
 
 const getResultContent = async () => {
@@ -120,7 +112,6 @@ const goToSignup = () => {
     <div class="flex flex-col justify-center items-center h-full">
         <h1 class="text-2xl gong-gothic-font font-bold-md mb-10">당신의 결과는:</h1>
         <img :src="resultImage" alt="Result Image" class="w-[390px] h-[614px] object-cover" />
-        <!-- <p class="text-lg">{{ resultContent }}</p> -->
 
         <div class="w-full max-w-lg">
             <ResultBar

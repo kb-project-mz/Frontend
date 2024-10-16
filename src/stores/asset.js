@@ -33,7 +33,6 @@ export const useAssetStore = defineStore('asset', {
           (asset) => asset.connectedStatus === 1
         );
       } catch (error) {
-        console.error('Failed to fetch asset list:', error);
         throw error;
       }
     },
@@ -54,7 +53,6 @@ export const useAssetStore = defineStore('asset', {
         this.connectedAccountList.push(selectedAccount);
         return response.data;
       } catch (error) {
-        console.error('Failed to update account status:', error);
         throw error;
       }
     },
@@ -75,7 +73,6 @@ export const useAssetStore = defineStore('asset', {
         this.connectedCardList.push(selectedCard);
         return response.data;
       } catch (error) {
-        console.error('Failed to update card status:', error);
         throw error;
       }
     },
@@ -95,7 +92,6 @@ export const useAssetStore = defineStore('asset', {
         
         this.connectedCardList = this.connectedCardList.filter(card => card.cardIdx !== cardIdx);
       } catch (error) {
-        console.error('Failed to update card status:', error);
         throw error;
       }
     },
@@ -115,7 +111,6 @@ export const useAssetStore = defineStore('asset', {
         this.connectedAccountList = this.connectedAccountList.filter(account => account.cardIdx !== accountIdx);
         return response.data;
       } catch (error) {
-        console.error('Failed to update account status:', error);
         throw error;
       }
     },

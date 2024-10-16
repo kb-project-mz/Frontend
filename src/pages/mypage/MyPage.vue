@@ -36,7 +36,6 @@ onMounted(async () => {
   await fetchProfile();
 });
 
-// 프로필 정보를 API에서 불러오는 함수
 const fetchProfile = async () => {
   try {
     const profileData = await memberStore.getProfile();
@@ -47,7 +46,6 @@ const fetchProfile = async () => {
     profile.email = profileData.email;
     const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${profileData.imageUrl}`;
     profile.imageUrl = imageUrl;
-
     if (profile.socialType === 'GOOGLE') {
       isSocialLogin.value = true;
     }
@@ -164,12 +162,9 @@ const sendVerificationCode = async () => {
       alert('이미 존재하는 이메일입니다.');
       return;
     }
-
     console.log('이메일 중복이 없음. 인증 코드 발송 시도.');
-
     const result = await authStore.sendEmailVerification(profile.email);
     console.log('인증 코드 발송 성공:', result);
-
     isVerificationCodeSent.value = true;
     alert('인증 코드가 해당 이메일로 발송되었습니다. 인증 코드를 입력해 이메일 변경을 완료해주세요.');
   } catch (error) {
@@ -181,7 +176,6 @@ const verifyCode = async () => {
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
-
   try {
     const result = await authStore.verifyEmailCode(profile.email, inputCode.value);
     if (result) {
@@ -225,7 +219,6 @@ const saveEmail = async () => {
   }
 };
 
-// 이미지
 const uploadImage = async (event) => {
   const file = event.target.files[0];
   if (!file) {
@@ -237,7 +230,6 @@ const uploadImage = async (event) => {
   profile.imageUrl = previewUrl;
   const formData = new FormData();
   formData.append('file', selectedImage.value);
-  
   try {
     const authStore = useAuthStore();
     const response = await apiInstance.post(`/member/image`, formData, {
@@ -263,7 +255,6 @@ const uploadImage = async (event) => {
 
 const deleteImage = async (profileImage) => {
   const confirmed = window.confirm("정말 삭제하시겠습니까? 기본 이미지로 변경됩니다.");
-
   if (confirmed) {
     try {
       const authStore = useAuthStore();
@@ -285,7 +276,6 @@ const deleteImage = async (profileImage) => {
     }
   }
 };
-
 const withdraw = async () => {
   const confirmed = window.confirm("정말 탈퇴하시겠습니까?");
 

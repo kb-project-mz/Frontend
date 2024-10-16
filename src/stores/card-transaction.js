@@ -25,7 +25,6 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
         const thisYear = now.getFullYear();
         const thisMonth = now.getMonth() + 1;
 
-        // 이번 달 거래 내역 필터링
         this.cardTransactionThisMonth = this.cardTransaction.filter(
           (transaction) => {
             const cardTransactionDate = new Date(
@@ -49,7 +48,6 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
           lastMonth = 12;
         }
 
-        // 지난 달 거래 내역 필터링
         this.cardTransactionLastMonth = this.cardTransaction.filter(
           (transaction) => {
             const cardTransactionDate = new Date(
@@ -101,7 +99,6 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
 
         const cardAmountBycardIdx = {};
 
-        // 이번 달 거래 내역을 기준으로 카드별 금액을 합산
         this.cardTransactionThisMonth.forEach((transaction) => {
           const { cardIdx: transactionCardIdx, amount } = transaction;
 
@@ -109,7 +106,6 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
             cardAmountBycardIdx[transactionCardIdx] = 0;
           }
 
-          // 카드별로 금액을 합산
           cardAmountBycardIdx[transactionCardIdx] += amount;
         });
 

@@ -7,7 +7,6 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const memberId = computed(() => authStore.member.memberId);
-const memberName = computed(() => authStore.member.memberName);
 const imageUrl = computed(() => authStore.member.imageUrl);
 
 const logout = async () => {

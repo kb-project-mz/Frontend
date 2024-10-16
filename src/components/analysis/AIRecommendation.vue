@@ -40,8 +40,6 @@ const splitRecommendation = computed(() => {
 });
 
 onMounted(async () => {
-  // recommendation.value =
-  //   "홍길동 님은 이번 달 배달의 민족에 소비를 많이 하신 편입니다. 배달의 민족에서 5번만 소비를 덜하게 된다면, 평균 50,000원을 아낄 수 있어요 ! 다음 달에는 배달 음식을 조금 줄여보는 것이 어떨까요?";
   recommendation.value = await transactionAnalysisStore.fetchAiRecommendation(memberIdx, currentYear, currentMonth + 1, getEndDay(currentYear, currentMonth));
   isLoaded.value = true;
 });

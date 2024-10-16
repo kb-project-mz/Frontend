@@ -2,7 +2,7 @@
 import { computed, reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import GoogleLoginComponent from "@/components/login/GoogleLoginComponent.vue";
+import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -37,7 +37,6 @@ const login = async () => {
       error.value = response.error.message;
     }
   } catch (err) {
-    console.error("로그인 중 예외 발생:", err);
     error.value = "로그인 중 오류가 발생했습니다.";
   }
 };

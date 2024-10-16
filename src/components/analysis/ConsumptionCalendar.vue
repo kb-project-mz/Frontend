@@ -23,7 +23,6 @@ const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
 const daysInMonth = ref([]);
 
-// 필터링된 계좌 지출 내역
 const filteredAccountExpenses = computed(() => {
   return props.accountTransactionData.filter((item) => {
     const itemDate = new Date(item.accountTransactionDate);
@@ -37,19 +36,17 @@ const filteredAccountExpenses = computed(() => {
   });
 });
 
-// 필터링된 카드 지출 내역
 const filteredCardExpenses = computed(() => {
   return props.cardTransactionData.filter((item) => {
     const itemDate = new Date(item.cardTransactionDate);
     return (
       itemDate.getFullYear() === currentYear.value &&
       itemDate.getMonth() === currentMonth.value &&
-      item.amount > 0 // 카드 지출 (양수)
+      item.amount > 0 
     );
   });
 });
 
-// 필터링된 수입 내역
 const filteredIncomes = computed(() => {
   return props.accountTransactionData.filter((item) => {
     const itemDate = new Date(item.accountTransactionDate);
@@ -58,12 +55,11 @@ const filteredIncomes = computed(() => {
       itemDate.getMonth() === currentMonth.value &&
       item.amount > 0 && // 수입
       (!item.accountTransactionDescription ||
-        !item.accountTransactionDescription.includes(memberName)) // memberName이 content에 포함되지 않은 경우
+        !item.accountTransactionDescription.includes(memberName)) 
     );
   });
 });
 
-// 월의 시작 요일과 마지막 날짜 계산
 const getMonthInfo = (year, month) => {
   const startDay = new Date(year, month, 1).getDay();
   const endDate = new Date(year, month + 1, 0).getDate();
@@ -72,13 +68,12 @@ const getMonthInfo = (year, month) => {
 
 const getDateString = (day) => {
   const year = currentYear.value;
-  const month = currentMonth.value + 1; // month는 0부터 시작하므로 +1
+  const month = currentMonth.value + 1; 
   const dayString = day < 10 ? `0${day}` : day;
   const monthString = month < 10 ? `0${month}` : month;
   return `${year}-${monthString}-${dayString}`;
 };
 
-// 달력을 생성하는 함수
 const calendarGenerator = (year, month) => {
   const { endDate, startDay } = getMonthInfo(year, month);
   const weekNumber = Math.ceil((startDay + endDate) / 7);
@@ -104,12 +99,10 @@ const calendarGenerator = (year, month) => {
   return calendar;
 };
 
-// 현재 월에 맞는 달력 생성
 const generateCalendar = () => {
   daysInMonth.value = calendarGenerator(currentYear.value, currentMonth.value);
 };
 
-// 월을 넘길 때 다음 월로 이동
 const nextMonth = () => {
   if (currentMonth.value === 11) {
     currentMonth.value = 0;
@@ -120,7 +113,6 @@ const nextMonth = () => {
   generateCalendar();
 };
 
-// 월을 넘길 때 이전 월로 이동
 const prevMonth = () => {
   if (currentMonth.value === 0) {
     currentMonth.value = 11;
@@ -132,15 +124,13 @@ const prevMonth = () => {
 };
 
 const getExpense = (date) => {
-  // 계좌 지출 필터링 (accountHistoryData에서 음수 값)
   const accountExpensesForDate = filteredAccountExpenses.value.filter((e) => {
     const accountDate = new Date(e.accountTransactionDate)
       .toISOString()
       .split("T")[0];
-    return accountDate === date; // 일별 필터링
+    return accountDate === date;
   });
 
-  // 카드 지출 필터링 (historyData에서 양수 값)
   const cardExpensesForDate = filteredCardExpenses.value.filter((e) => {
     const cardDate = new Date(e.cardTransactionDate)
       .toISOString()
@@ -161,7 +151,6 @@ const getExpense = (date) => {
 };
 
 const getIncome = (date) => {
-  // 해당 날짜에 해당하는 모든 수입 데이터를 필터링 (amount가 양수인 경우만)
   const incomesForDate = filteredIncomes.value.filter(
     (e) => e.accountTransactionDate === date && e.amount > 0
   );
@@ -170,7 +159,6 @@ const getIncome = (date) => {
   return totalAmount ? totalAmount.toLocaleString() : 0;
 };
 
-// 컴포넌트가 처음 로드될 때 달력 생성
 onMounted(() => {
   generateCalendar();
 });
