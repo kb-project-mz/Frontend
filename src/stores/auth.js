@@ -66,7 +66,6 @@ export const useAuthStore = defineStore("auth", {
           return false;
         }
       } catch (error) {
-        console.error("이메일 중복 확인 오류:", error);
         throw error;
       }
     },
@@ -147,7 +146,6 @@ export const useAuthStore = defineStore("auth", {
 
     isLogin() {
       const authData = localStorage.getItem('auth');
-      // console.log("isLogin 실행", authData);
       return !!authData;
     },
 

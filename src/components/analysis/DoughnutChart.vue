@@ -17,7 +17,6 @@ const props = defineProps({
 });
 
 const categoryTransactionStore = useCategoryTransactionStore();
-
 const chartData = ref({
   labels: [],
   datasets: [

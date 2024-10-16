@@ -29,7 +29,6 @@ const calculateResult = () => {
     resultValue = 8;
   }
 
-  // 1초 후 결과 페이지로 이동
   setTimeout(() => {
     router.push({ name: "testResult", params: { resultId: resultValue } });
   }, 1500);

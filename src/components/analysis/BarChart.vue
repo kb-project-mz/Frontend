@@ -16,27 +16,9 @@ const props = defineProps({
 const authData = JSON.parse(localStorage.getItem("auth"));
 const memberName = authData.memberName;
 
-// 현재 연도와 달을 초기화
 const initialYear = new Date().getFullYear();
 const initialMonth = new Date().getMonth();
-const currentYear = ref(initialYear);
-const currentMonth = ref(initialMonth);
 
-const chartData = ref({
-  labels: [],
-  datasets: [
-    {
-      label: "월별 총 지출액",
-      data: [],
-      borderColor: "#CEE3FF",
-      backgroundColor: "rgba(206, 227, 255, 0.3)", // Chart.js 배경 투명도 적용 (0.3 투명도)
-      fill: true,
-      tension: 0.4,
-    },
-  ],
-});
-
-// 각 달에 대한 지출 내역 필터링을 위한 함수
 const filterExpensesForMonth = (year, month) => {
   const accountExpenses = props.accountTransactionData.filter((item) => {
     const itemDate = new Date(item.accountTransactionDate);
@@ -58,7 +40,6 @@ const filterExpensesForMonth = (year, month) => {
     );
   });
 
-  // 계좌 지출과 카드 지출을 합산
   const totalAccountExpenses = accountExpenses.reduce(
     (sum, e) => sum + Math.abs(e.amount),
     0
@@ -68,13 +49,12 @@ const filterExpensesForMonth = (year, month) => {
   return totalAccountExpenses + totalCardExpenses;
 };
 
-// 지난 12개월 지출 내역 계산
 const getLast12MonthsExpenses = () => {
   const expensesPerMonth = [];
   const labels = [];
 
-  let year = initialYear; // 초기 연도 설정
-  let month = initialMonth; // 초기 월 설정
+  let year = initialYear; 
+  let month = initialMonth; 
 
   for (let i = 0; i < 12; i++) {
     const totalExpenses = filterExpensesForMonth(year, month);
@@ -82,7 +62,6 @@ const getLast12MonthsExpenses = () => {
     expensesPerMonth.push(totalExpenses ? totalExpenses : 0);
     labels.push(`${year}.${month + 1}`);
 
-    // 월을 이전으로 이동
     month--;
     if (month < 0) {
       month = 11;
@@ -99,7 +78,6 @@ const getLast12MonthsExpenses = () => {
 const canvasRef = ref(null);
 let chartInstance = null;
 
-// 차트 업데이트
 const updateChart = () => {
   if (chartInstance) {
     const { expensesPerMonth, labels } = getLast12MonthsExpenses();
@@ -109,7 +87,6 @@ const updateChart = () => {
   }
 };
 
-// 차트 렌더링
 const renderChart = () => {
   const { expensesPerMonth, labels } = getLast12MonthsExpenses();
 
@@ -128,7 +105,7 @@ const renderChart = () => {
             label: "월별 총 지출액",
             data: expensesPerMonth,
             borderColor: "#CEE3FF",
-            backgroundColor: "rgba(206, 227, 255, 0.3)", // 배경 투명도 적용
+            backgroundColor: "rgba(206, 227, 255, 0.3)", 
             fill: true,
             tension: 0.4,
           },
@@ -162,15 +139,12 @@ const renderChart = () => {
   }
 };
 
-// 컴포넌트 마운트 시 차트 렌더링
 onMounted(() => {
   renderChart();
-
-  // 실시간으로 데이터를 감시하여 업데이트
   watch(
     () => [props.accountTransactionData, props.cardTransactionData],
     () => {
-      updateChart(); // 데이터가 변경되면 차트 업데이트
+      updateChart(); 
     },
     { immediate: true }
   );

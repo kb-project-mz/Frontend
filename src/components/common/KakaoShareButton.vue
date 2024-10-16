@@ -2,13 +2,11 @@
 import { useRoute } from "vue-router";
 import { onMounted } from "vue";
 
-// TODO : 현재 경로 하드 코딩
 const route = useRoute();
-const baseUrl = "http://localhost:5173"; // 로컬 환경 URL
+const baseUrl = "http://localhost:5173"; 
 const linkUrl = `${baseUrl}${route.fullPath}`;
 const imageUrl = "https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/test.png";
 
-// 카카오 공유 기능 메서드
 const shareKakao = () => {
   if (window.Kakao && window.Kakao.isInitialized()) {
     window.Kakao.Share.sendDefault({

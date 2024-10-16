@@ -19,7 +19,6 @@ import challengeImage from "@/assets/챌린지.png";
       </div>
     </div>
 
-    <!-- 버튼 -->
     <div class="max-w-7.5xl mx-auto flex justify-between">
       <div class="flex space-x-36">
         <div class="max-w-7.5xl mx-auto space-x-12 flex font-jamsil">

@@ -27,7 +27,6 @@ const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
 
 const today = new Date();
 
-// 필터링된 계좌 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredAccountExpenses = computed(() => {
   return props.accountTransactionData.filter((item) => {
     const itemDate = new Date(item.accountTransactionDate);
@@ -36,87 +35,77 @@ const filteredAccountExpenses = computed(() => {
       itemDate <= today &&
       item.amount < 0 && // 지출 (음수)
       (!item.accountTransactionDescription ||
-        !item.accountTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
+        !item.accountTransactionDescription.includes(memberName)) 
     );
   });
 });
 
-// 필터링된 카드 지출 내역 (최근 30일간, memberName을 포함하지 않는 경우)
 const filteredCardExpenses = computed(() => {
   return props.cardTransactionData.filter((item) => {
     const itemDate = new Date(item.cardTransactionDate);
     return (
       itemDate >= thirtyDaysAgo &&
       itemDate <= today &&
-      item.amount > 0 && // 카드 지출 (양수)
+      item.amount > 0 && 
       (!item.cardTransactionDescription ||
-        !item.cardTransactionDescription.includes(memberName)) // memberName이 포함되지 않은 경우
+        !item.cardTransactionDescription.includes(memberName))
     );
   });
 });
 
-// 30일 동안의 총 지출액 계산 (계좌 지출 + 카드 지출)
 const getTotalExpensesFor30Days = () => {
   let totalExpenses = 0;
 
-  // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
-    totalExpenses += Math.abs(e.amount); // 계좌 지출 합산
+    totalExpenses += Math.abs(e.amount); 
   });
 
-  // 카드 지출 데이터
   filteredCardExpenses.value.forEach((e) => {
-    totalExpenses += e.amount; // 카드 지출 합산
+    totalExpenses += e.amount; 
   });
 
   return totalExpenses;
 };
 
-// 30일간의 일평균 지출액 계산
 const dailyAverageExpense = computed(() => {
   const totalExpenses = getTotalExpensesFor30Days();
   return Math.round(totalExpenses / 30).toLocaleString();
 });
 
-// 일별 지출 총합 계산 함수 (차트에 사용할 데이터)
 const getDailyExpenses = () => {
-  const dailyExpenses = Array(30).fill(0); // 30일 동안의 지출 데이터
+  const dailyExpenses = Array(30).fill(0); 
 
-  // 계좌 지출 데이터
   filteredAccountExpenses.value.forEach((e) => {
     const date = Math.floor(
       (today - new Date(e.accountTransactionDate)) / (1000 * 60 * 60 * 24)
-    ); // 일 수 계산
+    ); 
     if (date < 30) {
-      dailyExpenses[29 - date] += Math.abs(e.amount); // 날짜별로 금액 합산
+      dailyExpenses[29 - date] += Math.abs(e.amount); 
     }
   });
 
-  // 카드 지출 데이터
   filteredCardExpenses.value.forEach((e) => {
     const date = Math.floor(
       (today - new Date(e.cardTransactionDate)) / (1000 * 60 * 60 * 24)
-    ); // 일 수 계산
+    ); 
     if (date < 30) {
-      dailyExpenses[29 - date] += e.amount; // 날짜별로 금액 합산
+      dailyExpenses[29 - date] += e.amount; 
     }
   });
 
   return dailyExpenses;
 };
 
-// 날짜 배열을 생성하는 함수 (30일간의 실제 날짜를 생성)
 const getLast30DaysDates = () => {
   const dates = [];
   for (let i = 0; i < 30; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    dates.unshift(date.toISOString().split("T")[0]); // YYYY-MM-DD 형식으로 변환
+    dates.unshift(date.toISOString().split("T")[0]); 
   }
   return dates;
 };
 
-// 차트를 초기화하거나 새로 그리는 함수
 const renderChart = () => {
   const canvasElement = document.getElementById(props.chartId);
 
@@ -131,7 +120,7 @@ const renderChart = () => {
   const ctx = canvasElement.getContext("2d");
 
   const dailyExpenses = getDailyExpenses();
-  const dates = getLast30DaysDates(); // 30일간의 실제 날짜 배열
+  const dates = getLast30DaysDates(); 
 
   chartInstance.value = new Chart(ctx, {
     type: "bar",
@@ -155,7 +144,6 @@ const renderChart = () => {
       },
       scales: {
         y: {
-          // beginAtZero: true,
         },
       },
     },
@@ -168,7 +156,6 @@ onMounted(() => {
   }
 });
 
-// 데이터가 변경될 때 차트를 다시 렌더링
 watch([props.accountTransactionData, props.cardTransactionData], ([newAccountData, newCardData]) => {
     if (newAccountData?.length && newCardData?.length) {
       renderChart();
@@ -183,9 +170,6 @@ watch([props.accountTransactionData, props.cardTransactionData], ([newAccountDat
       <div class="font-medium">하루 평균 소비 금액</div>
       <div class="font-bold text-lg">{{ dailyAverageExpense }}원</div>
     </div>
-    <!-- <div>
-      <canvas :id="chartId"></canvas>
-    </div> -->
   </div>
 </template>
 

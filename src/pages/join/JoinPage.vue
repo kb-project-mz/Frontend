@@ -70,14 +70,8 @@ const checkMemberId = async () => {
   }
 
   isLoading.value = true;
-
-  console.log('중복 확인 요청 ID:', trimmedMemberId);
-
   try {
     const result = await auth.checkMemberId(trimmedMemberId);
-
-    console.log('중복 확인 결과:', result);
-
     if (result) {
       memberIdFail.value = '이미 사용 중인 ID입니다.';
       memberIdSuccess.value = '';
@@ -91,7 +85,6 @@ const checkMemberId = async () => {
     }
   } catch (error) {
     alert('ID 중복 확인 중 오류가 발생했습니다.');
-    console.error('ID 중복 확인 중 오류:', error);
     memberIdFail.value = 'ID 확인 중 오류가 발생했습니다.';
     memberIdSuccess.value = '';
     disableSubmit.value = true;
@@ -194,7 +187,6 @@ const verifyCode = async () => {
   if (!inputCode.value) {
     return alert('인증 코드를 입력해 주세요.');
   }
-
   try {
     isLoading.value = true;
     const result = await auth.verifyEmailCode(member.email, inputCode.value);
@@ -210,7 +202,6 @@ const verifyCode = async () => {
     }
   } catch (error) {
     alert('인증 코드 확인 중 오류가 발생했습니다.');
-    console.error('인증 코드 확인 오류:', error);
     verificationFail.value = '인증 코드 확인 중 오류가 발생했습니다.';
     isVerifiedEmail.value = false;
   } finally {
@@ -277,9 +268,6 @@ const join = async () => {
 
     isLoading.value = true;
     const createResponse = await auth.create(member);
-    console.log('회원가입 요청:', member);
-    console.log('회원가입 응답:', createResponse);
-
     const loginResponse = await auth.login(member.memberId, member.password);
 
     if (loginResponse.success) {

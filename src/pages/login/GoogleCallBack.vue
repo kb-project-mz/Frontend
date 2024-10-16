@@ -32,7 +32,6 @@ onMounted(async () => {
 					imageUrl: imageUrl.value,
         },
       });
-			
 			setLocalStorage({
         memberId: memberId.value,
         accessToken: googleAccessToken.value,
@@ -41,10 +40,6 @@ onMounted(async () => {
         memberIdx: memberIdx.value,
 				imageUrl: imageUrl.value,
       });
-
-      console.log("AuthStore memberId:", authStore.member.memberId);
-      console.log("AuthStore accessToken:", authStore.member.accessToken);
-			console.log("AuthStore imageUrl:", authStore.member.imageUrl);
 			const is_login_flag = authStore.isLogin();
 
       if (is_login_flag) {
@@ -53,8 +48,6 @@ onMounted(async () => {
         console.log("로그인 실패");
       }
 
-      console.log("AuthStore의 로그인 상태 확인:", authStore.isLogin());
-      
       authStore.loadAuthState();
       router.push('/');
 

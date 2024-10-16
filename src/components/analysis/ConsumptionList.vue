@@ -100,8 +100,6 @@ const formatTime = (time) => {
         <div class="border-b border-gray-300 my-2"></div>
       </div>
     </div>
-
-    <!-- 페이지네이션 -->
     <div class="mt-3 flex justify-center space-x-2">
       <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
         :class="['px-2 py-1 mx-1 rounded cursor-pointer', currentPage === 1 ? 'opacity-50' : 'hover:bg-gray-200']">

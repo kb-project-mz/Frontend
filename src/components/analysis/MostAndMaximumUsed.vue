@@ -86,7 +86,6 @@ const getMedal = (index) => {
   }
 };
 
-// watch를 사용하여 startDate와 endDate의 변경을 감시
 watch(
   [() => props.startDate, () => props.endDate],
   async ([newStartDate, newEndDate]) => {
@@ -98,12 +97,6 @@ watch(
     const endMonth = newEndDate.getMonth();
     const endDate = newEndDate.getDate();
 
-    // mostUsed.value = { "배달의 민족": 15, 스타벅스: 3, 편의점: 4 };
-    // maximumAmount.value = {
-    //   "배달의 민족": 120000,
-    //   스타벅스: 23000,
-    //   편의점: 12000,
-    // };
     await fetchTransactionAnalysis(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
     isLoaded.value = true;
   }
@@ -117,12 +110,6 @@ onMounted(async () => {
   const endMonth = props.endDate.getMonth();
   const endDate = props.endDate.getDate();
 
-  // mostUsed.value = { "배달의 민족": 15, 스타벅스: 3, 편의점: 4 };
-  // maximumAmount.value = {
-  //   "배달의 민족": 120000,
-  //   스타벅스: 23000,
-  //   편의점: 12000,
-  // };
   await fetchTransactionAnalysis(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
   isLoaded.value = true;
 });
