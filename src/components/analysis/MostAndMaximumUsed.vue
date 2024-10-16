@@ -69,8 +69,16 @@ const formatMostUsed = (data) => {
     maximumAmountObj[key.trim()] = parseInt(value.trim());
   });
 
-  mostUsed.value = mosUsedObj;
-  maximumAmount.value = maximumAmountObj;
+  const sortedMostUsedObj = Object.fromEntries(
+    Object.entries(mosUsedObj).sort(([, a], [, b]) => b - a)
+  );
+
+  const sortedMaximumAmountObj = Object.fromEntries(
+    Object.entries(maximumAmountObj).sort(([, a], [, b]) => b - a)
+  );
+
+  mostUsed.value = sortedMostUsedObj;
+  maximumAmount.value = sortedMaximumAmountObj;
 };
 
 const getMedal = (index) => {
