@@ -92,9 +92,7 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
           !this.cardTransactionThisMonth ||
           this.cardTransactionThisMonth.length === 0
         ) {
-          const authData = JSON.parse(localStorage.getItem('auth'));
-          const memberIdx = authData.memberIdx;
-          await this.getCardTransactionList(memberIdx);
+          await this.getCardTransactionList();
         }
 
         const cardAmountBycardIdx = {};

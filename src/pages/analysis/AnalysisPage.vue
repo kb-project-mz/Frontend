@@ -25,9 +25,6 @@ const accountTransactionData = ref([]);
 const accountTransactionThisMonthData = ref([]);
 const accountTransactionLastMonthData = ref([]);
 
-const authStore = useAuthStore();
-const user = authStore.member;
-
 const isFlipped = ref(false);
 
 const toggleCardFlip = () => {
@@ -36,15 +33,15 @@ const toggleCardFlip = () => {
 
 const isDataLoaded = ref(false);
 
-const fetchTransactionData = async (memberIdx) => {
-  await cardTransactionStore.getCardTransactionList(memberIdx);
+const fetchTransactionData = async () => {
+  await cardTransactionStore.getCardTransactionList();
   cardTransactionData.value = cardTransactionStore.cardTransaction;
   cardTransactionThisMonthData.value =
     cardTransactionStore.cardTransactionThisMonth;
   cardTransactionLastMonthData.value =
     cardTransactionStore.cardTransactionLastMonth;
 
-  await accountTransactionStore.getAccountTransactionList(memberIdx);
+  await accountTransactionStore.getAccountTransactionList();
   accountTransactionData.value = accountTransactionStore.accountTransaction;
   accountTransactionThisMonthData.value =
     accountTransactionStore.accountTransactionThisMonth;
@@ -55,7 +52,7 @@ const fetchTransactionData = async (memberIdx) => {
 };
 
 onMounted(async () => {
-  await fetchTransactionData(memberIdx);
+  await fetchTransactionData();
 });
 </script>
 
