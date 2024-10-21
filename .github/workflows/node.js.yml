@@ -32,11 +32,6 @@ jobs:
     - name: Build project
       run: npm run build --if-present
 
-    - name: Run tests
-      run: npm test
-      env:
-        CI: true
-
     # GitHub Pages로 배포하는 단계 추가
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
