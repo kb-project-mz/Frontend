@@ -5,13 +5,10 @@ import PeerChallenge from "@/components/challenge/PeerChallenge.vue";
 import { onMounted } from "vue";
 import { useChallengeStore } from "@/stores/challenge";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
-
 const challengeStore = useChallengeStore();
 
 onMounted(() => {
-  challengeStore.getChallengeList(memberIdx);
+  challengeStore.getChallengeList();
 });
 </script>
 

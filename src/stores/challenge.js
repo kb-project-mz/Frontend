@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import apiInstance from '@/util/axios-instance';
-
 import { useAuthStore } from '@/stores/auth.js';
 
 export const useChallengeStore = defineStore('challenge', {
@@ -12,11 +11,10 @@ export const useChallengeStore = defineStore('challenge', {
   }),
 
   actions: {
-    async getChallengeList(memberIdx) {
-      console.log("???");
+    async getChallengeList() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/challenge/${memberIdx}`, {
+        const res = await apiInstance.get(`/challenge`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },
@@ -39,7 +37,6 @@ export const useChallengeStore = defineStore('challenge', {
 
           return 0;
         });
-        console.log(this.challengeList);
       } catch (error) {
         console.error('Error fetching challenges:', error);
         throw error;
@@ -65,10 +62,7 @@ export const useChallengeStore = defineStore('challenge', {
     async deleteChallenge(challengeId) {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.post(
-          `/challenge/${challengeId}`,
-          {},
-          {
+        const res = await apiInstance.post(`/challenge/${challengeId}`, {}, {
             headers: {
               Authorization: authStore.member.accessToken,
             },
@@ -90,9 +84,7 @@ export const useChallengeStore = defineStore('challenge', {
     async getDetailedCategory(memberIdx, categoryId) {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(
-          `/challenge/detailed-category/${memberIdx}/${categoryId}`,
-          {
+        const res = await apiInstance.get(`/challenge/detailed-category/${memberIdx}/${categoryId}`, {
             headers: {
               Authorization: authStore.member.accessToken,
             },
@@ -104,10 +96,10 @@ export const useChallengeStore = defineStore('challenge', {
       }
     },
 
-    async getChallengeStatus(memberIdx) {
+    async getChallengeStatus() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/challenge/status/${memberIdx}`, {
+        const res = await apiInstance.get(`/challenge/status`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },
@@ -125,10 +117,10 @@ export const useChallengeStore = defineStore('challenge', {
       }
     },
 
-    async getPeerChallengeList(memberIdx) {
+    async getPeerChallengeList() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/challenge/peer/${memberIdx}`, {
+        const res = await apiInstance.get(`/challenge/peer`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },

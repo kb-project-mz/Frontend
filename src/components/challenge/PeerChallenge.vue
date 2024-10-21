@@ -2,9 +2,6 @@
 import { ref, onMounted, nextTick } from 'vue';
 import { useChallengeStore } from '@/stores/challenge';
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
-
 const challengeStore = useChallengeStore();
 const peerChallengeList = ref([]);
 
@@ -13,7 +10,7 @@ const formatDate = (date) => {
 }
 
 onMounted(async () => {
-  await challengeStore.getPeerChallengeList(memberIdx);
+  await challengeStore.getPeerChallengeList();
   peerChallengeList.value = challengeStore.peerChallengeList;
 
   let roller = document.querySelector('.rolling-list');

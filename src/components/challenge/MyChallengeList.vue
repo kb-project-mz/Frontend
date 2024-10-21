@@ -4,9 +4,6 @@ import { useChallengeStore } from "@/stores/challenge";
 import ChallengeComponent from "./ChallengeComponent.vue";
 import CreateChallenge from "@/components/challenge/CreateChallenge.vue";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
-
 const challengeStore = useChallengeStore();
 const chartData = ref([]);
 
@@ -25,8 +22,8 @@ const addNewChallenge = (newChallenge) => {
 };
 
 onMounted(async () => {
-  await challengeStore.getChallengeList(memberIdx);
-  await challengeStore.getChallengeStatus(memberIdx);
+  await challengeStore.getChallengeList();
+  await challengeStore.getChallengeStatus();
   chartData.value = challengeStore.chartData;
 });
 </script>

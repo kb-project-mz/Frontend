@@ -3,9 +3,6 @@ import { defineProps } from "vue";
 import ProgressBar from "./ProgressBar.vue";
 import { useChallengeStore } from "@/stores/challenge";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
-
 const challengeStore = useChallengeStore();
 
 const props = defineProps({
@@ -20,7 +17,7 @@ const formatDate = (date) => {
 const deleteChallenge = async (challengeIdx) => {
   if (confirm("정말로 삭제하시겠습니까?")) {
     await challengeStore.deleteChallenge(challengeIdx);
-    await challengeStore.getChallengeList(memberIdx);
+    await challengeStore.getChallengeList();
   }
 };
 </script>

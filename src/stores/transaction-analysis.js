@@ -10,15 +10,7 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
   }),
 
   actions: {
-    async getMostAndMaximumUse(
-      memberIdx,
-      startYear,
-      startMonth,
-      startDay,
-      endYear,
-      endMonth,
-      endDay
-    ) {
+    async getMostAndMaximumUse(memberIdx, startYear, startMonth, startDay, endYear, endMonth, endDay) {
       try {
         const authStore = useAuthStore();
         const res = await apiInstance.get(`/transaction/top-usage`, {
