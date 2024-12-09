@@ -1,12 +1,12 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { onMounted } from "vue";
-import testImage from '@/assets/test.png';
+
 
 const route = useRoute();
 const baseUrl = "http://localhost:5173"; 
 const linkUrl = `${baseUrl}${route.fullPath}`;
-const imageUrl = testImage;
+const imageUrl = "https://raw.githubusercontent.com/kb-project-mz/Frontend/main/src/assets/test_start.png";
 
 const shareKakao = () => {
   if (window.Kakao && window.Kakao.isInitialized()) {
