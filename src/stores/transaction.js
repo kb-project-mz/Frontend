@@ -3,10 +3,6 @@ import apiInstance from '@/util/axios-instance';
 import { useAuthStore } from '@/stores/auth.js';
 
 export const useTransactionStore = defineStore('transaction', {
-  state: () => ({
-
-  }),
-
   actions: {
     async fetchTransaction() {
       try {
@@ -16,7 +12,6 @@ export const useTransactionStore = defineStore('transaction', {
             Authorization: authStore.member.accessToken
           }
         });
-        console.log("개수: ", response.data.data);
         return response.data.data;
       } catch(err) {
         console.error(err);
@@ -35,33 +30,70 @@ export const useTransactionStore = defineStore('transaction', {
         console.error(err);
       }
     },
-    async getCardTransactionListByCardIdx() {
+    async getMonthlySummary(startDate, endDate) {
       try {
-        if (
-          !this.cardTransactionThisMonth ||
-          this.cardTransactionThisMonth.length === 0
-        ) {
-          const authData = JSON.parse(localStorage.getItem('auth'));
-          const memberIdx = authData.memberIdx;
-          await this.getCardTransactionList(memberIdx);
-        }
-
-        const cardAmountBycardIdx = {};
-
-        this.cardTransactionThisMonth.forEach((transaction) => {
-          const { cardIdx: transactionCardIdx, amount } = transaction;
-
-          if (!cardAmountBycardIdx[transactionCardIdx]) {
-            cardAmountBycardIdx[transactionCardIdx] = 0;
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/summary?startDate=${startDate}&endDate=${endDate}`, {
+          headers: {
+            Authorization: authStore.member.accessToken
           }
-
-          cardAmountBycardIdx[transactionCardIdx] += amount;
         });
-
-        this.cardAmountBycardIdx = cardAmountBycardIdx;
-      } catch (error) {
-        console.error('Error in getCardTransactionListByCardIdx:', error);
+        return response.data.data;
+      } catch(err) {
+        console.error(err);
       }
     },
+    async getMostAndMaximumUse(startDate, endDate) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/top-usage?startDate=${startDate}&endDate=${endDate}`, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        return response.data.data;
+      } catch(err) {
+        console.error(err);
+      }
+    },
+    async getFixedExpense() {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/fixed`, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        return response.data.data;
+      } catch(err) {
+        console.error(err);
+      }
+    },
+    async getDailyExpense() {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/daily`, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        return response.data.data;
+      } catch(err) {
+        console.error(err);
+      }
+    },
+    async getCategoryChartData(startDate, endDate) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/category?startDate=${startDate}&endDate=${endDate}`, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        return response.data.data;
+      } catch(err) {
+        console.error(err);
+      }
+    }
   },
 });

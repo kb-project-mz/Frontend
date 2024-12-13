@@ -1,81 +1,46 @@
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import { useCategoryTransactionStore } from "@/stores/category-transaction";
+import { ref, computed, onMounted } from "vue";
+import { useTransactionStore } from "@/stores/transaction";
 import DoughnutChart from "@/components/analysis/DoughnutChart.vue";
 
 const props = defineProps({
   chartId: {
-    type: String,
-    required: true
+    type: String
   },
   startDate: {
-    type: Date,
-    required: true,
+    type: String
   },
   endDate: {
-    type: Date,
-    required: true,
+    type: String
   },
   period: {
-    type: String,
-    required: true,
+    type: String
   }
 });
-
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
 
 const isLoaded = ref(false);
-const categoryStore = useCategoryTransactionStore();
+const transactionStore = useTransactionStore();
+const size = ref(0);
+const chartData = ref([]);
 
-const mostSpentCategory = computed(() => {
-  if (props.period === '이번 달') {
-    return categoryStore.mostSpentCategoryThisMonth;
-  } else {
-    return categoryStore.mostSpentCategorySelectedPeriod;
-  }
-});
+const mostSpentCategory = ref("");
 
 onMounted(async () => {
-  isLoaded.value = false;
-  const startYear = props.startDate.getFullYear();
-  const startMonth = props.startDate.getMonth();
-  const startDate = props.startDate.getDate();
-  const endYear = props.endDate.getFullYear();
-  const endMonth = props.endDate.getMonth();
-  const endDate = props.endDate.getDate();
-
-  await categoryStore.fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
-  
+  const result = await transactionStore.getCategoryChartData(props.startDate, props.endDate);
+  console.log(result);
+  chartData.value = result;
+  size.value = result.length;
+  mostSpentCategory.value = result[0].categoryName;
   isLoaded.value = true;
 });
-
-watch(
-  [() => props.startDate, () => props.endDate],
-  async ([newStartDate, newEndDate]) => {
-    
-    const startYear = newStartDate.getFullYear();
-    const startMonth = newStartDate.getMonth();
-    const startDate = newStartDate.getDate();
-    const endYear = newEndDate.getFullYear();
-    const endMonth = newEndDate.getMonth();
-    const endDate = newEndDate.getDate();
-
-    if (props.period === '해당 기간') {
-      isLoaded.value = false;
-      await categoryStore.fetchCategoryTransactionCount(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
-      isLoaded.value = true;
-    }    
-  }
-);
 </script>
 
 <template>
   <div class="p-10 bg-white border border-gray-200 rounded-xl shadow">
     <div v-if="isLoaded">
       <div v-if="period === '이번 달'">
-        <div v-if="categoryStore.categoryDataThisMonth.length > 0" class="flex flex-col items-center">
-          <DoughnutChart class="mb-5" :chart-id="chartId" :period="period" />
+        <div v-if="size > 0" class="flex flex-col items-center">
+          <DoughnutChart class="mb-5" :chart-id="chartId" :chart-data="chartData" />
           <div>{{ period }}은 <span class="text-red text-xl font-bold">{{ mostSpentCategory }}</span>에</div>
           <div>지출이 가장 많았어요.</div>
         </div>
@@ -84,8 +49,8 @@ watch(
         </div>
       </div>
       <div v-else>
-        <div v-if="categoryStore.categoryDataSelectedPeriod.length > 0" class="flex flex-col justify-between items-center">
-          <DoughnutChart class="mb-5" :chart-id="chartId" :period="period" />
+        <div v-if="size > 0" class="flex flex-col justify-between items-center">
+          <DoughnutChart class="mb-5" :chart-id="chartId" :chart-data="chartData" />
           <div>{{ period }}은 <span class="text-red text-xl font-bold">{{ mostSpentCategory }}</span>에</div>
           <div>지출이 가장 많았어요.</div>
         </div>
@@ -93,8 +58,6 @@ watch(
           {{ period }} 지출이 없어요!
         </div>
       </div>
-
-      
     </div>
     <div v-else>
       <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
