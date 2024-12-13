@@ -66,20 +66,5 @@ export const useTransactionAnalysisStore = defineStore('transactionAnalysis', {
         console.error(err);
       }
     },
-
-    async fetchFixedExpenses(memberIdx) {
-      try {
-        const authStore = useAuthStore();
-        const res = await apiInstance.get(`/transaction/fixed/${memberIdx}`, {
-          headers: {
-            Authorization: authStore.member.accessToken,
-          },
-        });
-
-        this.fixedExpenses = res.data.data;
-      } catch (err) {
-        console.error(err);
-      }
-    },
   },
 });
