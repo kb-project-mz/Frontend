@@ -98,7 +98,7 @@ export const useTransactionStore = defineStore('transaction', {
     async getMonthlyExpenses(startDate, endDate) {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/transaction/yearly-expenses?startDate=${startDate}&endDate=${endDate}`, {
+        const response = await apiInstance.get(`/transaction/monthly-expenses?startDate=${startDate}&endDate=${endDate}`, {
           headers: {
             Authorization: authStore.member.accessToken
           }
@@ -110,21 +110,21 @@ export const useTransactionStore = defineStore('transaction', {
     },
     async getDailyTransactions(page, size) {
       try {
-        const authStore = useAuthStore(); // authStore를 가져옴
+        const authStore = useAuthStore();
         const response = await apiInstance.get(
           `/transaction/daily-transactions?page=${page}&size=${size}`,
           {
             headers: {
-              Authorization: authStore.member.accessToken, // Authorization 헤더 설정
+              Authorization: authStore.member.accessToken,
             },
           }
         );
 
         if (response.data.success) {
           return {
-            data: response.data.data.data, // 거래 내역 데이터
-            totalElements: response.data.data.totalElements, // 전체 데이터 개수
-            totalPages: response.data.data.totalPages, // 총 페이지 수
+            data: response.data.data.data,
+            totalElements: response.data.data.totalElements,
+            totalPages: response.data.data.totalPages,
           };
         } else {
           console.error('API 호출 실패:', response.data.error);
