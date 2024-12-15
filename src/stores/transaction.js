@@ -134,6 +134,19 @@ export const useTransactionStore = defineStore('transaction', {
         console.error('getDailyTransactions 에러:', err.response ? err.response.data : err.message);
         return null;
       }
+    },
+    async getMonthlyDailySummary(startDate, endDate) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/monthly/summary?startDate=${startDate}&endDate=${endDate}`, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        return response.data.data;
+      } catch(err) {
+        console.error(err);
+      }
     }
   },
 });

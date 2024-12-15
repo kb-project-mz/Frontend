@@ -69,10 +69,9 @@ onMounted(async () => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-7 gap-10">
-        <!-- <div class="lg:col-span-4">
-          <ConsumptionCalendar :account-transaction-data="accountTransactionData"
-            :card-transaction-data="cardTransactionData" />
-        </div> -->
+        <div class="lg:col-span-4">
+          <ConsumptionCalendar />
+        </div>
         <div class="lg:col-span-3">
           <ConsumptionList />
         </div>
