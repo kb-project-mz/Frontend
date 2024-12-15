@@ -59,8 +59,8 @@ const updateSelectedDates = () => {
     selectedEndDate.value = end.getDate();
   }
 
-  startDate.value = selectedStartYear.value + "-" + (selectedStartMonth.value + 1) + "-" + "01";
-  endDate.value = selectedEndYear.value + "-" + (selectedEndMonth.value + 1) + "-" + selectedEndDate.value;
+  startDate.value = `${selectedStartYear.value}-${(selectedStartMonth.value + 1).toString().padStart(2, '0')}-01`;
+  endDate.value = `${selectedEndYear.value}-${(selectedEndMonth.value + 1).toString().padStart(2, '0')}-${selectedEndDate.value.toString().padStart(2, '0')}`;
 
   componentKey.value++;
 };
@@ -77,8 +77,8 @@ onMounted(() => {
   const dateStartDate = new Date(selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value);
   const dateEndDate = new Date(selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value);
 
-  startDate.value = `${selectedStartYear.value}-${selectedStartMonth.value + 1}-01`;
-  endDate.value = `${selectedEndYear.value}-${selectedEndMonth.value + 1}-${selectedEndDate.value}`;
+  startDate.value = `${selectedStartYear.value}-${(selectedStartMonth.value + 1).toString().padStart(2, '0')}-01`;
+  endDate.value = `${selectedEndYear.value}-${(selectedEndMonth.value + 1).toString().padStart(2, '0')}-${selectedEndDate.value.toString().padStart(2, '0')}`;
 
   date.value = [dateStartDate, dateEndDate];
   isLoaded.value = true;

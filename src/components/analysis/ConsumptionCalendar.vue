@@ -79,10 +79,8 @@ const prevMonth = () => {
 };
 
 const getSummary = async (startDate, endDate) => {
-  console.log(startDate, endDate);
   const response = await transactionStore.getMonthlyDailySummary(startDate, endDate);
   dailySummary.value = response;
-  console.log(response);
 };
 
 onMounted(() => {
