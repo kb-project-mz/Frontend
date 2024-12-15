@@ -23,8 +23,8 @@ const getEndDay = (year, month) => {
 };
 
 onMounted(() => {
-  startDate.value = year + "-" + (month + 1) + "-" + "01";
-  endDate.value = year + "-" + (month + 1) + "-" + getEndDay(year, month);
+  startDate.value = `${year}-${(month + 1).toString().padStart(2, '0')}-01`;
+  endDate.value = `${year}-${(month + 1).toString().padStart(2, '0')}-${getEndDay(year, month)}`;
   isLoaded.value = true;
 });
 </script>
