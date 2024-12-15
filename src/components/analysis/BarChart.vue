@@ -9,16 +9,11 @@ let chartInstance = null;
 const transactionStore = useTransactionStore();
 
 const fetchDataFromBackend = async () => {
-  const startDate = "2024-01-01";
-  const endDate = "2024-12-31";
-  const responseData = await transactionStore.getMonthlyExpenses(startDate, endDate);
+  const responseData = await transactionStore.getMonthlyExpenses();
 
   if (Array.isArray(responseData)) {
-    const sortedData = responseData.sort((a, b) => a.month - b.month);
-
-
-    const labels = sortedData.map((item) => `${item.month}월`);
-    const data = sortedData.map((item) => item.totalExpense);
+    const labels = responseData.map((item) => `${item.month}월`);
+    const data = responseData.map((item) => item.totalExpense);
 
     return { labels, data };
   } else {
@@ -38,16 +33,17 @@ const renderChart = async () => {
     const ctx = canvasRef.value.getContext("2d");
 
     chartInstance = new Chart(ctx, {
-      type: "bar",
+      type: "line",
       data: {
         labels, 
         datasets: [
           {
             label: "월별 총 지출액",
             data,
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1,
+            backgroundColor: "rgba(206, 227, 255, 0.3)",
+            borderColor: "#CEE3FF",
+            fill: true,
+            tension: 0.4
           },
         ],
       },
@@ -56,22 +52,19 @@ const renderChart = async () => {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: true,
-            position: "top",
+            display: false
           },
         },
         scales: {
           y: {
             beginAtZero: true,
             title: {
-              display: true,
-              text: "총 지출액 (원)",
+              display: false
             },
           },
           x: {
             title: {
-              display: true,
-              text: "월",
+              display: false
             },
           },
         },

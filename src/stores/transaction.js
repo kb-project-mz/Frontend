@@ -95,10 +95,10 @@ export const useTransactionStore = defineStore('transaction', {
         console.error(err);
       }
     },
-    async getMonthlyExpenses(startDate, endDate) {
+    async getMonthlyExpenses() {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/transaction/monthly-expenses?startDate=${startDate}&endDate=${endDate}`, {
+        const response = await apiInstance.get(`/transaction/monthly`, {
           headers: {
             Authorization: authStore.member.accessToken
           }

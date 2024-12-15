@@ -64,7 +64,7 @@ onMounted(async () => {
           <FixedExpenses />
         </div>
         <div class="h-full lg:col-span-3">
-          <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
+          <BarChart />
         </div>
       </div>
 
@@ -74,8 +74,7 @@ onMounted(async () => {
             :card-transaction-data="cardTransactionData" />
         </div> -->
         <div class="lg:col-span-3">
-          <ConsumptionList :card-transaction-data="cardTransactionThisMonthData" 
-            :account-transaction-data="accountTransactionThisMonthData" />
+          <ConsumptionList />
         </div>
       </div>
 
