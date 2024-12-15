@@ -94,6 +94,46 @@ export const useTransactionStore = defineStore('transaction', {
       } catch(err) {
         console.error(err);
       }
+    },
+    async getMonthlyExpenses(startDate, endDate) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/transaction/monthly-expenses?startDate=${startDate}&endDate=${endDate}`, {
+          headers: {
+            Authorization: authStore.member.accessToken
+          }
+        });
+        return response.data.data;
+      } catch (err) {
+        console.error('Error fetching monthly expenses:', err);
+      }
+    },
+    async getDailyTransactions(page, size) {
+      try {
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(
+          `/transaction/daily-transactions?page=${page}&size=${size}`,
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          return {
+            data: response.data.data.data,
+            totalElements: response.data.data.totalElements,
+            totalPages: response.data.data.totalPages,
+          };
+        } else {
+          console.error('API 호출 실패:', response.data.error);
+          return null;
+        }
+      } catch (err) {
+        console.error('getDailyTransactions 에러:', err.response ? err.response.data : err.message);
+        return null;
+      }
     }
   },
 });

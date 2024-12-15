@@ -63,21 +63,21 @@ onMounted(async () => {
           <LineChart />
           <FixedExpenses />
         </div>
-        <!-- <div class="h-full lg:col-span-3">
+        <div class="h-full lg:col-span-3">
           <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
-        </div> -->
+        </div>
       </div>
 
-      <!-- <div class="grid grid-cols-1 lg:grid-cols-7 gap-10">
-        <div class="lg:col-span-4">
+      <div class="grid grid-cols-1 lg:grid-cols-7 gap-10">
+        <!-- <div class="lg:col-span-4">
           <ConsumptionCalendar :account-transaction-data="accountTransactionData"
             :card-transaction-data="cardTransactionData" />
-        </div>
+        </div> -->
         <div class="lg:col-span-3">
           <ConsumptionList :card-transaction-data="cardTransactionThisMonthData" 
             :account-transaction-data="accountTransactionThisMonthData" />
         </div>
-      </div> -->
+      </div>
 
       <div>
         <AIRecommendation />

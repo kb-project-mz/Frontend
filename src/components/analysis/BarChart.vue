@@ -1,94 +1,34 @@
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { Chart } from "chart.js/auto";
-
-const props = defineProps({
-  accountTransactionData: {
-    type: Array,
-    required: true,
-  },
-  cardTransactionData: {
-    type: Array,
-    required: true,
-  },
-});
-
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
-
-const initialYear = new Date().getFullYear();
-const initialMonth = new Date().getMonth();
-
-const filterExpensesForMonth = (year, month) => {
-  const accountExpenses = props.accountTransactionData.filter((item) => {
-    const itemDate = new Date(item.accountTransactionDate);
-    return (
-      itemDate.getFullYear() === year &&
-      itemDate.getMonth() === month &&
-      item.amount < 0 &&
-      (!item.accountTransactionDescription ||
-        !item.accountTransactionDescription.includes(memberName))
-    );
-  });
-
-  const cardExpenses = props.cardTransactionData.filter((item) => {
-    const itemDate = new Date(item.cardTransactionDate);
-    return (
-      itemDate.getFullYear() === year &&
-      itemDate.getMonth() === month &&
-      item.amount > 0
-    );
-  });
-
-  const totalAccountExpenses = accountExpenses.reduce(
-    (sum, e) => sum + Math.abs(e.amount),
-    0
-  );
-  const totalCardExpenses = cardExpenses.reduce((sum, e) => sum + e.amount, 0);
-
-  return totalAccountExpenses + totalCardExpenses;
-};
-
-const getLast12MonthsExpenses = () => {
-  const expensesPerMonth = [];
-  const labels = [];
-
-  let year = initialYear; 
-  let month = initialMonth; 
-
-  for (let i = 0; i < 12; i++) {
-    const totalExpenses = filterExpensesForMonth(year, month);
-
-    expensesPerMonth.push(totalExpenses ? totalExpenses : 0);
-    labels.push(`${year}.${month + 1}`);
-
-    month--;
-    if (month < 0) {
-      month = 11;
-      year--;
-    }
-  }
-
-  return {
-    expensesPerMonth: expensesPerMonth.reverse(),
-    labels: labels.reverse(),
-  };
-};
+import { useTransactionStore } from "@/stores/transaction";
 
 const canvasRef = ref(null);
 let chartInstance = null;
 
-const updateChart = () => {
-  if (chartInstance) {
-    const { expensesPerMonth, labels } = getLast12MonthsExpenses();
-    chartInstance.data.labels = labels;
-    chartInstance.data.datasets[0].data = expensesPerMonth;
-    chartInstance.update();
+const transactionStore = useTransactionStore();
+
+const fetchDataFromBackend = async () => {
+  const startDate = "2024-01-01";
+  const endDate = "2024-12-31";
+  const responseData = await transactionStore.getMonthlyExpenses(startDate, endDate);
+
+  if (Array.isArray(responseData)) {
+    const sortedData = responseData.sort((a, b) => a.month - b.month);
+
+
+    const labels = sortedData.map((item) => `${item.month}월`);
+    const data = sortedData.map((item) => item.totalExpense);
+
+    return { labels, data };
+  } else {
+    console.error("잘못된 데이터 형식:", responseData);
+    return { labels: [], data: [] };
   }
 };
 
-const renderChart = () => {
-  const { expensesPerMonth, labels } = getLast12MonthsExpenses();
+const renderChart = async () => {
+  const { labels, data } = await fetchDataFromBackend();
 
   if (chartInstance) {
     chartInstance.destroy();
@@ -96,18 +36,18 @@ const renderChart = () => {
 
   if (canvasRef.value) {
     const ctx = canvasRef.value.getContext("2d");
+
     chartInstance = new Chart(ctx, {
-      type: "line",
+      type: "bar",
       data: {
-        labels: labels,
+        labels, 
         datasets: [
           {
             label: "월별 총 지출액",
-            data: expensesPerMonth,
-            borderColor: "#CEE3FF",
-            backgroundColor: "rgba(206, 227, 255, 0.3)", 
-            fill: true,
-            tension: 0.4,
+            data,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
           },
         ],
       },
@@ -116,40 +56,37 @@ const renderChart = () => {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false
-          }
+            display: true,
+            position: "top",
+          },
         },
         scales: {
           y: {
             beginAtZero: true,
             title: {
               display: true,
+              text: "총 지출액 (원)",
             },
           },
           x: {
             title: {
               display: true,
+              text: "월",
             },
           },
         },
       },
     });
   } else {
-    console.error("canvasRef가 null입니다. 차트를 렌더링할 수 없습니다.");
+    console.error("canvasRef가 정의되지 않았습니다.");
   }
 };
 
 onMounted(() => {
   renderChart();
-  watch(
-    () => [props.accountTransactionData, props.cardTransactionData],
-    () => {
-      updateChart(); 
-    },
-    { immediate: true }
-  );
 });
 </script>
+
 
 <template>
   <div class="p-5 bg-white border rounded-xl shadow">
