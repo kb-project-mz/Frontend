@@ -27,7 +27,6 @@ const mostSpentCategory = ref("");
 
 onMounted(async () => {
   const result = await transactionStore.getCategoryChartData(props.startDate, props.endDate);
-  console.log(result);
   chartData.value = result;
   size.value = result.length;
   mostSpentCategory.value = result[0].categoryName;
