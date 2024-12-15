@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
-import { setLocalStorage, clearTokens } from '@/util/token';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
+import { setLocalStorage, clearTokens } from "@/util/token";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -73,7 +73,7 @@ export const useAuthStore = defineStore("auth", {
     async sendEmailVerification(email) {
       try {
         const response = await apiInstance.post("/member/email/code", {
-          email
+          email,
         });
         return response.data;
       } catch (error) {
@@ -89,7 +89,7 @@ export const useAuthStore = defineStore("auth", {
       try {
         const response = await apiInstance.post("/member/email/verification", {
           email,
-          inputCode: code
+          inputCode: code,
         });
         return response.data.success;
       } catch (err) {
@@ -100,17 +100,17 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.post('/member/logout', null, {
+        const response = await apiInstance.post("/member/logout", null, {
           headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         clearTokens();
         localStorage.clear();
         this.clearAuthState();
       } catch (error) {
         console.error(
-          '로그아웃 중 오류:',
+          "로그아웃 중 오류:",
           error.response ? error.response.data : error.message
         );
       }
@@ -127,13 +127,13 @@ export const useAuthStore = defineStore("auth", {
 
     updateImageUrl(imageUrl) {
       this.member.imageUrl = imageUrl;
-      const authData = JSON.parse(localStorage.getItem('auth') || '{}');
+      const authData = JSON.parse(localStorage.getItem("auth") || "{}");
       authData.imageUrl = imageUrl;
-      localStorage.setItem('auth', JSON.stringify(authData));
+      localStorage.setItem("auth", JSON.stringify(authData));
     },
 
     loadAuthState() {
-      const authData = JSON.parse(localStorage.getItem('auth'));
+      const authData = JSON.parse(localStorage.getItem("auth"));
       if (authData && authData.memberId) {
         this.member.memberId = authData.memberId;
         this.member.memberName = authData.memberName;
@@ -145,19 +145,18 @@ export const useAuthStore = defineStore("auth", {
     },
 
     isLogin() {
-      const authData = localStorage.getItem('auth');
+      const authData = localStorage.getItem("auth");
       return !!authData;
     },
 
     async verifyPassword(password) {
       try {
-        const response = await apiInstance.post('/member/info', { password });
+        const response = await apiInstance.post("/member/info", { password });
         return response.data.isPasswordCorrect;
       } catch (error) {
-        console.error('비밀번호 확인 중 오류 발생:', error);
-        throw new Error('비밀번호 확인 중 오류가 발생했습니다.');
+        console.error("비밀번호 확인 중 오류 발생:", error);
+        throw new Error("비밀번호 확인 중 오류가 발생했습니다.");
       }
     },
-
   },
 });

@@ -9,6 +9,8 @@ const router = useRouter();
 const memberId = computed(() => authStore.member.memberId);
 const imageUrl = computed(() => authStore.member.imageUrl);
 
+const authData = JSON.parse(localStorage.getItem('auth'));
+
 const logout = async () => {
   await authStore.logout();
   authStore.clearAuthState();
@@ -32,7 +34,7 @@ const logout = async () => {
         <router-link to="/challenge">마이 챌린지</router-link>
       </div>
 
-      <div v-if="memberId" class="flex">
+      <div v-if="authData" class="flex">
 
         <div class="flex space-x-4">
           <div class="flex space-x-2">

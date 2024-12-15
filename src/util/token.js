@@ -51,8 +51,9 @@ export function setLocalStorage(loginData) {
 
   loginData.accessToken = `Bearer ${loginData.accessToken}`;
   loginData.refreshToken = `Bearer ${loginData.refreshToken}`;
-  
+
   setTokens(loginData.accessToken, loginData.refreshToken);
 
-  localStorage.setItem("auth", JSON.stringify(loginData));
+  localStorage.setItem("auth", JSON.stringify(loginData.accessToken));
+  localStorage.setItem("imageUrl", JSON.stringify(loginData.imageUrl));
 }
