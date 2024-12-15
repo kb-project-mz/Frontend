@@ -4,6 +4,10 @@ import CategoryChart from "@/components/analysis/CategoryChart.vue";
 import TotalAmount from "@/components/analysis/TotalAmount.vue";
 import AverageConsumption from "@/components/analysis/AverageConsumption.vue";
 import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth.js";
+
+const authStore = useAuthStore();
+const memberName = authStore.member.memberName;
 
 const props = defineProps({
   cardTransactionData: {
@@ -16,8 +20,8 @@ const props = defineProps({
   },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+// const authData = JSON.parse(localStorage.getItem("auth"));
+// const memberName = authData.memberName;
 
 const isLoaded = ref(false);
 const today = new Date();

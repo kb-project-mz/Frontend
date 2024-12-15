@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from "vue";
 import { useTransactionAnalysisStore } from "@/stores/transaction-analysis";
 
 const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
 
 const transactionAnalysisStore = useTransactionAnalysisStore();
 
@@ -40,7 +39,7 @@ const splitRecommendation = computed(() => {
 });
 
 onMounted(async () => {
-  recommendation.value = await transactionAnalysisStore.fetchAiRecommendation(memberIdx, currentYear, currentMonth + 1, getEndDay(currentYear, currentMonth));
+  recommendation.value = await transactionAnalysisStore.fetchAiRecommendation(currentYear, currentMonth + 1, getEndDay(currentYear, currentMonth));
   isLoaded.value = true;
 });
 </script>

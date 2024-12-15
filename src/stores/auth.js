@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import apiInstance from "@/util/axios-instance";
-import { setLocalStorage, clearTokens } from "@/util/token";
+import { decodeToken, setLocalStorage, clearTokens } from "@/util/token";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -127,20 +127,23 @@ export const useAuthStore = defineStore("auth", {
 
     updateImageUrl(imageUrl) {
       this.member.imageUrl = imageUrl;
-      const authData = JSON.parse(localStorage.getItem("auth") || "{}");
-      authData.imageUrl = imageUrl;
-      localStorage.setItem("auth", JSON.stringify(authData));
+      // const authData = JSON.parse(localStorage.getItem("auth") || "{}");
+      // authData.imageUrl = imageUrl;
+      localStorage.setItem("imageUrl", JSON.stringify(imageUrl));
     },
 
     loadAuthState() {
-      const authData = JSON.parse(localStorage.getItem("auth"));
-      if (authData && authData.memberId) {
-        this.member.memberId = authData.memberId;
-        this.member.memberName = authData.memberName;
-        this.member.accessToken = authData.accessToken;
-        this.member.memberIdx = authData.memberIdx;
-        this.member.imageUrl = authData.imageUrl || "";
-        this.member.role = authData.role;
+      const token = JSON.parse(localStorage.getItem("auth"));
+      if (token) {
+        const decoded = decodeToken(token);
+        console.log("디코딩 결과:", decoded);
+        if (decoded) {
+          this.member.memberId = decoded.sub;
+          this.member.memberIdx = decoded.memberIdx || null;
+          this.member.memberName = decoded.memberName || null;
+          this.member.role = decoded.role || null;
+          this.member.accessToken = token;
+        }
       }
     },
 
