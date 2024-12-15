@@ -124,7 +124,7 @@ onMounted(() => {
             :start-date="startDate" 
             :end-date="endDate" 
           />
-        </div>ㄴ
+        </div>
         <CategoryChart 
           :key="componentKey" 
           class="lg:col-span-1" 
