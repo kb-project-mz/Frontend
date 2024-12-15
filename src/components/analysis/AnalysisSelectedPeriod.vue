@@ -98,7 +98,7 @@ onMounted(() => {
           </div>
         </div>
         <div>
-          <VueDatePicker v-model="date" range :format="'yyyy-MM-dd'" @update:model-value="updateSelectedDates">
+          <VueDatePicker class="min-w-64" v-model="date" range :format="'yyyy-MM-dd'" @update:model-value="updateSelectedDates">
             <template #time-picker></template>
             <template #action-row="{ selectDate, closePicker }">
               <div class="action-row mx-auto">
