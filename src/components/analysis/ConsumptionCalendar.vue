@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   accountTransactionData: {
@@ -12,8 +13,8 @@ const props = defineProps({
   },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+const authStore = useAuthStore();
+const memberName = authStore.member.memberName;
 
 const now = new Date();
 const currentYear = ref(now.getFullYear());

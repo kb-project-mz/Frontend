@@ -3,9 +3,10 @@ import { ref, onMounted } from "vue";
 import { useChallengeStore } from "@/stores/challenge";
 import ChallengeComponent from "./ChallengeComponent.vue";
 import CreateChallenge from "@/components/challenge/CreateChallenge.vue";
+import { useAuthStore } from "@/stores/auth.js";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const challengeStore = useChallengeStore();
 const chartData = ref([]);
@@ -69,6 +70,4 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

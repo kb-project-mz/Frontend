@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { Line } from "vue-chartjs";
+import { useAuthStore } from "@/stores/auth.js";
 import {
   Chart,
   Title,
@@ -45,8 +46,8 @@ const props = defineProps({
 const today = new Date();
 const currentDate = today.getDate();
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+const authStore = useAuthStore();
+const memberName = authStore.member.memberName;
 
 const lastMonthCompareData = ref(0);
 const thisMonthCompareData = ref(0);

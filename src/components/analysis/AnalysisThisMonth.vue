@@ -20,9 +20,6 @@ const props = defineProps({
   },
 });
 
-// const authData = JSON.parse(localStorage.getItem("auth"));
-// const memberName = authData.memberName;
-
 const isLoaded = ref(false);
 const today = new Date();
 const year = today.getFullYear();
@@ -34,7 +31,20 @@ const endDate = ref(null);
 const getEndDay = (year, month) => {
   const isLeapYear = (year) =>
     (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const daysInMonth = [
+    31,
+    isLeapYear(year) ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
   return daysInMonth[month];
 };
 
@@ -56,13 +66,27 @@ onMounted(() => {
       </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <MostAndMaximumUsed period="이번 달" :start-date="startDate" :end-date="endDate" />
+      <MostAndMaximumUsed
+        period="이번 달"
+        :start-date="startDate"
+        :end-date="endDate"
+      />
       <div class="lg:col-span-1 flex flex-col justify-between gap-10 h-full">
-        <TotalAmount class="flex-1" :card-transaction-data="cardTransactionData"
-          :account-transaction-data="accountTransactionData" :start-date="startDate" :end-date="endDate" />
+        <TotalAmount
+          class="flex-1"
+          :card-transaction-data="cardTransactionData"
+          :account-transaction-data="accountTransactionData"
+          :start-date="startDate"
+          :end-date="endDate"
+        />
       </div>
-      <CategoryChart class="lg:col-span-1" chart-id="thisMonthCategory" :start-date="startDate" :end-date="endDate"
-        period="이번 달" />
+      <CategoryChart
+        class="lg:col-span-1"
+        chart-id="thisMonthCategory"
+        :start-date="startDate"
+        :end-date="endDate"
+        period="이번 달"
+      />
     </div>
   </div>
 </template>

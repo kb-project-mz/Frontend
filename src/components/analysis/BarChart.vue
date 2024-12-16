@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import { Chart } from "chart.js/auto";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   accountTransactionData: {
@@ -13,8 +14,8 @@ const props = defineProps({
   },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+const authStore = useAuthStore();
+const memberName = authStore.member.memberName;
 
 const initialYear = new Date().getFullYear();
 const initialMonth = new Date().getMonth();
@@ -53,8 +54,8 @@ const getLast12MonthsExpenses = () => {
   const expensesPerMonth = [];
   const labels = [];
 
-  let year = initialYear; 
-  let month = initialMonth; 
+  let year = initialYear;
+  let month = initialMonth;
 
   for (let i = 0; i < 12; i++) {
     const totalExpenses = filterExpensesForMonth(year, month);
@@ -105,7 +106,7 @@ const renderChart = () => {
             label: "월별 총 지출액",
             data: expensesPerMonth,
             borderColor: "#CEE3FF",
-            backgroundColor: "rgba(206, 227, 255, 0.3)", 
+            backgroundColor: "rgba(206, 227, 255, 0.3)",
             fill: true,
             tension: 0.4,
           },
@@ -116,8 +117,8 @@ const renderChart = () => {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false
-          }
+            display: false,
+          },
         },
         scales: {
           y: {
@@ -144,7 +145,7 @@ onMounted(() => {
   watch(
     () => [props.accountTransactionData, props.cardTransactionData],
     () => {
-      updateChart(); 
+      updateChart();
     },
     { immediate: true }
   );

@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useTransactionAnalysisStore } from '@/stores/transaction-analysis';
+import { useAuthStore } from "@/stores/auth.js";
 
-const memberIdx = JSON.parse(localStorage.getItem('auth')).memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const transactionAnalysisStore = useTransactionAnalysisStore();
 

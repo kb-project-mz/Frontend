@@ -2,9 +2,10 @@
 import { ref, onMounted } from "vue";
 import { useAssetStore } from "@/stores/asset";
 import AddAccountBookModal from "@/components/connection/AddAccountModal.vue";
+import { useAuthStore } from "@/stores/auth.js";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const assetStore = useAssetStore();
 

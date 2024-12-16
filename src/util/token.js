@@ -56,7 +56,6 @@ export function setLocalStorage(loginData) {
   setTokens(loginData.accessToken, loginData.refreshToken);
 
   localStorage.setItem("auth", JSON.stringify(loginData.accessToken));
-  // localStorage.setItem("token", JSON.stringify(loginData.accessToken));
   localStorage.setItem("imageUrl", JSON.stringify(loginData.imageUrl));
 }
 

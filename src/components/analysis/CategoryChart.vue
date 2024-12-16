@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useCategoryTransactionStore } from "@/stores/category-transaction";
 import DoughnutChart from "@/components/analysis/DoughnutChart.vue";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   chartId: {
@@ -22,8 +23,8 @@ const props = defineProps({
   }
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const isLoaded = ref(false);
 const categoryStore = useCategoryTransactionStore();

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useTransactionAnalysisStore } from "@/stores/transaction-analysis";
+import { useAuthStore } from "@/stores/auth.js";
 import MostUsed from "./MostUsed.vue";
 import MaximumUsed from "./MaximumUsed.vue";
 import medalFirst from "@/assets/medal_first.png";
@@ -21,8 +22,8 @@ const props = defineProps({
   },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const transactionAnalysisStore = useTransactionAnalysisStore();
 const mostUsed = ref({});

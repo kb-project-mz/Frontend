@@ -2,12 +2,14 @@
 import { ref, onMounted } from "vue";
 import { useAssetStore } from "@/stores/asset";
 import AddCardModal from "@/components/connection/AddCardModal.vue";
+import { useAuthStore } from "@/stores/auth.js";
 
 import { useCardTransactionStore } from "@/stores/card-transaction.js";
 const cardTransactionStore = useCardTransactionStore();
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
+
 const assetStore = useAssetStore();
 const connectedCardList = ref([]);
 
@@ -44,8 +46,8 @@ const fetchAsset = async () => {
 };
 
 const disconnectCard = async (cardIdx) => {
-  const card = connectedCardList.value.find(card => card.prdtId === cardIdx);
-  
+  const card = connectedCardList.value.find((card) => card.prdtId === cardIdx);
+
   const confirm = window.confirm(`${card.prdtName} 연동을 해제하시겠습니까?`);
 
   if (confirm) {
@@ -86,18 +88,26 @@ onMounted(async () => {
       </div>
 
       <div v-else-if="connectedCardList.length > 0">
-        <div v-for="(card, index) in connectedCardList" :key="index" class="py-3 pl-2 flex items-center justify-between">
+        <div
+          v-for="(card, index) in connectedCardList"
+          :key="index"
+          class="py-3 pl-2 flex items-center justify-between"
+        >
           <div class="flex items-center">
             <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
             <div>
               <div class="text-medium">{{ card.prdtName }}</div>
-              <div class="text-lg font-bold">{{ card.totalAmount.toLocaleString() }}원</div>
+              <div class="text-lg font-bold">
+                {{ card.totalAmount.toLocaleString() }}원
+              </div>
             </div>
           </div>
-          <button @click="disconnectCard(card.prdtId)" class="ml-4 text-gray-400">
+          <button
+            @click="disconnectCard(card.prdtId)"
+            class="ml-4 text-gray-400"
+          >
             삭제
           </button>
-
         </div>
         <button @click="openModal" class="w-full">
           <div
@@ -113,7 +123,9 @@ onMounted(async () => {
 
       <div v-else class="flex flex-col items-center">
         <div class="text-xl">연결된 카드가 없어요</div>
-        <div class="text-9xl font-black mt-6 mb-8 text-gray-600 font-jamsil">텅</div>
+        <div class="text-9xl font-black mt-6 mb-8 text-gray-600 font-jamsil">
+          텅
+        </div>
         <button
           @click="openModal"
           class="w-full py-4 bg-customNavy text-white text-lg rounded-lg"
@@ -131,6 +143,4 @@ onMounted(async () => {
   />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

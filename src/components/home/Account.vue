@@ -8,8 +8,6 @@ const balanceByMember = ref([]);
 const currentAccountIndex = ref(0);
 
 const balanceStore = useBalanceStore();
-// const authData = JSON.parse(localStorage.getItem("auth"));
-// const memberIdx = authData.memberIdx;
 
 const authStore = useAuthStore();
 const memberIdx = authStore.member.memberIdx;
