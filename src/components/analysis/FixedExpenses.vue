@@ -1,16 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useTransactionAnalysisStore } from '@/stores/transaction-analysis';
+import { useTransactionStore } from '@/stores/transaction';
 
-const memberIdx = JSON.parse(localStorage.getItem('auth')).memberIdx;
-
-const transactionAnalysisStore = useTransactionAnalysisStore();
-
+const transactionStore = useTransactionStore();
 const fixedExpenses = ref([]);
 
 onMounted(async () => {
-  await transactionAnalysisStore.fetchFixedExpenses(memberIdx);
-  fixedExpenses.value = transactionAnalysisStore.fixedExpenses;
+  const fixedExpense = await transactionStore.getFixedExpense();
+  fixedExpenses.value = fixedExpense;
 })
 </script>
 
@@ -30,6 +27,4 @@ onMounted(async () => {
   </div>
 </template>
 
-<style>
-
-</style>
+<style scoped></style>
