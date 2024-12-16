@@ -2,10 +2,11 @@
 import { useRoute } from "vue-router";
 import { onMounted } from "vue";
 
+
 const route = useRoute();
 const baseUrl = "http://localhost:5173"; 
 const linkUrl = `${baseUrl}${route.fullPath}`;
-const imageUrl = "https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/test.png";
+const imageUrl = "https://raw.githubusercontent.com/kb-project-mz/Frontend/main/src/assets/test_start.png";
 
 const shareKakao = () => {
   if (window.Kakao && window.Kakao.isInitialized()) {
