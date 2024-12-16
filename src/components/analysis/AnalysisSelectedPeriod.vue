@@ -1,19 +1,10 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { useCardTransactionStore } from "@/stores/card-transaction";
-import { useAccountTransactionStore } from "@/stores/account-transaction";
 import MostAndMaximumUsed from "@/components/analysis/MostAndMaximumUsed.vue";
 import CategoryChart from "@/components/analysis/CategoryChart.vue";
 import TotalAmount from "@/components/analysis/TotalAmount.vue";
-import AverageConsumption from "@/components/analysis/AverageConsumption.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
-
-const cardTransactionStore = useCardTransactionStore();
-const accountTransactionStore = useAccountTransactionStore();
-
-const cardTransactionData = ref(null);
-const accountTransactionData = ref(null);
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const today = new Date();
 
@@ -28,13 +19,15 @@ const date = ref(null);
 const startDate = ref(null);
 const endDate = ref(null);
 
+const componentKey = ref(0);
+
 const isLoaded = ref(false);
 
 const getEndDay = (year, month) => {
   const isLeapYear = (year) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   return daysInMonth[month];
-}
+};
 
 const getLastMonth = () => {
   const year = today.getFullYear();
@@ -49,7 +42,7 @@ const getLastMonth = () => {
   }
 
   return new Date(lastMonthYear, lastMonth, getEndDay(lastMonthYear, lastMonth));
-}
+};
 
 const updateSelectedDates = () => {
   const [start, end] = date.value;
@@ -66,26 +59,11 @@ const updateSelectedDates = () => {
     selectedEndDate.value = end.getDate();
   }
 
-  startDate.value = new Date(selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value);
-  endDate.value = new Date(selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value);
+  startDate.value = `${selectedStartYear.value}-${(selectedStartMonth.value + 1).toString().padStart(2, '0')}-01`;
+  endDate.value = `${selectedEndYear.value}-${(selectedEndMonth.value + 1).toString().padStart(2, '0')}-${selectedEndDate.value.toString().padStart(2, '0')}`;
 
-  loadData();
-}
-
-const loadData = () => {
-  isLoaded.value = false;
-
-  cardTransactionData.value = cardTransactionStore.getSelectedPeriodCardTransactionData(
-    selectedStartYear.value, selectedStartMonth.value + 1, selectedStartDate.value,
-    selectedEndYear.value, selectedEndMonth.value + 1, selectedEndDate.value,
-  );
-  accountTransactionData.value = accountTransactionStore.getSelectedPeriodAccountTransactionData(
-    selectedStartYear.value, selectedStartMonth.value + 1, selectedStartDate.value,
-    selectedEndYear.value, selectedEndMonth.value + 1, selectedEndDate.value,
-  );
-
-  isLoaded.value = true;
-}
+  componentKey.value++;
+};
 
 onMounted(() => {
   const lastMonthLastDate = getLastMonth();
@@ -96,15 +74,16 @@ onMounted(() => {
   selectedEndMonth.value = lastMonthLastDate.getMonth();
   selectedEndDate.value = lastMonthLastDate.getDate();
 
-  startDate.value = new Date(selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value);
-  endDate.value = new Date(selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value);
+  const dateStartDate = new Date(selectedStartYear.value, selectedStartMonth.value, selectedStartDate.value);
+  const dateEndDate = new Date(selectedEndYear.value, selectedEndMonth.value, selectedEndDate.value);
 
-  date.value = [startDate.value, endDate.value];
+  startDate.value = `${selectedStartYear.value}-${(selectedStartMonth.value + 1).toString().padStart(2, '0')}-01`;
+  endDate.value = `${selectedEndYear.value}-${(selectedEndMonth.value + 1).toString().padStart(2, '0')}-${selectedEndDate.value.toString().padStart(2, '0')}`;
 
-  loadData();
+  date.value = [dateStartDate, dateEndDate];
+  isLoaded.value = true;
 });
 
-watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear, selectedEndMonth, selectedEndDate], loadData);
 </script>
 
 <template>
@@ -115,12 +94,11 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
           <div class="text-lg">이번 달 나의 소비 습관을 다른 달과 비교해볼까요?</div>
           <div class="text-xl font-semibold mb-5">
             {{ selectedStartYear }}년 {{ selectedStartMonth + 1 }}월 {{ selectedStartDate }}일 -
-          {{ selectedEndYear }}년 {{ selectedEndMonth + 1 }}월 {{ selectedEndDate }}일
+            {{ selectedEndYear }}년 {{ selectedEndMonth + 1 }}월 {{ selectedEndDate }}일
           </div>
-          
         </div>
         <div>
-          <VueDatePicker v-model="date" range :format="'yyyy-MM-dd'" @update:model-value="updateSelectedDates">
+          <VueDatePicker class="min-w-64" v-model="date" range :format="'yyyy-MM-dd'" @update:model-value="updateSelectedDates">
             <template #time-picker></template>
             <template #action-row="{ selectDate, closePicker }">
               <div class="action-row mx-auto">
@@ -132,22 +110,32 @@ watch([selectedStartYear, selectedStartMonth, selectedStartDate, selectedEndYear
         </div>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <MostAndMaximumUsed class="lg:col-span-1" :start-date="startDate" :end-date="endDate" period="해당 기간" />
-        <div class="lg:col-span-1 flex flex-col justify-between gap-10">
-          <TotalAmount
-            class="flex-1"
-            :card-transaction-data="cardTransactionData"
-            :account-transaction-data="accountTransactionData"
-            :start-date="startDate"
-            :end-date="endDate" />
+        <MostAndMaximumUsed 
+          :key="componentKey" 
+          class="lg:col-span-1" 
+          :start-date="startDate" 
+          :end-date="endDate" 
+          period="해당 기간" 
+        />
+        <div class="lg:col-span-1 flex flex-col justify-between gap-10 h-full">
+          <TotalAmount 
+            :key="componentKey" 
+            class="flex-1" 
+            :start-date="startDate" 
+            :end-date="endDate" 
+          />
         </div>
-        <CategoryChart class="lg:col-span-1" chart-id="selectedPeriodCategory"
-          :start-date="startDate" :end-date="endDate" period="해당 기간" />
+        <CategoryChart 
+          :key="componentKey" 
+          class="lg:col-span-1" 
+          chart-id="selectedPeriodCategory"
+          :start-date="startDate" 
+          :end-date="endDate" 
+          period="해당 기간" 
+        />
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

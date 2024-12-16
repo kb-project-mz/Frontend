@@ -13,7 +13,6 @@ export const useChallengeStore = defineStore('challenge', {
 
   actions: {
     async getChallengeList(memberIdx) {
-      console.log("???");
       try {
         const authStore = useAuthStore();
         const res = await apiInstance.get(`/challenge/${memberIdx}`, {

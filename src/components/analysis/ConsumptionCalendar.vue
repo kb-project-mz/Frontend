@@ -1,19 +1,8 @@
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useTransactionStore } from "@/stores/transaction";
 
-const props = defineProps({
-  accountTransactionData: {
-    type: Array,
-    required: true,
-  },
-  cardTransactionData: {
-    type: Array,
-    required: true,
-  },
-});
-
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+const transactionStore = useTransactionStore();
 
 const now = new Date();
 const currentYear = ref(now.getFullYear());
@@ -22,56 +11,24 @@ const currentMonth = ref(now.getMonth());
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
 const daysInMonth = ref([]);
+const dailySummary = ref([]);
 
-const filteredAccountExpenses = computed(() => {
-  return props.accountTransactionData.filter((item) => {
-    const itemDate = new Date(item.accountTransactionDate);
-    return (
-      itemDate.getFullYear() === currentYear.value &&
-      itemDate.getMonth() === currentMonth.value &&
-      item.amount < 0 &&
-      (!item.accountTransactionDescription ||
-        !item.accountTransactionDescription.includes(memberName)) // memberName이 content에 포함되지 않은 경우
-    );
-  });
-});
+const getDailySummary = (date) => {
+  const summary = dailySummary.value.find(item => parseInt(item.date.slice(-2)) === date);
+  return summary || { income: 0, expense: 0 };
+};
 
-const filteredCardExpenses = computed(() => {
-  return props.cardTransactionData.filter((item) => {
-    const itemDate = new Date(item.cardTransactionDate);
-    return (
-      itemDate.getFullYear() === currentYear.value &&
-      itemDate.getMonth() === currentMonth.value &&
-      item.amount > 0 
-    );
-  });
-});
-
-const filteredIncomes = computed(() => {
-  return props.accountTransactionData.filter((item) => {
-    const itemDate = new Date(item.accountTransactionDate);
-    return (
-      itemDate.getFullYear() === currentYear.value &&
-      itemDate.getMonth() === currentMonth.value &&
-      item.amount > 0 && // 수입
-      (!item.accountTransactionDescription ||
-        !item.accountTransactionDescription.includes(memberName)) 
-    );
-  });
-});
+const getEndDay = (year, month) => {
+  const isLeapYear = (year) =>
+    (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return daysInMonth[month];
+};
 
 const getMonthInfo = (year, month) => {
   const startDay = new Date(year, month, 1).getDay();
   const endDate = new Date(year, month + 1, 0).getDate();
   return { startDay, endDate };
-};
-
-const getDateString = (day) => {
-  const year = currentYear.value;
-  const month = currentMonth.value + 1; 
-  const dayString = day < 10 ? `0${day}` : day;
-  const monthString = month < 10 ? `0${month}` : month;
-  return `${year}-${monthString}-${dayString}`;
 };
 
 const calendarGenerator = (year, month) => {
@@ -110,7 +67,6 @@ const nextMonth = () => {
   } else {
     currentMonth.value++;
   }
-  generateCalendar();
 };
 
 const prevMonth = () => {
@@ -120,50 +76,29 @@ const prevMonth = () => {
   } else {
     currentMonth.value--;
   }
-  generateCalendar();
 };
 
-const getExpense = (date) => {
-  const accountExpensesForDate = filteredAccountExpenses.value.filter((e) => {
-    const accountDate = new Date(e.accountTransactionDate)
-      .toISOString()
-      .split("T")[0];
-    return accountDate === date;
-  });
-
-  const cardExpensesForDate = filteredCardExpenses.value.filter((e) => {
-    const cardDate = new Date(e.cardTransactionDate)
-      .toISOString()
-      .split("T")[0];
-    return cardDate === date;
-  });
-
-  const totalAccountExpenses = accountExpensesForDate.reduce(
-    (sum, e) => sum + Math.abs(e.amount),
-    0
-  );
-  const totalCardExpenses = cardExpensesForDate.reduce(
-    (sum, e) => sum + e.amount,
-    0
-  );
-  const totalExpenses = totalAccountExpenses + totalCardExpenses;
-  return totalExpenses ? totalExpenses.toLocaleString() : 0;
-};
-
-const getIncome = (date) => {
-  const incomesForDate = filteredIncomes.value.filter(
-    (e) => e.accountTransactionDate === date && e.amount > 0
-  );
-  const totalAmount = incomesForDate.reduce((sum, e) => sum + e.amount, 0);
-
-  return totalAmount ? totalAmount.toLocaleString() : 0;
+const getSummary = async (startDate, endDate) => {
+  const response = await transactionStore.getMonthlyDailySummary(startDate, endDate);
+  dailySummary.value = response;
 };
 
 onMounted(() => {
+  const lastDate = getEndDay(currentYear.value, currentMonth.value);
+  const startDate = `${currentYear.value}-${(currentMonth.value + 1).toString().padStart(2, '0')}-01`;
+  const endDate = `${currentYear.value}-${(currentMonth.value + 1).toString().padStart(2, '0')}-${lastDate}`;
   generateCalendar();
+  getSummary(startDate, endDate);
 });
 
-watch([currentYear, currentMonth], generateCalendar);
+watch([currentYear, currentMonth], async () => {
+  generateCalendar();
+  const lastDate = getEndDay(currentYear.value, currentMonth.value);
+  const startDate = `${currentYear.value}-${(currentMonth.value + 1).toString().padStart(2, '0')}-01`;
+  const endDate = `${currentYear.value}-${(currentMonth.value + 1).toString().padStart(2, '0')}-${lastDate}`;
+  await getSummary(startDate, endDate);
+});
+
 </script>
 
 <template>
@@ -187,11 +122,11 @@ watch([currentYear, currentMonth], generateCalendar);
               <div class="mb-1">{{ day }}</div>
               <div>
                 <div class="text-customBlue text-xs mb-1">
-                  {{ getIncome(getDateString(day)) !== 0 ? getIncome(getDateString(day)) : "&nbsp;"}}
+                  {{ getDailySummary(day).income !== 0 ? getDailySummary(day).income.toLocaleString() : "&nbsp;" }}
                 </div>
                 <div class="text-customRed text-xs">
-                  {{ getExpense(getDateString(day)) !== 0 ? getExpense(getDateString(day)) : "&nbsp;" }}
-                </div>
+                  {{ getDailySummary(day).expense !== 0 ? getDailySummary(day).expense.toLocaleString() : "&nbsp;" }}
+                </div> 
               </div>
             </div>
           </td>
@@ -201,6 +136,4 @@ watch([currentYear, currentMonth], generateCalendar);
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

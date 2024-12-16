@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { useTransactionAnalysisStore } from "@/stores/transaction-analysis";
+import { useTransactionStore } from "@/stores/transaction";
 import MostUsed from "./MostUsed.vue";
 import MaximumUsed from "./MaximumUsed.vue";
 import medalFirst from "@/assets/medal_first.png";
@@ -9,76 +9,26 @@ import medalThird from "@/assets/medal_third.png";
 
 const props = defineProps({
   startDate: {
-    type: Date,
-    required: true,
+    type: String
   },
   endDate: {
-    type: Date,
-    required: true,
+    type: String
   },
   period: {
-    type: String,
+    type: String
   },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
-
-const transactionAnalysisStore = useTransactionAnalysisStore();
+const transactionStore = useTransactionStore();
 const mostUsed = ref({});
 const maximumAmount = ref({});
 
 const isLoaded = ref(false);
 
-const fetchTransactionAnalysis = async (
-  memberIdx,
-  startYear,
-  startMonth,
-  startDay,
-  endYear,
-  endMonth,
-  endDay
-) => {
-  await transactionAnalysisStore.getMostAndMaximumUse(
-    memberIdx,
-    startYear,
-    startMonth,
-    startDay,
-    endYear,
-    endMonth,
-    endDay
-  );
-  formatMostUsed(transactionAnalysisStore.mostAndMaximum);
-};
-
-const formatMostUsed = (data) => {
-  const [mostUsedStr, maximumAmountStr] = data.split('], ');
-
-  const mostUsedArr = mostUsedStr.replace(/[\[\]]/g, '').split(', ');
-  const maximumAmountArr = maximumAmountStr.replace(/[\[\]]/g, '').split(', ');
-
-  const mosUsedObj = {};
-  mostUsedArr.forEach(item => {
-    const [key, value] = item.split(':');
-    mosUsedObj[key.trim()] = parseInt(value.trim());
-  });
-
-  const maximumAmountObj = {};
-  maximumAmountArr.forEach(item => {
-    const [key, value] = item.split(':');
-    maximumAmountObj[key.trim()] = parseInt(value.trim());
-  });
-
-  const sortedMostUsedObj = Object.fromEntries(
-    Object.entries(mosUsedObj).sort(([, a], [, b]) => b - a)
-  );
-
-  const sortedMaximumAmountObj = Object.fromEntries(
-    Object.entries(maximumAmountObj).sort(([, a], [, b]) => b - a)
-  );
-
-  mostUsed.value = sortedMostUsedObj;
-  maximumAmount.value = sortedMaximumAmountObj;
+const fetchTransactionAnalysis = async () => {
+  const topUsage = await transactionStore.getMostAndMaximumUse(props.startDate, props.endDate);
+  mostUsed.value = topUsage.mostUsage;
+  maximumAmount.value = topUsage.maximumUsage;
 };
 
 const getMedal = (index) => {
@@ -94,31 +44,8 @@ const getMedal = (index) => {
   }
 };
 
-watch(
-  [() => props.startDate, () => props.endDate],
-  async ([newStartDate, newEndDate]) => {
-    isLoaded.value = false;
-    const startYear = newStartDate.getFullYear();
-    const startMonth = newStartDate.getMonth();
-    const startDate = newStartDate.getDate();
-    const endYear = newEndDate.getFullYear();
-    const endMonth = newEndDate.getMonth();
-    const endDate = newEndDate.getDate();
-
-    await fetchTransactionAnalysis(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
-    isLoaded.value = true;
-  }
-);
-
 onMounted(async () => {
-  const startYear = props.startDate.getFullYear();
-  const startMonth = props.startDate.getMonth();
-  const startDate = props.startDate.getDate();
-  const endYear = props.endDate.getFullYear();
-  const endMonth = props.endDate.getMonth();
-  const endDate = props.endDate.getDate();
-
-  await fetchTransactionAnalysis(memberIdx, startYear, startMonth, startDate, endYear, endMonth, endDate);
+  // await fetchTransactionAnalysis();
   isLoaded.value = true;
 });
 </script>

@@ -1,22 +1,18 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from "chart.js";
-import { useCategoryTransactionStore } from "@/stores/category-transaction";
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 const props = defineProps({
   chartId: {
-    type: String,
-    required: true
+    type: String
   },
-  period: {
-    type: String,
-    required: true
+  chartData: {
+    type: Array
   }
 });
 
-const categoryTransactionStore = useCategoryTransactionStore();
 const chartData = ref({
   labels: [],
   datasets: [
@@ -58,25 +54,8 @@ const renderChart = () => {
 };
 
 onMounted(() => {
-  if (props.period === '이번 달') {
-    const uniqueCategories = [...new Set(categoryTransactionStore.categoryDataThisMonth.map((item) => item.categoryName))];
-
-    chartData.value.labels = uniqueCategories;
-    chartData.value.datasets[0].data = uniqueCategories.map((category) => {
-      const categoryData = categoryTransactionStore.categoryDataThisMonth.find((item) => item.categoryName === category);
-      return categoryData.percentage.toFixed(1);
-  });
-  } else {
-    const uniqueCategories = [...new Set(categoryTransactionStore.categoryDataSelectedPeriod.map((item) => item.categoryName))];
-
-    chartData.value.labels = uniqueCategories;
-    chartData.value.datasets[0].data = uniqueCategories.map((category) => {
-      const categoryData = categoryTransactionStore.categoryDataSelectedPeriod.find((item) => item.categoryName === category);
-      return categoryData.percentage.toFixed(1);
-    });
-  }
-
-
+  chartData.value.labels = props.chartData.map(item => item.categoryName);
+  chartData.value.datasets[0].data = props.chartData.map(item => item.totalSpent);
   renderChart();
 });
 </script>
@@ -87,6 +66,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
