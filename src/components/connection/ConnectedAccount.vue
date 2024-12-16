@@ -25,7 +25,7 @@ const closeModal = async () => {
 
 const fetchAsset = async () => {
   isLoading.value = true;
-  await assetStore.getAssetList(memberIdx);
+  await assetStore.getAssetList();
   const accountList = assetStore.allAccountList;
   connectedAccountList.value = accountList.filter(
     (account) => account.connectedStatus === 1

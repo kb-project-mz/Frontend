@@ -47,7 +47,7 @@ const addCard = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberIdx);
+  await assetStore.getAssetList();
   const cardList = assetStore.allCardList;
   unconnectedCardList.value = cardList.filter(
     (card) => card.connectedStatus === 0

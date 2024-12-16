@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
-import { useAuthStore } from '@/stores/auth.js';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
+import { useAuthStore } from "@/stores/auth.js";
 
-export const useAssetStore = defineStore('asset', {
+export const useAssetStore = defineStore("asset", {
   state: () => ({
     allAssetList: [],
     allAccountList: [],
@@ -11,10 +11,10 @@ export const useAssetStore = defineStore('asset', {
     connectedCardList: [],
   }),
   actions: {
-    async getAssetList(memberIdx) {
+    async getAssetList() {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/asset/${memberIdx}`, {
+        const response = await apiInstance.get(`/asset`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },
@@ -89,8 +89,10 @@ export const useAssetStore = defineStore('asset', {
             },
           }
         );
-        
-        this.connectedCardList = this.connectedCardList.filter(card => card.cardIdx !== cardIdx);
+
+        this.connectedCardList = this.connectedCardList.filter(
+          (card) => card.cardIdx !== cardIdx
+        );
       } catch (error) {
         throw error;
       }
@@ -108,7 +110,9 @@ export const useAssetStore = defineStore('asset', {
             },
           }
         );
-        this.connectedAccountList = this.connectedAccountList.filter(account => account.cardIdx !== accountIdx);
+        this.connectedAccountList = this.connectedAccountList.filter(
+          (account) => account.cardIdx !== accountIdx
+        );
         return response.data;
       } catch (error) {
         throw error;

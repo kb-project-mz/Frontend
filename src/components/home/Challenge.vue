@@ -16,17 +16,17 @@ const formatDate = (date) => {
   return date.split("-").join(".");
 };
 
-const fetchChallengeTop3 = async (memberIdx) => {
-  await challengeTop3Store.getChallengeTop3(memberIdx);
+const fetchChallengeTop3 = async () => {
+  await challengeTop3Store.getChallengeTop3();
 };
 
-const fetchPeerChallenge = async (memberIdx) => {
-  await challengeTop3Store.getPeerChallenge(memberIdx);
+const fetchPeerChallenge = async () => {
+  await challengeTop3Store.getPeerChallenge();
 };
 
 onMounted(async () => {
-  await fetchChallengeTop3(memberIdx);
-  await fetchPeerChallenge(memberIdx);
+  await fetchChallengeTop3();
+  await fetchPeerChallenge();
   challengeTop3ByMember.value = challengeTop3Store.ChallengeTop3List;
   peerChallenge.value = challengeTop3Store.PeerChallengeList;
 });

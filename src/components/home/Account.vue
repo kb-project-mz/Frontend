@@ -12,8 +12,8 @@ const balanceStore = useBalanceStore();
 const authStore = useAuthStore();
 const memberIdx = authStore.member.memberIdx;
 
-const fetchBalance = async (memberIdx) => {
-  await balanceStore.getTotalBalance(memberIdx);
+const fetchBalance = async () => {
+  await balanceStore.getTotalBalance();
 };
 
 onMounted(async () => {

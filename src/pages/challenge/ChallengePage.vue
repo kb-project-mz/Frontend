@@ -12,7 +12,7 @@ const memberIdx = authStore.member.memberIdx;
 const challengeStore = useChallengeStore();
 
 onMounted(() => {
-  challengeStore.getChallengeList(memberIdx);
+  challengeStore.getChallengeList();
 });
 </script>
 

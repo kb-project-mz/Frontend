@@ -47,7 +47,7 @@ const addAccount = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberIdx);
+  await assetStore.getAssetList();
   const accountList = assetStore.allAccountList;
   unconnectedAccountList.value = accountList.filter(
     (account) => account.connectedStatus === 0

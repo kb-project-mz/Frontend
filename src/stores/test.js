@@ -84,9 +84,14 @@ export const useTestStore = defineStore("testStore", {
       }
     },
 
-    async getSurveyInfo(memberId) {
+    async getSurveyInfo() {
       try {
-        const response = await apiInstance.get(`/test/survey/${memberId}`);
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/test/survey`, {
+          headers: {
+            Authorization: authStore.member.accessToken,
+          },
+        });
         if (response.data.success) {
           return response.data.data;
         } else {
@@ -97,9 +102,14 @@ export const useTestStore = defineStore("testStore", {
       }
     },
 
-    async getAdditionalSurveyInfo(memberIdx) {
+    async getAdditionalSurveyInfo() {
       try {
-        const response = await apiInstance.get(`/test/survey/${memberIdx}/additional-info`);
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/test/survey/additional-info`, {
+          headers: {
+            Authorization: authStore.member.accessToken,
+          },
+        });
         if (response.data.success) {
           this.additionalSurveyInfo = response.data.data;
           return this.additionalSurveyInfo;
@@ -213,9 +223,14 @@ export const useTestStore = defineStore("testStore", {
     }
   },
 
-  async getSurveyInfo(memberId) {
+  async getSurveyInfo() {
     try {
-      const response = await apiInstance.get(`/test/survey/${memberId}`);
+      const authStore = useAuthStore();
+      const response = await apiInstance.get(`/test/survey`, {
+        headers: {
+          Authorization: authStore.member.accessToken,
+        },
+      });
       if (response.data.success) {
         return response.data.data;
       } else {

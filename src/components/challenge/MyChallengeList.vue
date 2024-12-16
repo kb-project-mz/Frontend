@@ -26,8 +26,8 @@ const addNewChallenge = (newChallenge) => {
 };
 
 onMounted(async () => {
-  await challengeStore.getChallengeList(memberIdx);
-  await challengeStore.getChallengeStatus(memberIdx);
+  await challengeStore.getChallengeList();
+  await challengeStore.getChallengeStatus();
   chartData.value = challengeStore.chartData;
 });
 </script>

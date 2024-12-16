@@ -63,7 +63,7 @@ const confirmSubmission = async () => {
     formData.value.challengeStatus = challengeStatus;
 
     await challengeStore.insertChallenge(formData.value);
-    await challengeStore.getChallengeList(formData.value.memberIdx);
+    await challengeStore.getChallengeList();
 
     window.location.reload();
     closeModal();
@@ -84,7 +84,6 @@ const onConditionChange = () => {
 const onCategoryChange = async () => {
   if (formData.value.categoryIdx != 0) {
     await challengeStore.getDetailedCategory(
-      memberIdx,
       formData.value.categoryIdx
     );
     detailedCategories.value = challengeStore.detailedCategories;
