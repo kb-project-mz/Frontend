@@ -1,5 +1,4 @@
 <script setup>
-import { defineProps } from "vue";
 import ProgressBar from "./ProgressBar.vue";
 import { useChallengeStore } from "@/stores/challenge";
 

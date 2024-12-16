@@ -53,7 +53,7 @@ onMounted(async () => {
             <AnalysisThisMonth />
           </div>
           <div class="back w-full [transform:rotateY(180deg)]">
-            <!-- <AnalysisSelectedPeriod /> -->
+            <AnalysisSelectedPeriod />
           </div>
         </div>
       </div>
@@ -64,18 +64,16 @@ onMounted(async () => {
           <FixedExpenses />
         </div>
         <div class="h-full lg:col-span-3">
-          <BarChart :account-transaction-data="accountTransactionData" :card-transaction-data="cardTransactionData" />
+          <BarChart />
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-7 gap-10">
-        <!-- <div class="lg:col-span-4">
-          <ConsumptionCalendar :account-transaction-data="accountTransactionData"
-            :card-transaction-data="cardTransactionData" />
-        </div> -->
+        <div class="lg:col-span-4">
+          <ConsumptionCalendar />
+        </div>
         <div class="lg:col-span-3">
-          <ConsumptionList :card-transaction-data="cardTransactionThisMonthData" 
-            :account-transaction-data="accountTransactionThisMonthData" />
+          <ConsumptionList />
         </div>
       </div>
 
