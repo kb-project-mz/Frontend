@@ -10,10 +10,10 @@ export const useAccountTransactionStore = defineStore('accountTransaction', {
   }),
 
   actions: {
-    async getAccountTransactionList(memberIdx) {
+    async getAccountTransactionList() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/transaction/account/${memberIdx}`, {
+        const res = await apiInstance.get(`/asset/account/`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },

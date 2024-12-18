@@ -100,8 +100,8 @@ watch(
             >
               <img :src="card.image" alt="card" class="h-10 rounded-sm mr-3" />
               <div class="block">
-                <div class="text-sm text-gray-600">{{ card.financeName }}</div>
-                <div class="font-bold">{{ card.prdtName }}</div>
+                <div class="text-sm text-gray-600">{{ card.bankName }}</div>
+                <div class="font-bold">{{ card.assetName }}</div>
               </div>
             </label>
           </div>

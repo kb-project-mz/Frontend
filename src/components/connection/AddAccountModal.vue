@@ -105,9 +105,9 @@ watch(
               />
               <div class="block">
                 <div class="text-sm text-gray-600">
-                  {{ account.financeName }}
+                  {{ account.bankName }}
                 </div>
-                <div class="font-bold">{{ account.prdtName }}</div>
+                <div class="font-bold">{{ account.assetName }}</div>
               </div>
             </label>
           </div>

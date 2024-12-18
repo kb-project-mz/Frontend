@@ -11,10 +11,10 @@ export const useCardTransactionStore = defineStore('cardTransaction', {
   }),
 
   actions: {
-    async getCardTransactionList(memberIdx) {
+    async getCardTransactionList() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/transaction/card/${memberIdx}`, {
+        const res = await apiInstance.get(`/asset/card/`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },

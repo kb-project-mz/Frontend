@@ -34,9 +34,9 @@ const fetchAsset = async () => {
 };
 
 const disconnectAccount = async (accountIdx) => {
-  const account = connectedAccountList.value.find(account => account.prdtId === accountIdx);
+  const account = connectedAccountList.value.find(account => account.assetIdx === accountIdx);
   
-  const confirm = window.confirm(`${account.prdtName} 연동을 해제하시겠습니까?`);
+  const confirm = window.confirm(`${account.assetName} 연동을 해제하시겠습니까?`);
 
   if (confirm) {
     await assetStore.disconnectAccount(accountIdx);
@@ -79,11 +79,11 @@ onMounted(async () => {
           <div class="flex items-center">
             <img :src="account.image" alt="account" class="w-12 h-12 mr-4 rounded-full" />
             <div>
-              <div class="text-medium">{{ account.prdtName }}</div>
-              <div class="text-lg font-bold">{{ account.balance.toLocaleString() }}원</div>
+              <div class="text-medium">{{ account.assetName }}</div>
+              <div class="text-lg font-bold">{{ account.accountBalance.toLocaleString() }}원</div>
             </div>
           </div>
-          <button @click="disconnectAccount(account.prdtId)" class="ml-4 text-gray-400">
+          <button @click="disconnectAccount(account.assetIdx)" class="ml-4 text-gray-400">
             삭제
           </button>
         </div>
