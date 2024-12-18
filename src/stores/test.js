@@ -88,7 +88,6 @@ export const useTestStore = defineStore("testStore", {
       try {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/test/survey`, {
-          headers: {
             Authorization: authStore.member.accessToken,
           },
         });
@@ -109,6 +108,7 @@ export const useTestStore = defineStore("testStore", {
           headers: {
             Authorization: authStore.member.accessToken,
           },
+
         });
         if (response.data.success) {
           this.additionalSurveyInfo = response.data.data;
