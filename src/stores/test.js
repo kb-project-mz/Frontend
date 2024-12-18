@@ -87,7 +87,8 @@ export const useTestStore = defineStore("testStore", {
     async getSurveyInfo() {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/test/survey`, {
+        const response = await apiInstance.get("/test/survey", {
+          headers: {
             Authorization: authStore.member.accessToken,
           },
         });
@@ -261,6 +262,7 @@ export const useTestStore = defineStore("testStore", {
   getOptionsByQuestionIdx(questionIdx) {
     return this.options.get(questionIdx) || [];
   },
+
   resetScore() {
     this.impulseScore = 0;
     this.plannedScore = 0;

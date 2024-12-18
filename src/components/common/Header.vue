@@ -15,6 +15,7 @@ const logout = async () => {
   localStorage.clear(); 
   router.push('/');
 };
+
 </script>
 
 <template>

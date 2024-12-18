@@ -77,7 +77,7 @@ onMounted(async () => {
       <div v-else-if="connectedAccountList.length > 0">
         <div v-for="(account, index) in connectedAccountList" :key="index" class="py-3 pl-2 flex items-center justify-between">
           <div class="flex items-center">
-            <img :src="account.image" alt="account" class="w-12 h-12 mr-4 rounded-full" />
+            <img :src="account.assetImage" alt="account" class="w-12 h-12 mr-4 rounded-full" />
             <div>
               <div class="text-medium">{{ account.assetName }}</div>
               <div class="text-lg font-bold">{{ account.accountBalance.toLocaleString() }}원</div>

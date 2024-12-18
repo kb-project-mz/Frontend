@@ -19,9 +19,9 @@ const fetchSBTIResult = async (memberIdx) => {
   const _obj = toRaw(SBTIResult.value);
 
   if (_obj && _obj.typeImage) {
-    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${_obj.typeImage}`;
+    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/basic-image/${_obj.typeImage}`;
   } else {
-    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/before_test.png`;
+    resultImage.value = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/basic-image/before_test.png`;
     GoTest.value = true;
   }
 };

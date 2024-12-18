@@ -94,7 +94,7 @@ onMounted(async () => {
           class="py-3 pl-2 flex items-center justify-between"
         >
           <div class="flex items-center">
-            <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
+            <img :src="card.assetImage" alt="card" class="h-12 mr-4 rounded-sm" />
             <div>
               <div class="text-medium">{{ card.assetName }}</div>
               <div class="text-lg font-bold">
