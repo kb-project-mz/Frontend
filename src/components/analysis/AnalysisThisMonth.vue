@@ -3,9 +3,10 @@ import MostAndMaximumUsed from "@/components/analysis/MostAndMaximumUsed.vue";
 import CategoryChart from "@/components/analysis/CategoryChart.vue";
 import TotalAmount from "@/components/analysis/TotalAmount.vue";
 import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth.js";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+const authStore = useAuthStore();
+const memberName = authStore.member.memberName;
 
 const isLoaded = ref(false);
 const today = new Date();
@@ -18,7 +19,20 @@ const endDate = ref(null);
 const getEndDay = (year, month) => {
   const isLeapYear = (year) =>
     (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const daysInMonth = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const daysInMonth = [
+    31,
+    isLeapYear(year) ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
   return daysInMonth[month];
 };
 

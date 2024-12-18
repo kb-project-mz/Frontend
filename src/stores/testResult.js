@@ -1,18 +1,24 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
+import { useAuthStore } from "@/stores/auth.js";
 
-export const useTestResultStore = defineStore('testResult', {
+export const useTestResultStore = defineStore("testResult", {
   state: () => ({
     TestResult: [],
   }),
 
   actions: {
-    async getTestResult(memberIdx) {
+    async getTestResult() {
       try {
-        const response = await apiInstance.get(`/home/test/${memberIdx}`);
+        const authStore = useAuthStore();
+        const response = await apiInstance.get(`/home/test`, {
+          headers: {
+            Authorization: authStore.member.accessToken,
+          },
+        });
         this.TestResult = response.data.data;
       } catch (error) {
-        console.error('Failed to fetch test result : ', error);
+        console.error("Failed to fetch test result : ", error);
         throw error;
       }
     },

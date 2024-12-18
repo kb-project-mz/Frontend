@@ -1,19 +1,23 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
-import { useAuthStore } from '@/stores/auth.js';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
+import { useAuthStore } from "@/stores/auth.js";
 
-export const useTransactionStore = defineStore('transaction', {
+export const useTransactionStore = defineStore("transaction", {
   actions: {
     async fetchTransaction() {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.post(`/transaction`, {}, {
-          headers: {
-            Authorization: authStore.member.accessToken
+        const response = await apiInstance.post(
+          `/transaction`,
+          {},
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
@@ -22,37 +26,43 @@ export const useTransactionStore = defineStore('transaction', {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/transaction/recommendation`, {
           headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
     async getMonthlySummary(startDate, endDate) {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/transaction/summary?startDate=${startDate}&endDate=${endDate}`, {
-          headers: {
-            Authorization: authStore.member.accessToken
+        const response = await apiInstance.get(
+          `/transaction/summary?startDate=${startDate}&endDate=${endDate}`,
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
     async getMostAndMaximumUse(startDate, endDate) {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/transaction/top-usage?startDate=${startDate}&endDate=${endDate}`, {
-          headers: {
-            Authorization: authStore.member.accessToken
+        const response = await apiInstance.get(
+          `/transaction/top-usage?startDate=${startDate}&endDate=${endDate}`,
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
@@ -61,11 +71,11 @@ export const useTransactionStore = defineStore('transaction', {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/transaction/fixed`, {
           headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
@@ -74,24 +84,27 @@ export const useTransactionStore = defineStore('transaction', {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/transaction/daily`, {
           headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
     async getCategoryChartData(startDate, endDate) {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/transaction/category?startDate=${startDate}&endDate=${endDate}`, {
-          headers: {
-            Authorization: authStore.member.accessToken
+        const response = await apiInstance.get(
+          `/transaction/category?startDate=${startDate}&endDate=${endDate}`,
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
     },
@@ -100,12 +113,12 @@ export const useTransactionStore = defineStore('transaction', {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/transaction/monthly`, {
           headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         return response.data.data;
       } catch (err) {
-        console.error('Error fetching monthly expenses:', err);
+        console.error("Error fetching monthly expenses:", err);
       }
     },
     async getDailyTransactions(page, size) {
@@ -127,26 +140,32 @@ export const useTransactionStore = defineStore('transaction', {
             totalPages: response.data.data.totalPages,
           };
         } else {
-          console.error('API 호출 실패:', response.data.error);
+          console.error("API 호출 실패:", response.data.error);
           return null;
         }
       } catch (err) {
-        console.error('getDailyTransactions 에러:', err.response ? err.response.data : err.message);
+        console.error(
+          "getDailyTransactions 에러:",
+          err.response ? err.response.data : err.message
+        );
         return null;
       }
     },
     async getMonthlyDailySummary(startDate, endDate) {
       try {
         const authStore = useAuthStore();
-        const response = await apiInstance.get(`/transaction/monthly/summary?startDate=${startDate}&endDate=${endDate}`, {
-          headers: {
-            Authorization: authStore.member.accessToken
+        const response = await apiInstance.get(
+          `/transaction/monthly/summary?startDate=${startDate}&endDate=${endDate}`,
+          {
+            headers: {
+              Authorization: authStore.member.accessToken,
+            },
           }
-        });
+        );
         return response.data.data;
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       }
-    }
+    },
   },
 });

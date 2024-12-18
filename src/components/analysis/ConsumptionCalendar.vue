@@ -3,7 +3,6 @@ import { ref, onMounted, watch } from "vue";
 import { useTransactionStore } from "@/stores/transaction";
 
 const transactionStore = useTransactionStore();
-
 const now = new Date();
 const currentYear = ref(now.getFullYear());
 const currentMonth = ref(now.getMonth());

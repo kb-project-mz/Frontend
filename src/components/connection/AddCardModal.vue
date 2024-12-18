@@ -1,14 +1,15 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useAssetStore } from "@/stores/asset";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   visible: { type: Boolean, required: true },
   onClose: { type: Function, required: true },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const emit = defineEmits(["updateCard"]);
 
@@ -46,7 +47,7 @@ const addCard = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberIdx);
+  await assetStore.getAssetList();
   const cardList = assetStore.allCardList;
   unconnectedCardList.value = cardList.filter(
     (card) => card.connectedStatus === 0

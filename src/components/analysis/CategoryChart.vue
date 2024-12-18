@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useTransactionStore } from "@/stores/transaction";
 import DoughnutChart from "@/components/analysis/DoughnutChart.vue";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   chartId: {

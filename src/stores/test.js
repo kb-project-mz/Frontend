@@ -88,9 +88,8 @@ export const useTestStore = defineStore("testStore", {
       try {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/test/survey`, {
-          headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
         });
         if (response.data.success) {
           return response.data.data;
@@ -107,8 +106,9 @@ export const useTestStore = defineStore("testStore", {
         const authStore = useAuthStore();
         const response = await apiInstance.get(`/test/survey/additional-info`, {
           headers: {
-            Authorization: authStore.member.accessToken
-          }
+            Authorization: authStore.member.accessToken,
+          },
+
         });
         if (response.data.success) {
           this.additionalSurveyInfo = response.data.data;
@@ -223,9 +223,14 @@ export const useTestStore = defineStore("testStore", {
     }
   },
 
-  async getSurveyInfo(memberId) {
+  async getSurveyInfo() {
     try {
-      const response = await apiInstance.get(`/test/survey/${memberId}`);
+      const authStore = useAuthStore();
+      const response = await apiInstance.get(`/test/survey`, {
+        headers: {
+          Authorization: authStore.member.accessToken,
+        },
+      });
       if (response.data.success) {
         return response.data.data;
       } else {

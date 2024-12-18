@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from "vue";
 import { useTransactionStore } from "@/stores/transaction";
 
+const authData = JSON.parse(localStorage.getItem("auth"));
+
 const transactionStore = useTransactionStore();
 
 const recommendation = ref("");

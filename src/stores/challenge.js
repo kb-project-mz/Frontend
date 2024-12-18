@@ -1,9 +1,8 @@
-import { defineStore } from 'pinia';
-import apiInstance from '@/util/axios-instance';
+import { defineStore } from "pinia";
+import apiInstance from "@/util/axios-instance";
+import { useAuthStore } from "@/stores/auth.js";
 
-import { useAuthStore } from '@/stores/auth.js';
-
-export const useChallengeStore = defineStore('challenge', {
+export const useChallengeStore = defineStore("challenge", {
   state: () => ({
     challengeList: [],
     detailedCategories: [],
@@ -12,20 +11,26 @@ export const useChallengeStore = defineStore('challenge', {
   }),
 
   actions: {
-    async getChallengeList(memberIdx) {
+    async getChallengeList() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/challenge/${memberIdx}`, {
+        const res = await apiInstance.get(`/challenge`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },
         });
 
-        const statusPriority = { "진행":1, "예정":2, "종료":3 };
+        const statusPriority = { 진행: 1, 예정: 2, 종료: 3 };
         this.challengeList = res.data.data;
         this.challengeList = this.challengeList.sort((a, b) => {
-          if (statusPriority[a.challengeStatus] !== statusPriority[b.challengeStatus]) {
-            return statusPriority[a.challengeStatus] - statusPriority[b.challengeStatus];
+          if (
+            statusPriority[a.challengeStatus] !==
+            statusPriority[b.challengeStatus]
+          ) {
+            return (
+              statusPriority[a.challengeStatus] -
+              statusPriority[b.challengeStatus]
+            );
           }
 
           if (a.challengeStatus === "진행") {
@@ -33,14 +38,16 @@ export const useChallengeStore = defineStore('challenge', {
           }
 
           if (a.challengeStatus === "예정") {
-            return new Date(a.challengeStartDate) - new Date(b.challengeStartDate);
+            return (
+              new Date(a.challengeStartDate) - new Date(b.challengeStartDate)
+            );
           }
 
           return 0;
         });
         console.log(this.challengeList);
       } catch (error) {
-        console.error('Error fetching challenges:', error);
+        console.error("Error fetching challenges:", error);
         throw error;
       }
     },
@@ -56,7 +63,7 @@ export const useChallengeStore = defineStore('challenge', {
 
         this.challengeList.push(challengeData);
       } catch (error) {
-        console.error('Error adding challenge:', error);
+        console.error("Error adding challenge:", error);
         throw error;
       }
     },
@@ -81,16 +88,16 @@ export const useChallengeStore = defineStore('challenge', {
           this.challengeList.splice(index, 1);
         }
       } catch (error) {
-        console.error('Error deleting challenge:', error);
+        console.error("Error deleting challenge:", error);
         throw error;
       }
     },
 
-    async getDetailedCategory(memberIdx, categoryId) {
+    async getDetailedCategory(categoryId) {
       try {
         const authStore = useAuthStore();
         const res = await apiInstance.get(
-          `/challenge/detailed-category/${memberIdx}/${categoryId}`,
+          `/challenge/detailed-category/${categoryId}`,
           {
             headers: {
               Authorization: authStore.member.accessToken,
@@ -99,42 +106,47 @@ export const useChallengeStore = defineStore('challenge', {
         );
         this.detailedCategories = res.data.data;
       } catch (errpt) {
-        console.error('Error fetching detailed categories:', errpt);
+        console.error("Error fetching detailed categories:", errpt);
       }
     },
 
-    async getChallengeStatus(memberIdx) {
+    async getChallengeStatus() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/challenge/status/${memberIdx}`, {
+        const res = await apiInstance.get(`/challenge/status`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },
         });
         this.chartData = res.data.data;
         if (this.challengeList.length > 0) {
-          const challengeOrder = this.challengeList.map(challenge => challenge.challengeIdx);
-    
+          const challengeOrder = this.challengeList.map(
+            (challenge) => challenge.challengeIdx
+          );
+
           this.chartData = this.chartData.sort((a, b) => {
-            return challengeOrder.indexOf(a.challengeIdx) - challengeOrder.indexOf(b.challengeIdx);
+            return (
+              challengeOrder.indexOf(a.challengeIdx) -
+              challengeOrder.indexOf(b.challengeIdx)
+            );
           });
         }
       } catch (error) {
-        console.error('Error fetching chart data:', error);
+        console.error("Error fetching chart data:", error);
       }
     },
 
-    async getPeerChallengeList(memberIdx) {
+    async getPeerChallengeList() {
       try {
         const authStore = useAuthStore();
-        const res = await apiInstance.get(`/challenge/peer/${memberIdx}`, {
+        const res = await apiInstance.get(`/challenge/peer`, {
           headers: {
             Authorization: authStore.member.accessToken,
           },
         });
         this.peerChallengeList = res.data.data;
       } catch (error) {
-        console.error('Error fetching peer challenge data:', error);
+        console.error("Error fetching peer challenge data:", error);
       }
     },
   },

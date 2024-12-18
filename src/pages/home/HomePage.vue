@@ -5,11 +5,14 @@ import Member from '@/components/home/Member.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
+
+const authData = JSON.parse(localStorage.getItem('auth'));
+
 </script>
 
 <template>
   <div>
-    <div v-if="authStore.member.memberIdx == null">
+    <div v-if="authData == null">
       <Guest />
     </div>
     <div v-else>

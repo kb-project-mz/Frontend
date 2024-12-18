@@ -4,19 +4,22 @@ import PeerChallenge from "@/components/challenge/PeerChallenge.vue";
 
 import { onMounted } from "vue";
 import { useChallengeStore } from "@/stores/challenge";
+import { useAuthStore } from "@/stores/auth.js";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const challengeStore = useChallengeStore();
 
 onMounted(() => {
-  challengeStore.getChallengeList(memberIdx);
+  challengeStore.getChallengeList();
 });
 </script>
 
 <template>
-  <div class="mx-[15%] grid grid-cols-1 lg:grid-cols-6 gap-20 font-pretendard-regular">
+  <div
+    class="mx-[15%] grid grid-cols-1 lg:grid-cols-6 gap-20 font-pretendard-regular"
+  >
     <PeerChallenge class="lg:col-span-2 max-h-180" />
     <MyChallengeList class="lg:col-span-4" />
   </div>

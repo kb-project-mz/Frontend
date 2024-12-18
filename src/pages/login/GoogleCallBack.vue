@@ -16,8 +16,8 @@ const memberName = computed(() => route.query.member_name);
 
 
 const imageUrl = computed(() => {
-  const authData = JSON.parse(localStorage.getItem('auth') || '{}');
-  return authData.imageUrl || 'basic.jpg';
+  const imageUrl = JSON.parse(localStorage.getItem('imageUrl') || '{}');
+  return imageUrl || 'basic.jpg';
 });
 
 onMounted(async () => {
