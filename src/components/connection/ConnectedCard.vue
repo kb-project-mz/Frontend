@@ -34,7 +34,7 @@ const fetchAsset = async () => {
   );
 
   connectedCardList.value.forEach((card) => {
-    const cardIdx = card.prdtId;
+    const cardIdx = card.assetIdx;
     if (cardTransactionStore.cardAmountBycardIdx[cardIdx]) {
       card.totalAmount = cardTransactionStore.cardAmountBycardIdx[cardIdx];
     } else {
@@ -46,9 +46,9 @@ const fetchAsset = async () => {
 };
 
 const disconnectCard = async (cardIdx) => {
-  const card = connectedCardList.value.find((card) => card.prdtId === cardIdx);
+  const card = connectedCardList.value.find((card) => card.assetIdx === cardIdx);
 
-  const confirm = window.confirm(`${card.prdtName} 연동을 해제하시겠습니까?`);
+  const confirm = window.confirm(`${card.assetName} 연동을 해제하시겠습니까?`);
 
   if (confirm) {
     await assetStore.disconnectCard(cardIdx);
@@ -94,16 +94,16 @@ onMounted(async () => {
           class="py-3 pl-2 flex items-center justify-between"
         >
           <div class="flex items-center">
-            <img :src="card.image" alt="card" class="h-12 mr-4 rounded-sm" />
+            <img :src="card.assetImage" alt="card" class="h-12 mr-4 rounded-sm" />
             <div>
-              <div class="text-medium">{{ card.prdtName }}</div>
+              <div class="text-medium">{{ card.assetName }}</div>
               <div class="text-lg font-bold">
-                {{ card.totalAmount.toLocaleString() }}원
+                {{ card.totalCardExpense.toLocaleString() }}원
               </div>
             </div>
           </div>
           <button
-            @click="disconnectCard(card.prdtId)"
+            @click="disconnectCard(card.assetIdx)"
             class="ml-4 text-gray-400"
           >
             삭제

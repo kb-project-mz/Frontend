@@ -21,10 +21,10 @@ export const useAssetStore = defineStore("asset", {
         });
         this.allAssetList = response.data.data;
         this.allAccountList = this.allAssetList.filter(
-          (asset) => asset.financeKind === 2
+          (asset) => asset.assetType === 'account'
         );
         this.allCardList = this.allAssetList.filter(
-          (asset) => asset.financeKind === 1
+          (asset) => asset.assetType === 'card'
         );
         this.connectedAccountList = this.allAccountList.filter(
           (asset) => asset.connectedStatus === 1
@@ -39,7 +39,7 @@ export const useAssetStore = defineStore("asset", {
 
     async updateAccountStatus(selectedAccount) {
       try {
-        const accountIdx = selectedAccount.prdtId;
+        const accountIdx = selectedAccount.assetIdx;
         const authStore = useAuthStore();
         const response = await apiInstance.post(
           `/asset/account/${accountIdx}`,
@@ -59,7 +59,7 @@ export const useAssetStore = defineStore("asset", {
 
     async updateCardStatus(selectedCard) {
       try {
-        const cardIdx = selectedCard.prdtId;
+        const cardIdx = selectedCard.assetIdx;
         const authStore = useAuthStore();
         const response = await apiInstance.post(
           `/asset/card/${cardIdx}`,

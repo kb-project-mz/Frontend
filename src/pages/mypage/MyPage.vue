@@ -243,6 +243,7 @@ const uploadImage = async (event) => {
       alert('이미지 업로드에 성공했습니다.');
       const imageUrl = `https://fingertips-bucket-local.s3.ap-northeast-2.amazonaws.com/${response.data.data.storeFileName}`;
       profile.imageUrl = imageUrl;
+     
       authStore.updateImageUrl(response.data.data.storeFileName)
       Object.assign(profile, { imageUrl: imageUrl });
       await fetchProfile();
@@ -267,8 +268,8 @@ const deleteImage = async (profileImage) => {
         },
       });
       if (response.data.success) {
-        profile.imageUrl = 'basic.jpg';
-        authStore.updateImageUrl("basic.jpg")
+        profile.imageUrl = 'upload-image/basic.jpg';
+        authStore.updateImageUrl("upload-image/basic.jpg")
         await fetchProfile();
       }
     } catch (error) {
