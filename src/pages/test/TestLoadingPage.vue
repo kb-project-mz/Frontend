@@ -37,8 +37,7 @@ const calculateResult = () => {
 onMounted(() => {
   calculateResult();
   if (testStore.birthYear == "") {
-    const memberId = authStore.member.memberId;
-    const info = testStore.getSurveyInfo(memberId);
+    const info = testStore.getSurveyInfo();
     testStore.setBirthYear(info.birthYear);
     testStore.setGender(info.gender);
   }

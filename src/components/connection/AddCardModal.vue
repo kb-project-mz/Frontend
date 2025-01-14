@@ -1,14 +1,15 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useAssetStore } from "@/stores/asset";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   visible: { type: Boolean, required: true },
   onClose: { type: Function, required: true },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const emit = defineEmits(["updateCard"]);
 
@@ -46,7 +47,7 @@ const addCard = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberIdx);
+  await assetStore.getAssetList();
   const cardList = assetStore.allCardList;
   unconnectedCardList.value = cardList.filter(
     (card) => card.connectedStatus === 0
@@ -97,10 +98,10 @@ watch(
               :for="'card-' + index"
               class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-indigo-900 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
             >
-              <img :src="card.image" alt="card" class="h-10 rounded-sm mr-3" />
+              <img :src="card.assetImage" alt="card" class="h-10 rounded-sm mr-3" />
               <div class="block">
-                <div class="text-sm text-gray-600">{{ card.financeName }}</div>
-                <div class="font-bold">{{ card.prdtName }}</div>
+                <div class="text-sm text-gray-600">{{ card.bankName }}</div>
+                <div class="font-bold">{{ card.assetName }}</div>
               </div>
             </label>
           </div>

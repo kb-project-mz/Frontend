@@ -11,7 +11,10 @@ const gender = ref(null);
 const region = ref("");
 const occupation = ref("");
 
-const years = Array.from({ length: 100 }, (v, i) => new Date().getFullYear() - i);
+const years = Array.from(
+  { length: 100 },
+  (v, i) => new Date().getFullYear() - i
+);
 const genderOptions = ["남성", "여성"];
 
 const selectGender = (option) => {
@@ -45,26 +48,30 @@ const selectYear = (year, index) => {
   const wheel = document.querySelector(".wheel");
   wheel.scrollTo({
     top: index * itemHeight,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 };
 
 onMounted(() => {
-  console.log('Birth Year:', testStore.birthYear);
-  console.log('Gender:', testStore.gender);
+  console.log("Birth Year:", testStore.birthYear);
+  console.log("Gender:", testStore.gender);
 });
 </script>
 
 <template>
   <div class="survey-container gong-gothic-font">
-    <div class="question" v-if=!testStore.birthYear>
+    <div class="question" v-if="!testStore.birthYear">
       <label class="text-2xl">당신이 태어난 연도는?</label>
       <div class="wheel-picker">
         <div class="wheel" @scroll="onScroll" ref="wheel">
           <ul>
             <li class="spacer"></li>
-            <li v-for="(year, index) in years" :key="year" :class="{ active: birthYear === year }"
-              @click="selectYear(year, index)">
+            <li
+              v-for="(year, index) in years"
+              :key="year"
+              :class="{ active: birthYear === year }"
+              @click="selectYear(year, index)"
+            >
               {{ year }}
             </li>
             <li class="spacer"></li>
@@ -73,14 +80,17 @@ onMounted(() => {
       </div>
     </div>
     <br />
-    <div class="question gong-gothic-font" v-if=!testStore.gender>
+    <div class="question gong-gothic-font" v-if="!testStore.gender">
       <label class="text-2xl">당신의 성별은?</label>
       <br />
       <div class="gender-options">
         <button
           class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[100px]"
-          v-for="(option, index) in genderOptions" :key="index" :class="{ selected: gender === option }"
-          @click="selectGender(option)">
+          v-for="(option, index) in genderOptions"
+          :key="index"
+          :class="{ selected: gender === option }"
+          @click="selectGender(option)"
+        >
           {{ option }}
         </button>
       </div>
@@ -89,20 +99,29 @@ onMounted(() => {
     <div class="question gong-gothic-font">
       <label class="text-2xl">당신의 거주지는? ('구'까지 입력)</label>
 
-      <input v-model="region" type="text" placeholder="거주지 입력"
-        class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]" />
+      <input
+        v-model="region"
+        type="text"
+        placeholder="거주지 입력"
+        class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
+      />
     </div>
     <br />
     <div class="question gong-gothic-font">
       <label class="text-2xl">당신의 직업은?</label>
 
-      <input v-model="occupation" type="text" placeholder="직업 입력"
-        class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]" />
+      <input
+        v-model="occupation"
+        type="text"
+        placeholder="직업 입력"
+        class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[300px]"
+      />
     </div>
     <br />
     <button
       class="custom-shadow gong-gothic-font bg-white text-gray-500 font-medium py-4 px-6 rounded-xl text-l transition duration-300 transform hover:scale-105 w-[200px]"
-      @click="goToQuestions">
+      @click="goToQuestions"
+    >
       다음
     </button>
   </div>
@@ -212,7 +231,8 @@ li.active {
 
 @font-face {
   font-family: "GongGothicMedium";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff") format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }

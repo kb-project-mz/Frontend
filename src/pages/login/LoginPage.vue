@@ -1,11 +1,13 @@
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useMemberStore } from '@/stores/member.js';
 import { useRouter } from "vue-router";
 import GoogleLoginComponent from "@/components/Login/GoogleLoginComponent.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
+const memberStore = useMemberStore();
 
 const member = reactive({
   memberId: "",
@@ -31,6 +33,7 @@ const login = async () => {
       if (response.data.role === 'ROLE_ADMIN') {
         router.push("/admin");
       } else {
+        await memberStore.getProfile();
         router.push("/");
       }
     } else {

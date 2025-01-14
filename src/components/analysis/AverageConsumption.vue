@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import Chart from "chart.js/auto";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   chartId: {
@@ -17,8 +18,8 @@ const props = defineProps({
   },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberName = authData.memberName;
+const authStore = useAuthStore();
+const memberName = authStore.member.memberName;
 
 const chartInstance = ref(null);
 

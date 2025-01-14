@@ -24,7 +24,7 @@ const startTest = async () => {
   localStorage.removeItem('resultName');
 
   if (authStore.member.memberId) {
-    const info = await testStore.getSurveyInfo(authStore.member.memberId);
+    const info = await testStore.getSurveyInfo();
     testStore.setBirthYear(info.birthYear);
     testStore.setGender(info.gender);
     if (testStore.getAdditionalSurveyInfo()) {

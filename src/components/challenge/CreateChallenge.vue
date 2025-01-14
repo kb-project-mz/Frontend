@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import { useChallengeStore } from "@/stores/challenge";
+import { useAuthStore } from "@/stores/auth.js";
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const props = defineProps(["showModal"]);
 const emit = defineEmits(["close", "challengeAdded"]);
@@ -62,7 +63,7 @@ const confirmSubmission = async () => {
     formData.value.challengeStatus = challengeStatus;
 
     await challengeStore.insertChallenge(formData.value);
-    await challengeStore.getChallengeList(formData.value.memberIdx);
+    await challengeStore.getChallengeList();
 
     window.location.reload();
     closeModal();
@@ -83,7 +84,6 @@ const onConditionChange = () => {
 const onCategoryChange = async () => {
   if (formData.value.categoryIdx != 0) {
     await challengeStore.getDetailedCategory(
-      memberIdx,
       formData.value.categoryIdx
     );
     detailedCategories.value = challengeStore.detailedCategories;

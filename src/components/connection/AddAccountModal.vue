@@ -1,14 +1,15 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useAssetStore } from "@/stores/asset";
+import { useAuthStore } from "@/stores/auth.js";
 
 const props = defineProps({
   visible: { type: Boolean, required: true },
   onClose: { type: Function, required: true },
 });
 
-const authData = JSON.parse(localStorage.getItem("auth"));
-const memberIdx = authData.memberIdx;
+const authStore = useAuthStore();
+const memberIdx = authStore.member.memberIdx;
 
 const emit = defineEmits(["updateAccount"]);
 
@@ -46,7 +47,7 @@ const addAccount = async () => {
 };
 
 const fetchAsset = async () => {
-  await assetStore.getAssetList(memberIdx);
+  await assetStore.getAssetList();
   const accountList = assetStore.allAccountList;
   unconnectedAccountList.value = accountList.filter(
     (account) => account.connectedStatus === 0
@@ -98,15 +99,15 @@ watch(
               class="inline-flex items-center w-full p-5 my-1 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-indigo-900 hover:text-gray-600 peer-checked:text-gray-600 hover:bg-gray-50"
             >
               <img
-                :src="account.image"
+                :src="account.assetImage"
                 alt="account"
                 class="w-10 h-10 rounded-full mr-3"
               />
               <div class="block">
                 <div class="text-sm text-gray-600">
-                  {{ account.financeName }}
+                  {{ account.bankName }}
                 </div>
-                <div class="font-bold">{{ account.prdtName }}</div>
+                <div class="font-bold">{{ account.assetName }}</div>
               </div>
             </label>
           </div>
